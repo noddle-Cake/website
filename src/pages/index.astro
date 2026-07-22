@@ -1,11 +1,61 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { profile } from '../data/profile';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allProjects = await getCollection('projects');
+const featured = allProjects.filter((p: CollectionEntry<'projects'>) => p.data.featured);
 ---
 
 <Layout>
-	<Welcome />
+  <section class="py-8">
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">{profile.name}</h1>
+    <p class="text-slate-400 mt-4 leading-relaxed max-w-2xl">{profile.tagline}</p>
+    <div class="flex gap-4 mt-6">
+      <a
+        href={`mailto:${profile.email}`}
+        class="text-sm bg-slate-100 text-slate-900 rounded px-4 py-2 font-medium hover:bg-slate-300"
+      >
+        Get in touch
+      </a>
+      <a
+        href="/projects"
+        class="text-sm border border-slate-700 rounded px-4 py-2 font-medium hover:border-slate-500"
+      >
+        View all projects
+      </a>
+    </div>
+  </section>
+
+  <section id="about" class="py-8 border-t border-slate-800">
+    <h2 class="text-xl font-semibold mb-4">About</h2>
+    <div class="space-y-3 text-sm text-slate-400">
+      {profile.education.map((ed) => (
+        <div class="flex justify-between max-w-2xl">
+          <span class="text-slate-300">{ed.degree} &mdash; {ed.school}</span>
+          <span>{ed.date}</span>
+        </div>
+      ))}
+    </div>
+    <div class="mt-6 flex flex-wrap gap-2">
+      {[...profile.skills.languages, ...profile.skills.frameworks, ...profile.skills.systems].map((skill) => (
+        <span class="text-xs bg-slate-800 text-slate-300 rounded px-2 py-1">{skill}</span>
+      ))}
+    </div>
+  </section>
+
+  <section id="projects" class="py-8 border-t border-slate-800">
+    <h2 class="text-xl font-semibold mb-4">Featured Projects</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      {featured.map((project: CollectionEntry<'projects'>) => (
+        <ProjectCard
+          title={project.data.title}
+          stack={project.data.stack}
+          summary={project.data.summary}
+          github={project.data.github}
+        />
+      ))}
+    </div>
+  </section>
 </Layout>

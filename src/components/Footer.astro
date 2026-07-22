@@ -1,0 +1,17 @@
+---
+import { profile } from '../data/profile';
+---
+
+<footer id="contact" class="border-t border-slate-800 mt-16">
+  <div class="w-full max-w-4xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-slate-400">
+    <p>&copy; {new Date().getFullYear()} {profile.name}</p>
+    <div class="flex gap-4">
+      <a href={`mailto:${profile.email}`} class="hover:text-slate-100">
+        {profile.email}
+      </a>
+      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-slate-100">
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,44 @@
+<button
+  id="theme-toggle"
+  aria-label="Toggle color theme"
+  class="text-sm border border-slate-700 rounded px-3 py-1.5 hover:border-slate-500 transition-colors"
+>
+  <span id="theme-toggle-label">Theme</span>
+</button>
+
+<script>
+  const STORAGE_KEY = 'theme';
+
+  function getStoredTheme(): 'light' | 'dark' | null {
+    const value = localStorage.getItem(STORAGE_KEY);
+    return value === 'light' || value === 'dark' ? value : null;
+  }
+
+  function systemPrefersDark(): boolean {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function currentTheme(): 'light' | 'dark' {
+    return getStoredTheme() ?? (systemPrefersDark() ? 'dark' : 'light');
+  }
+
+  function applyTheme(theme: 'light' | 'dark') {
+    document.documentElement.setAttribute('data-theme', theme);
+    const label = document.getElementById('theme-toggle-label');
+    if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+  }
+
+  function initToggle() {
+    applyTheme(currentTheme());
+
+    const button = document.getElementById('theme-toggle');
+    button?.addEventListener('click', () => {
+      const next = currentTheme() === 'dark' ? 'light' : 'dark';
+      localStorage.setItem(STORAGE_KEY, next);
+      applyTheme(next);
+    });
+  }
+
+  initToggle();
+  document.addEventListener('astro:after-swap', initToggle);
+</script>

@@ -1,0 +1,78 @@
+@import "tailwindcss";
+@source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+/* ---- Gruvbox Light (default) ---- */
+@theme {
+  --color-slate-950: #fbf1c7; /* bg0 — page background */
+  --color-slate-900: #f2e5bc; /* bg0_s */
+  --color-slate-800: #ebdbb2; /* bg1 — cards, borders */
+  --color-slate-700: #d5c4a1; /* bg2 — hover borders */
+  --color-slate-600: #bdae93; /* bg3 */
+  --color-slate-500: #a89984; /* bg4 */
+  --color-slate-400: #7c6f64; /* fg4 — muted text */
+  --color-slate-300: #665c54; /* fg3 */
+  --color-slate-200: #504945; /* fg2 */
+  --color-slate-100: #3c3836; /* fg1 — primary text */
+  --color-slate-50: #282828;  /* fg0 — darkest text */
+}
+
+/* ---- Gruvbox Dark — applied when system prefers dark AND no manual override is set ---- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-slate-950: #1d2021;
+    --color-slate-900: #282828;
+    --color-slate-800: #3c3836;
+    --color-slate-700: #504945;
+    --color-slate-600: #665c54;
+    --color-slate-500: #7c6f64;
+    --color-slate-400: #a89984;
+    --color-slate-300: #bdae93;
+    --color-slate-200: #d5c4a1;
+    --color-slate-100: #ebdbb2;
+    --color-slate-50: #fbf1c7;
+  }
+}
+
+/* ---- Manual override via toggle (wins regardless of system preference) ---- */
+[data-theme="dark"] {
+  --color-slate-950: #1d2021;
+  --color-slate-900: #282828;
+  --color-slate-800: #3c3836;
+  --color-slate-700: #504945;
+  --color-slate-600: #665c54;
+  --color-slate-500: #7c6f64;
+  --color-slate-400: #a89984;
+  --color-slate-300: #bdae93;
+  --color-slate-200: #d5c4a1;
+  --color-slate-100: #ebdbb2;
+  --color-slate-50: #fbf1c7;
+}
+
+[data-theme="light"] {
+  --color-slate-950: #fbf1c7;
+  --color-slate-900: #f2e5bc;
+  --color-slate-800: #ebdbb2;
+  --color-slate-700: #d5c4a1;
+  --color-slate-600: #bdae93;
+  --color-slate-500: #a89984;
+  --color-slate-400: #7c6f64;
+  --color-slate-300: #665c54;
+  --color-slate-200: #504945;
+  --color-slate-100: #3c3836;
+  --color-slate-50: #282828;
+}
