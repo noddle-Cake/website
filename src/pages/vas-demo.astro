@@ -1,0 +1,742 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const oldScreens = [
+  { src: '/vas-demo/old/tools-home.jpg', label: 'Tools home' },
+  { src: '/vas-demo/old/warehouse-lookup.jpg', label: 'Warehouse item lookup' },
+  { src: '/vas-demo/old/receiving-verification.jpg', label: 'Receiving verification' },
+  { src: '/vas-demo/old/cycle-count.jpg', label: 'Cycle count' },
+  { src: '/vas-demo/old/inventory-history.jpg', label: 'Inventory verification history' },
+  { src: '/vas-demo/old/pod-login.jpg', label: 'POD search login' },
+  { src: '/vas-demo/old/pod-search.jpg', label: 'POD search results' },
+  { src: '/vas-demo/old/document-search.jpg', label: 'OCR document search' },
+];
+
+const newScreens = [
+  { src: '/vas-demo/new/unreconciled-dashboard.jpg', label: 'Received, not reconciled' },
+  { src: '/vas-demo/new/cycle-count.jpg', label: 'Cycle count' },
+  { src: '/vas-demo/new/hub.jpg', label: 'Desk & page hub' },
+  { src: '/vas-demo/new/settings.jpg', label: 'Per-user settings' },
+  { src: '/vas-demo/new/admin-users.jpg', label: 'Admin — users' },
+  { src: '/vas-demo/new/admin-exports.jpg', label: 'Admin — scheduled exports' },
+];
+---
+
+<Layout title="VAS Inventory Platform — Live Demo">
+  <section class="py-8">
+    <a href="/projects" class="text-xs text-slate-400 hover:text-slate-100">&larr; Back to projects</a>
+    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mt-2">
+      VAS Inventory Platform &mdash; Before &amp; After
+    </h1>
+    <p class="text-sm text-slate-400 mt-3 max-w-2xl leading-relaxed">
+      I rebuilt VAS's internal inventory tool from a Python/NiceGUI prototype sitting on a
+      Postgres buffer into a Go REST API with a React frontend, synced in real time from the
+      Fishbowl ERP. Screenshots below are from the real, running apps; underneath them is an
+      interactive mock of the warehouse item-lookup screen from both versions on dummy data, so
+      you can search each one yourself and feel the difference.
+    </p>
+  </section>
+
+  <section class="py-4">
+    <h2 class="text-xl font-semibold mb-1">Real screenshots</h2>
+    <p class="text-xs text-slate-500 mb-4 italic">
+      A couple of names in the admin screenshots below are pixelated &mdash; coworker accounts,
+      blurred for privacy. Everything else is unedited.
+    </p>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div>
+        <div class="flex items-center gap-2 mb-3 flex-wrap">
+          <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Before</span>
+          <span class="text-xs bg-slate-800 text-slate-300 rounded px-2 py-1">Python &middot; NiceGUI</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {oldScreens.map((shot) => (
+            <button
+              type="button"
+              class="shot-thumb border border-slate-800 rounded-lg overflow-hidden hover:border-slate-600 transition-colors"
+              data-src={shot.src}
+              data-label={shot.label}
+            >
+              <img src={shot.src} alt={`Old UI — ${shot.label}`} loading="lazy" class="w-full h-28 object-cover object-top" />
+            </button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-3 flex-wrap">
+          <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">After</span>
+          <span class="text-xs bg-slate-800 text-slate-300 rounded px-2 py-1">Go API &middot; React</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {newScreens.map((shot) => (
+            <button
+              type="button"
+              class="shot-thumb border border-slate-800 rounded-lg overflow-hidden hover:border-slate-600 transition-colors"
+              data-src={shot.src}
+              data-label={shot.label}
+            >
+              <img src={shot.src} alt={`New UI — ${shot.label}`} loading="lazy" class="w-full h-28 object-cover object-top" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8 border-t border-slate-800">
+    <h2 class="text-xl font-semibold mb-1">Try it yourself</h2>
+    <p class="text-sm text-slate-400 mb-1 max-w-2xl">
+      A live, interactive mock of the item-lookup screen from each version, running on the same
+      made-up dataset.
+    </p>
+    <p class="text-xs text-slate-500 italic">
+      Everything below is fake, hardcoded data running entirely in your browser. Nothing here
+      touches Fishbowl, Postgres, or any live system.
+    </p>
+  </section>
+
+  <section class="grid lg:grid-cols-2 gap-6 py-4 items-start">
+    <!-- OLD UI -->
+    <div>
+      <div class="flex items-center gap-2 mb-3 flex-wrap">
+        <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Before</span>
+        <span class="text-xs bg-slate-800 text-slate-300 rounded px-2 py-1">Python &middot; NiceGUI &middot; Postgres buffer</span>
+      </div>
+
+      <div class="rounded-xl overflow-hidden border border-slate-800 bg-[#eeeeee]">
+        <div class="p-5 sm:p-6">
+          <div class="bg-white rounded-xl shadow-lg p-5">
+            <h3 class="text-xl sm:text-2xl font-bold text-[#1976D2]">Warehouse Item Lookup</h3>
+            <p class="text-[#616161] text-sm mb-4">
+              Scan a barcode or search by UPC, Part Number, or Description.
+            </p>
+
+            <div class="flex items-end gap-3 flex-wrap">
+              <div class="flex-1 min-w-[160px]">
+                <label class="block text-xs text-[#1976D2] mb-1" for="old-search-input">Search</label>
+                <input
+                  id="old-search-input"
+                  type="text"
+                  placeholder="Scan UPC or type a search..."
+                  class="w-full border border-[#bdbdbd] rounded px-3 py-2 text-sm text-[#212121] bg-white focus:outline-none focus:border-[#1976D2]"
+                />
+              </div>
+              <button
+                id="old-scan-btn"
+                type="button"
+                class="bg-[#1976D2] hover:bg-[#1565C0] text-white text-sm font-medium rounded px-4 py-2 shadow whitespace-nowrap"
+              >
+                &#128247; Scan
+              </button>
+              <button
+                id="old-search-btn"
+                type="button"
+                class="bg-[#21BA45] hover:bg-[#1a9438] text-white text-sm font-medium rounded px-4 py-2 shadow whitespace-nowrap"
+              >
+                &#128269; Search
+              </button>
+            </div>
+
+            <p class="text-xs text-[#9e9e9e] mt-2">
+              Tip: try "valve", "elbow", or a PO barcode like <span class="font-mono">P4521</span>.
+            </p>
+
+            <div id="old-results" class="mt-5 space-y-3">
+              <p class="text-[#9e9e9e] text-sm italic">No search yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW UI -->
+    <div>
+      <div class="flex items-center gap-2 mb-3 flex-wrap">
+        <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">After</span>
+        <span class="text-xs bg-slate-800 text-slate-300 rounded px-2 py-1">Go API &middot; React &middot; Fishbowl-synced</span>
+      </div>
+
+      <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+        <div class="p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-1 gap-2">
+            <h3 id="new-title" class="text-lg font-semibold text-slate-100">Stock Lookup</h3>
+            <div class="flex items-center gap-1 shrink-0">
+              <button data-lang="en" class="lang-btn text-xs px-2 py-1 rounded bg-slate-100 text-slate-900 font-medium">EN</button>
+              <button data-lang="es" class="lang-btn text-xs px-2 py-1 rounded text-slate-400 hover:text-slate-100">ES</button>
+            </div>
+          </div>
+          <p id="new-subtitle" class="text-xs text-slate-500 mb-3">
+            Type to search &mdash; results update as you type.
+          </p>
+
+          <div id="new-role-toggle" class="flex gap-2 mb-3">
+            <button data-role="warehouse" class="role-btn text-xs px-3 py-1.5 rounded-full bg-slate-100 text-slate-900 font-medium">
+              Warehouse staff
+            </button>
+            <button data-role="sales" class="role-btn text-xs px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">
+              Sales rep
+            </button>
+          </div>
+
+          <input
+            id="new-search-input"
+            type="search"
+            placeholder="Search SKU, name, or UPC..."
+            class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-slate-400"
+          />
+
+          <p id="new-status" class="text-xs text-slate-500 mt-2">Start typing to search.</p>
+
+          <ul id="new-results" class="mt-1 divide-y divide-slate-800"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8 border-t border-slate-800">
+    <h2 class="text-xl font-semibold mb-4">What changed</h2>
+    <ul class="space-y-2 text-sm text-slate-400 list-disc list-inside max-w-2xl">
+      <li>Fishbowl ERP is the system of record now, synced in real time &mdash; the old Postgres buffer could silently drift from what the warehouse actually had.</li>
+      <li>Search is instant and debounced instead of a manual Search-button round trip against the buffer database.</li>
+      <li>Bins are grouped by site with how long ago each was last counted, instead of a flat per-row expansion list.</li>
+      <li>Zero-quantity bins are shown explicitly ("0 EA") rather than silently dropped &mdash; try "nail" on both sides below to see the difference.</li>
+      <li>Pricing is permission-gated per role, and language/theme/accessibility settings persist per user across devices &mdash; toggle "Sales rep" and EN/ES on the right to try it.</li>
+    </ul>
+  </section>
+
+  <!-- Old-UI scan dialog -->
+  <div id="old-scan-dialog" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-xl p-6 w-full max-w-xs text-center">
+      <h4 class="text-lg font-semibold text-[#1976D2] mb-3">Scan Barcode</h4>
+      <div class="bg-[#eeeeee] rounded h-36 flex items-center justify-center text-[#9e9e9e] text-sm mb-3">
+        <span id="old-scan-status">Simulating camera scan&hellip;</span>
+      </div>
+      <button id="old-scan-cancel" type="button" class="text-[#d32f2f] text-sm font-medium">Cancel</button>
+    </div>
+  </div>
+
+  <!-- New-UI item sheet -->
+  <div id="item-sheet-overlay" class="hidden fixed inset-0 bg-black/50 z-50">
+    <div class="absolute right-0 top-0 h-full w-full max-w-sm bg-slate-900 border-l border-slate-700 p-5 overflow-y-auto">
+      <button id="item-sheet-close" type="button" class="text-slate-400 hover:text-slate-100 text-sm mb-4">
+        &#10005; Close
+      </button>
+      <div id="item-sheet-content"></div>
+    </div>
+  </div>
+
+  <!-- Screenshot lightbox -->
+  <div id="shot-lightbox" class="hidden fixed inset-0 bg-black/80 z-50 items-center justify-center p-4 sm:p-8">
+    <button
+      id="shot-lightbox-close"
+      type="button"
+      class="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-300 hover:text-white text-sm bg-slate-900/80 rounded px-3 py-1.5"
+    >
+      &#10005; Close
+    </button>
+    <figure class="max-w-4xl w-full max-h-full flex flex-col items-center gap-3">
+      <img id="shot-lightbox-img" src="" alt="" class="max-h-[80vh] w-auto rounded-lg border border-slate-700 object-contain" />
+      <figcaption id="shot-lightbox-caption" class="text-sm text-slate-300"></figcaption>
+    </figure>
+  </div>
+</Layout>
+
+<script>
+  type Location = {
+    site: string;
+    location: string;
+    qty: number;
+    uom: string;
+    lot: string | null;
+    exp: string | null;
+    countedAgo: string;
+  };
+
+  type Item = {
+    id: number;
+    sku: string;
+    description: string;
+    upc: string;
+    uom: string;
+    price: number;
+    locations: Location[];
+  };
+
+  const ITEMS: Item[] = [
+    {
+      id: 1,
+      sku: 'CU-ELB-050',
+      description: '1/2" Copper Elbow 90°',
+      upc: '012345678901',
+      uom: 'EA',
+      price: 1.85,
+      locations: [
+        { site: 'Warehouse', location: 'A-12-3', qty: 180, uom: 'EA', lot: null, exp: null, countedAgo: '2 days ago' },
+        { site: 'Warehouse', location: 'B-04-1', qty: 60, uom: 'EA', lot: 'L2291', exp: '2027-03-01', countedAgo: '6 hours ago' },
+      ],
+    },
+    {
+      id: 2,
+      sku: 'PVC-PIPE-200',
+      description: '2in PVC Pipe, 10ft',
+      upc: '012345678902',
+      uom: 'EA',
+      price: 6.4,
+      locations: [
+        { site: 'Warehouse', location: 'C-01-2', qty: 72, uom: 'EA', lot: null, exp: null, countedAgo: '1 day ago' },
+        { site: 'Showroom', location: 'S-DISPLAY', qty: 24, uom: 'EA', lot: null, exp: null, countedAgo: '3 weeks ago' },
+      ],
+    },
+    {
+      id: 3,
+      sku: 'GALV-NAIL-8D',
+      description: '8D Galvanized Nail, 50lb box',
+      upc: '012345678903',
+      uom: 'BOX',
+      price: 42.0,
+      locations: [
+        { site: 'Warehouse', location: 'D-09-4', qty: 0, uom: 'BOX', lot: null, exp: null, countedAgo: '5 days ago' },
+      ],
+    },
+    {
+      id: 4,
+      sku: 'BRS-VLV-034',
+      description: '3/4in Brass Ball Valve',
+      upc: '012345678904',
+      uom: 'EA',
+      price: 11.25,
+      locations: [
+        { site: 'Warehouse', location: 'A-03-1', qty: 54, uom: 'EA', lot: 'L1187', exp: null, countedAgo: '12 hours ago' },
+      ],
+    },
+    {
+      id: 5,
+      sku: 'SIL-CLR-10OZ',
+      description: 'Clear Silicone Sealant, 10oz',
+      upc: '012345678905',
+      uom: 'EA',
+      price: 4.1,
+      locations: [
+        { site: 'Warehouse', location: 'E-02-2', qty: 288, uom: 'EA', lot: 'L3390', exp: '2028-01-15', countedAgo: '4 hours ago' },
+        { site: 'Showroom', location: 'S-04', qty: 24, uom: 'EA', lot: 'L3390', exp: '2028-01-15', countedAgo: '2 weeks ago' },
+      ],
+    },
+    {
+      id: 6,
+      sku: 'TAPE-TEFLON-12',
+      description: 'Teflon Tape, 1/2in x 260in',
+      upc: '012345678906',
+      uom: 'EA',
+      price: 0.95,
+      locations: [
+        { site: 'Warehouse', location: 'F-11-1', qty: 18, uom: 'EA', lot: null, exp: null, countedAgo: '9 hours ago' },
+      ],
+    },
+  ];
+
+  const PURCHASE_ORDERS: Record<string, { itemId: number; ordered: number }[]> = {
+    '4521': [
+      { itemId: 1, ordered: 300 },
+      { itemId: 4, ordered: 60 },
+      { itemId: 5, ordered: 250 },
+    ],
+  };
+
+  const SCAN_BARCODES = ['012345678904', '012345678901', '012345678905'];
+
+  function matches(item: Item, term: string): boolean {
+    const t = term.toLowerCase();
+    return (
+      item.sku.toLowerCase().includes(t) ||
+      item.description.toLowerCase().includes(t) ||
+      item.upc.includes(t)
+    );
+  }
+
+  function totalQty(item: Item): number {
+    return item.locations.reduce((sum, l) => sum + l.qty, 0);
+  }
+
+  // ---------------------------------------------------------------
+  // OLD UI — click-to-search, round-trip delay, click-to-expand cards,
+  // zero-qty bins silently filtered out (mirrors the real NiceGUI app).
+  // ---------------------------------------------------------------
+  (function oldUi() {
+    const input = document.getElementById('old-search-input') as HTMLInputElement;
+    const searchBtn = document.getElementById('old-search-btn') as HTMLButtonElement;
+    const scanBtn = document.getElementById('old-scan-btn') as HTMLButtonElement;
+    const results = document.getElementById('old-results') as HTMLDivElement;
+    const scanDialog = document.getElementById('old-scan-dialog') as HTMLDivElement;
+    const scanCancel = document.getElementById('old-scan-cancel') as HTMLButtonElement;
+    let scanIndex = 0;
+    let scanTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function itemCard(item: Item, ordered: number | null): string {
+      const visibleLocations = item.locations.filter((l) => l.qty > 0);
+      const qty = totalQty(item);
+
+      const body = visibleLocations.length
+        ? `<div class="hidden px-4 pb-4 space-y-2" data-body>
+            <div class="text-sm font-semibold text-[#1976D2]">Warehouse Locations</div>
+            ${visibleLocations
+              .map(
+                (l) => `
+              <div class="bg-[#E3F2FD] rounded p-3 flex items-center justify-between gap-3">
+                <div>
+                  <div class="font-bold text-[#212121]">${l.location}</div>
+                  <div class="text-[#616161] text-sm">${l.qty} ${l.uom}</div>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                  ${l.lot ? `<span class="bg-[#FB8C00] text-white text-xs rounded-full px-2 py-1">LOT ${l.lot}</span>` : ''}
+                  ${l.exp ? `<span class="bg-[#E53935] text-white text-xs rounded-full px-2 py-1">EXP ${l.exp}</span>` : ''}
+                </div>
+              </div>`
+              )
+              .join('')}
+          </div>`
+        : `<div class="hidden px-4 pb-4" data-body>
+            <p class="text-[#9e9e9e] italic text-sm">No inventory data available</p>
+          </div>`;
+
+      return `
+        <div class="bg-white rounded-lg shadow border border-[#e0e0e0]">
+          <button type="button" class="w-full text-left p-4 flex flex-col gap-1" data-toggle>
+            <span class="text-lg font-bold text-[#1976D2]">${item.description}</span>
+            <span class="flex gap-6 flex-wrap text-sm">
+              <span class="flex flex-col">
+                <span class="text-xs text-[#9e9e9e]">Part Number</span>
+                <span class="font-bold text-[#212121]">${item.sku}</span>
+              </span>
+              <span class="flex flex-col">
+                <span class="text-xs text-[#9e9e9e]">UPC</span>
+                <span class="font-mono text-[#212121]">${item.upc}</span>
+              </span>
+              ${
+                ordered !== null
+                  ? `<span class="flex flex-col">
+                      <span class="text-xs text-[#9e9e9e]">Ordered</span>
+                      <span class="font-bold text-[#212121]">${ordered} ${item.uom}</span>
+                    </span>`
+                  : ''
+              }
+              <span class="flex flex-col">
+                <span class="text-xs text-[#9e9e9e]">On Hand</span>
+                <span class="font-bold text-[#21BA45]">${qty}</span>
+              </span>
+            </span>
+          </button>
+          ${body}
+        </div>`;
+    }
+
+    function render(html: string) {
+      results.innerHTML = html;
+      results.querySelectorAll('[data-toggle]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const body = (btn.nextElementSibling as HTMLElement) ?? null;
+          body?.classList.toggle('hidden');
+        });
+      });
+    }
+
+    function runSearch() {
+      const term = input.value.trim();
+      if (!term) return;
+
+      results.innerHTML = `<p class="text-[#9e9e9e] text-sm italic">Searching&hellip;</p>`;
+
+      window.setTimeout(() => {
+        const poMatch = /^p(\d+)$/i.exec(term);
+        if (poMatch) {
+          const po = PURCHASE_ORDERS[poMatch[1]];
+          if (!po) {
+            render(`<p class="text-[#e53935] text-base font-medium">PO ${poMatch[1]} not found</p>`);
+            return;
+          }
+          const cards = po
+            .map(({ itemId, ordered }) => {
+              const item = ITEMS.find((i) => i.id === itemId);
+              return item ? itemCard(item, ordered) : '';
+            })
+            .join('');
+          render(
+            `<div class="text-xl font-bold text-[#1976D2]">Purchase Order ${poMatch[1]}</div>
+             <div class="text-[#616161] text-sm mb-2">${po.length} item(s)</div>
+             <div class="space-y-3">${cards}</div>`
+          );
+          return;
+        }
+
+        const found = ITEMS.filter((i) => matches(i, term));
+        if (!found.length) {
+          render(
+            `<div class="bg-[#FFEBEE] border-l-4 border-[#E53935] rounded p-4">
+              <div class="text-[#E53935] text-lg font-bold">No items found</div>
+            </div>`
+          );
+          return;
+        }
+        render(
+          `<div class="text-[#616161] text-sm mb-1">${found.length} item(s) found</div>` +
+            found
+              .slice(0, 20)
+              .map((i) => itemCard(i, null))
+              .join('')
+        );
+      }, 700);
+    }
+
+    searchBtn.addEventListener('click', runSearch);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') runSearch();
+    });
+
+    scanBtn.addEventListener('click', () => {
+      scanDialog.classList.remove('hidden');
+      scanDialog.classList.add('flex');
+      const status = document.getElementById('old-scan-status')!;
+      status.textContent = 'Simulating camera scan…';
+      scanTimer = window.setTimeout(() => {
+        const code = SCAN_BARCODES[scanIndex % SCAN_BARCODES.length];
+        scanIndex += 1;
+        scanDialog.classList.add('hidden');
+        scanDialog.classList.remove('flex');
+        input.value = code;
+        runSearch();
+      }, 1100);
+    });
+
+    scanCancel.addEventListener('click', () => {
+      if (scanTimer) window.clearTimeout(scanTimer);
+      scanDialog.classList.add('hidden');
+      scanDialog.classList.remove('flex');
+    });
+  })();
+
+  // ---------------------------------------------------------------
+  // NEW UI — debounced live search, item sheet grouped by site with
+  // explicit zero-qty bins, role-gated pricing, EN/ES toggle.
+  // ---------------------------------------------------------------
+  (function newUi() {
+    const STRINGS = {
+      en: {
+        title: 'Stock Lookup',
+        subtitle: 'Type to search — results update as you type.',
+        placeholder: 'Search SKU, name, or UPC...',
+        hint: 'Start typing to search.',
+        noMatch: (term: string) => `No matches for "${term}".`,
+        price: 'Price',
+        counted: 'Counted',
+        onHandZero: 'Out of stock at this site',
+        priceLocked: 'Sign in as a sales rep to see price.',
+      },
+      es: {
+        title: 'Buscar Inventario',
+        subtitle: 'Escribe para buscar — los resultados se actualizan al instante.',
+        placeholder: 'Buscar SKU, nombre o UPC...',
+        hint: 'Empieza a escribir para buscar.',
+        noMatch: (term: string) => `Sin resultados para "${term}".`,
+        price: 'Precio',
+        counted: 'Contado',
+        onHandZero: 'Sin existencias en este sitio',
+        priceLocked: 'Inicia sesión como vendedor para ver el precio.',
+      },
+    } as const;
+
+    let lang: 'en' | 'es' = 'en';
+    let role: 'warehouse' | 'sales' = 'warehouse';
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const title = document.getElementById('new-title')!;
+    const subtitle = document.getElementById('new-subtitle')!;
+    const input = document.getElementById('new-search-input') as HTMLInputElement;
+    const status = document.getElementById('new-status')!;
+    const resultsEl = document.getElementById('new-results') as HTMLUListElement;
+    const langBtns = document.querySelectorAll<HTMLButtonElement>('.lang-btn');
+    const roleBtns = document.querySelectorAll<HTMLButtonElement>('.role-btn');
+    const sheetOverlay = document.getElementById('item-sheet-overlay') as HTMLDivElement;
+    const sheetContent = document.getElementById('item-sheet-content') as HTMLDivElement;
+    const sheetClose = document.getElementById('item-sheet-close') as HTMLButtonElement;
+
+    function applyStrings() {
+      const s = STRINGS[lang];
+      title.textContent = s.title;
+      subtitle.textContent = s.subtitle;
+      input.placeholder = s.placeholder;
+      if (!input.value.trim()) status.textContent = s.hint;
+    }
+
+    langBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        lang = btn.dataset.lang as 'en' | 'es';
+        langBtns.forEach((b) => {
+          if (b === btn) {
+            b.classList.add('bg-slate-100', 'text-slate-900', 'font-medium');
+            b.classList.remove('text-slate-400');
+          } else {
+            b.classList.remove('bg-slate-100', 'text-slate-900', 'font-medium');
+            b.classList.add('text-slate-400');
+          }
+        });
+        applyStrings();
+        renderResults(input.value.trim());
+      });
+    });
+
+    roleBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        role = btn.dataset.role as 'warehouse' | 'sales';
+        roleBtns.forEach((b) => {
+          if (b === btn) {
+            b.classList.add('bg-slate-100', 'text-slate-900', 'font-medium');
+            b.classList.remove('border', 'border-slate-700', 'text-slate-300');
+          } else {
+            b.classList.remove('bg-slate-100', 'text-slate-900', 'font-medium');
+            b.classList.add('border', 'border-slate-700', 'text-slate-300');
+          }
+        });
+      });
+    });
+
+    function renderResults(term: string) {
+      const s = STRINGS[lang];
+      if (!term) {
+        resultsEl.innerHTML = '';
+        status.textContent = s.hint;
+        return;
+      }
+      const found = ITEMS.filter((i) => matches(i, term)).slice(0, 8);
+      if (!found.length) {
+        resultsEl.innerHTML = '';
+        status.textContent = s.noMatch(term);
+        return;
+      }
+      status.textContent = '';
+      resultsEl.innerHTML = found
+        .map((item) => {
+          const qty = totalQty(item);
+          const qtyClass = qty <= 0 ? 'text-red-400' : 'text-emerald-400';
+          return `
+            <li>
+              <button type="button" class="w-full text-left px-1 py-2 flex items-center justify-between gap-3 hover:bg-slate-800/50 rounded" data-item="${item.id}">
+                <span class="min-w-0">
+                  <strong class="text-slate-100">${item.sku}</strong>
+                  <span class="text-slate-500 text-sm"> ${item.description}</span>
+                </span>
+                <span class="${qtyClass} text-sm font-medium shrink-0">${qty} ${item.uom}</span>
+              </button>
+            </li>`;
+        })
+        .join('');
+
+      resultsEl.querySelectorAll<HTMLButtonElement>('[data-item]').forEach((btn) => {
+        btn.addEventListener('click', () => openSheet(Number(btn.dataset.item)));
+      });
+    }
+
+    function openSheet(id: number) {
+      const item = ITEMS.find((i) => i.id === id);
+      if (!item) return;
+      const s = STRINGS[lang];
+
+      const bySite = new Map<string, Location[]>();
+      item.locations.forEach((l) => {
+        if (!bySite.has(l.site)) bySite.set(l.site, []);
+        bySite.get(l.site)!.push(l);
+      });
+
+      const priceRow =
+        role === 'sales'
+          ? `<p class="text-sm text-slate-300 mb-4">${s.price}: <strong class="text-slate-100">$${item.price.toFixed(2)}</strong> / ${item.uom}</p>`
+          : `<p class="text-xs text-slate-500 italic mb-4">${s.priceLocked}</p>`;
+
+      const siteBlocks = Array.from(bySite.entries())
+        .map(
+          ([site, locs]) => `
+          <div class="mb-4">
+            <div class="text-xs uppercase tracking-wide text-slate-500 mb-2">${site}</div>
+            ${locs
+              .map((l) => {
+                const zero = l.qty <= 0;
+                return `
+                <div class="bg-slate-800 rounded p-3 mb-2 flex items-center justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="font-semibold text-slate-100">${l.location}</div>
+                    <div class="text-slate-500 text-xs">${s.counted} ${l.countedAgo}</div>
+                    ${zero ? `<div class="text-red-400 text-xs mt-1">${s.onHandZero}</div>` : ''}
+                  </div>
+                  <div class="text-right shrink-0">
+                    <div class="${zero ? 'text-red-400' : 'text-slate-100'} font-medium">${l.qty} ${l.uom}</div>
+                    <div class="flex gap-1 mt-1 justify-end">
+                      ${l.lot ? `<span class="text-[10px] bg-amber-900/40 text-amber-300 rounded px-1.5 py-0.5">LOT ${l.lot}</span>` : ''}
+                      ${l.exp ? `<span class="text-[10px] bg-red-900/40 text-red-300 rounded px-1.5 py-0.5">EXP ${l.exp}</span>` : ''}
+                    </div>
+                  </div>
+                </div>`;
+              })
+              .join('')}
+          </div>`
+        )
+        .join('');
+
+      sheetContent.innerHTML = `
+        <h4 class="text-lg font-bold text-slate-100">${item.sku}</h4>
+        <p class="text-slate-400 text-sm mb-3">${item.description}</p>
+        ${priceRow}
+        ${siteBlocks}`;
+
+      sheetOverlay.classList.remove('hidden');
+    }
+
+    sheetClose.addEventListener('click', () => sheetOverlay.classList.add('hidden'));
+    sheetOverlay.addEventListener('click', (e) => {
+      if (e.target === sheetOverlay) sheetOverlay.classList.add('hidden');
+    });
+
+    input.addEventListener('input', () => {
+      if (debounceTimer) window.clearTimeout(debounceTimer);
+      const term = input.value.trim();
+      debounceTimer = window.setTimeout(() => renderResults(term), 300);
+    });
+
+    applyStrings();
+  })();
+
+  // ---------------------------------------------------------------
+  // Screenshot lightbox — shared by both thumbnail grids.
+  // ---------------------------------------------------------------
+  (function lightbox() {
+    const overlay = document.getElementById('shot-lightbox') as HTMLDivElement;
+    const img = document.getElementById('shot-lightbox-img') as HTMLImageElement;
+    const caption = document.getElementById('shot-lightbox-caption') as HTMLElement;
+    const closeBtn = document.getElementById('shot-lightbox-close') as HTMLButtonElement;
+
+    function open(src: string, label: string) {
+      img.src = src;
+      img.alt = label;
+      caption.textContent = label;
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+    }
+
+    function close() {
+      overlay.classList.add('hidden');
+      overlay.classList.remove('flex');
+      img.src = '';
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.shot-thumb').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        open(btn.dataset.src ?? '', btn.dataset.label ?? '');
+      });
+    });
+
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  })();
+</script>
