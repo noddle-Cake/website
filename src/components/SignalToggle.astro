@@ -1,0 +1,47 @@
+---
+---
+
+<button
+  id="signal-toggle"
+  aria-label="Toggle signal mode"
+  title="Signal"
+  class="font-mono text-xs border border-slate-700 rounded px-2 py-1.5 hover:border-slate-500 hover:text-slate-100 transition-colors text-slate-500"
+>
+  &#8767;
+</button>
+
+<script>
+  const STORAGE_KEY = 'signal';
+
+  function isOn(): boolean {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === 'on';
+    } catch {
+      return document.documentElement.getAttribute('data-signal') === 'on';
+    }
+  }
+
+  function apply(on: boolean) {
+    if (on) {
+      document.documentElement.setAttribute('data-signal', 'on');
+    } else {
+      document.documentElement.removeAttribute('data-signal');
+    }
+  }
+
+  function initSignalToggle() {
+    const button = document.getElementById('signal-toggle');
+    button?.addEventListener('click', () => {
+      const next = !isOn();
+      try {
+        localStorage.setItem(STORAGE_KEY, next ? 'on' : 'off');
+      } catch {
+        // ignore — mode just won't persist across reloads
+      }
+      apply(next);
+    });
+  }
+
+  initSignalToggle();
+  document.addEventListener('astro:after-swap', initSignalToggle);
+</script>

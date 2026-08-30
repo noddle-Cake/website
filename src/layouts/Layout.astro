@@ -20,11 +20,15 @@ const { title = profile.name } = Astro.props;
     <title>{title}</title>
     <script is:inline src="/theme-init.js"></script>
   </head>
-  <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
+  <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-slate-100 selection:text-slate-950">
+    <div class="scanlines"></div>
     <Nav />
-    <main class="flex-1 w-full max-w-4xl mx-auto px-6 py-12">
+    <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-12">
       <slot />
     </main>
     <Footer />
+    <script>
+      import '../scripts/reveal';
+    </script>
   </body>
 </html>
