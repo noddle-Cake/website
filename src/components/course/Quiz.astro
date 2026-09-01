@@ -1,0 +1,43 @@
+---
+interface Props {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  correctText?: string;
+  incorrectText?: string;
+}
+
+const { question, options, correctIndex, correctText, incorrectText } = Astro.props;
+const quizId = `quiz-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  data-quiz
+  data-quiz-id={quizId}
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Check your understanding</p>
+  <p class="font-semibold text-slate-100 mb-4">{question}</p>
+  <div class="grid gap-2">
+    {
+      options.map((option, i) => (
+        <button
+          type="button"
+          data-option
+          data-correct={i === correctIndex ? 'true' : 'false'}
+          class="text-left text-sm border border-slate-800 rounded-lg px-4 py-2.5 transition-colors hover:border-slate-500 disabled:cursor-default"
+        >
+          {option}
+        </button>
+      ))
+    }
+  </div>
+  <p
+    data-quiz-feedback
+    data-correct-text={correctText}
+    data-incorrect-text={incorrectText}
+    hidden
+    class="text-sm mt-4 leading-relaxed"
+  />
+</div>

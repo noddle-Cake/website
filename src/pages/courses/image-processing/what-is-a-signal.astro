@@ -1,0 +1,98 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import QuantizationDemo from "../../../components/course/widgets/QuantizationDemo.astro";
+---
+
+<CourseLesson lessonSlug="what-is-a-signal">
+  <h2>What counts as a signal</h2>
+  <p>
+    A <strong>signal</strong> is anything that bears information. An electrocardiogram, an EEG trace, speech, the
+    speed of the wind, the Dow Jones index, a seismic recording, and an image are all signals — they just carry
+    very different kinds of information, at very different rates.
+  </p>
+  <p>
+    What makes image processing its own field is the shape that information comes in: a signal can be a
+    function of one, two, or three independent variables.
+  </p>
+
+  <h2>Dimensionality: 1-D, 2-D, 3-D</h2>
+  <ul>
+    <li>
+      <strong>1-D</strong> — speech, the Dow Jones index, interest rates. The independent variable is time: <Math
+        tex="x(t)"
+      />.
+    </li>
+    <li>
+      <strong>2-D</strong> — an <strong>image</strong>. The independent variables are spatial position <Math
+        tex="(x, y)"
+      />, whether that's a real scene captured by a camera or a slice from a tomography scan.
+    </li>
+    <li>
+      <strong>3-D</strong> — wind speed and temperature over a region, indexed by longitude, latitude, and elevation.
+    </li>
+  </ul>
+  <p>
+    This course lives almost entirely in 1-D and 2-D: 1-D to build intuition, 2-D because that's what an image
+    is.
+  </p>
+
+  <h2>Continuous vs. discrete, analog vs. digital</h2>
+  <p>
+    Signals split into two families along two independent questions: is the <em>domain</em> continuous or discrete,
+    and is the <em>amplitude</em> continuous or discrete?
+  </p>
+  <ul>
+    <li>
+      <strong>Continuous-time signal</strong> — defined at a continuum of times, with an amplitude that can range
+      over a continuous (or finite) range of values.
+    </li>
+    <li>
+      <strong>Analog</strong> — a continuous-time signal whose amplitude can also assume a continuous range of values.
+      A voltage waveform straight off a sensor is analog.
+    </li>
+    <li>
+      <strong>Discrete-time signal</strong> — defined only at discrete instants of time, i.e. a sequence of numbers.
+      Its amplitude can still assume a continuous <em>or</em> a discrete set of values.
+    </li>
+    <li>
+      <strong>Digital</strong> — a discrete-time signal whose amplitude is also restricted to a discrete set of
+      values. This is the only kind of signal a computer can actually store.
+    </li>
+  </ul>
+
+  <Callout variant="intuition" label="The two operations that make a signal digital">
+    <p>
+      <strong>(1)</strong> Discrete instants of time → <strong>sampling</strong>.<br />
+      <strong>(2)</strong> Discrete set of amplitude values → <strong>quantization</strong>.
+    </p>
+    <p class="mt-2">
+      Sampling is the subject of the next lesson. Quantization is the one you can feel right now — try the
+      demo below.
+    </p>
+  </Callout>
+
+  <h2>Quantization: how many gray levels?</h2>
+  <p>
+    An image with 8-bit resolution per pixel has <Math tex="2^8 = 256" /> gray scales, running from 0 (black) to
+    255 (white). Drop the bit depth and you drop the number of distinguishable shades — the image doesn't get dimmer,
+    it gets <em>banded</em>.
+  </p>
+
+  <QuantizationDemo />
+
+  <Quiz
+    question="A frame from a digital security camera, stored as an 8-bit-per-pixel grayscale image, is best described as:"
+    options={[
+      "A 1-D analog signal",
+      "A 2-D discrete-time signal with continuous amplitude",
+      "A 2-D digital signal",
+      "A 3-D digital signal",
+    ]}
+    correctIndex={2}
+    correctText="Right — two spatial dimensions (x, y), sampled at discrete pixel locations, with amplitude quantized to one of 256 levels. That combination is exactly what 'digital image' means."
+    incorrectText="An image has two independent variables (x, y), and 8-bit storage means both the sampling grid and the amplitude are discrete — that combination is what makes a signal digital, not just discrete-time."
+  />
+</CourseLesson>

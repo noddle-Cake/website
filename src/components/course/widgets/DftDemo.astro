@@ -1,0 +1,38 @@
+---
+---
+
+<div
+  data-widget="dft-demo"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">Interactive &middot; 2-D DFT</p>
+
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button data-pattern="v-stripes" type="button" class="text-xs border border-slate-800 rounded px-2.5 py-1.5 hover:border-slate-500 transition-colors">Vertical stripes</button>
+    <button data-pattern="h-stripes" type="button" class="text-xs border border-slate-800 rounded px-2.5 py-1.5 hover:border-slate-500 transition-colors">Horizontal stripes</button>
+    <button data-pattern="checkerboard" type="button" class="text-xs border border-slate-800 rounded px-2.5 py-1.5 hover:border-slate-500 transition-colors">Checkerboard</button>
+    <button data-pattern="dot" type="button" class="text-xs border border-slate-800 rounded px-2.5 py-1.5 hover:border-slate-500 transition-colors">Single dot</button>
+    <button data-pattern="diagonal" type="button" class="text-xs border border-slate-800 rounded px-2.5 py-1.5 hover:border-slate-500 transition-colors">Diagonal cross</button>
+  </div>
+
+  <div class="flex flex-wrap gap-8 items-start">
+    <div>
+      <p class="text-xs text-slate-500 mb-2">f(x, y)</p>
+      <canvas data-canvas="input" class="border border-slate-800 rounded"></canvas>
+    </div>
+    <div>
+      <p class="text-xs text-slate-500 mb-2">|F(u, v)|, log-scaled</p>
+      <canvas data-canvas="spectrum" class="border border-slate-800 rounded"></canvas>
+    </div>
+    <label class="flex items-center gap-2 text-sm text-slate-300 mt-6">
+      <input data-center-toggle type="checkbox" checked class="accent-slate-300" />
+      Center the spectrum
+    </label>
+  </div>
+  <p data-readout class="mt-4 text-sm font-mono text-slate-400"></p>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/dft-demo';
+</script>

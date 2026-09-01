@@ -1,0 +1,92 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import SamplingDemo from "../../../components/course/widgets/SamplingDemo.astro";
+---
+
+<CourseLesson lessonSlug="the-impulse-and-sampling">
+  <h2>The impulse function</h2>
+  <p>
+    Sampling — turning a continuous signal into a sequence of numbers — is easiest to describe with one tool:
+    the <strong>unit impulse function</strong>, also called the <strong>delta function</strong> or the <strong
+      >Dirac delta function</strong
+    >, after the physicist Paul Dirac.
+  </p>
+  <Math
+    display
+    tex="\delta(t-a) = \begin{cases} 0 & t \neq a \\ \infty & t = a \end{cases}, \qquad \int_{a-\varepsilon}^{a+\varepsilon} \delta(t-a)\,dt = 1 \;\; (\varepsilon > 0)"
+  />
+  <p>
+    It's zero everywhere except at <Math tex="t=a" />, infinite there, and yet the area underneath it is
+    exactly one. You can build it as the limit of an ever-narrower, ever-taller rectangular pulse of unit
+    area:
+  </p>
+  <Math tex="\delta(t-a) = \lim_{\Delta \to 0} \delta_\Delta(t-a)" display />
+
+  <h3>The sifting property</h3>
+  <p>
+    Multiply any function that's continuous at <Math tex="t=a" /> by an impulse and integrate, and every value of
+    that function except the one at <Math tex="t=a" /> is thrown away:
+  </p>
+  <Math tex="\int_{-\infty}^{\infty} f(t)\,\delta(t-a)\,dt = f(a)" display />
+  <p>
+    This is called the <strong>sifting property</strong> — the delta function <em>sifts out</em> a single sample
+    of <Math tex="f" /> from the entire continuum. It's the mechanism that turns sampling from a hand-wavy idea
+    ("just grab the value every so often") into an exact algebraic operation.
+  </p>
+
+  <Callout variant="note">
+    <p>
+      Integrating an impulse train produces the unit <strong>step function</strong>
+      <Math tex="u(t-a)" />: 0 before <Math tex="a" />, 1 from <Math tex="a" /> onward. Equivalently, the step function's
+      derivative is the impulse — <Math tex="\delta(t-a)" /> is the rate of change of a signal that jumps instantaneously.
+      In discrete form, <Math tex="u(t) = \sum_{k=0}^{\infty} \delta(t-k)" />.
+    </p>
+  </Callout>
+
+  <h2>Sampling as multiplication by an impulse train</h2>
+  <p>
+    Now the payoff. Take a continuous signal <Math tex="x(t)" /> and multiply it by a train of unit impulses spaced
+    one unit apart. At every integer <Math tex="t = n" />, the sifting property pulls out exactly the value <Math
+      tex="x(n)"
+    />; everywhere else, the product is zero. The result is the <strong>sampled signal</strong>:
+  </p>
+  <Math tex="x_s(t) = \sum_{n=-\infty}^{\infty} x(n)\,\delta(t-n)" display />
+  <p>
+    That's it — that's sampling. A continuous curve becomes a set of weighted impulses, one at each sample
+    instant, each one scaled by the original signal's value there.
+  </p>
+
+  <SamplingDemo />
+
+  <h2>The impulse function in two dimensions</h2>
+  <p>
+    Since an image is a function of two variables, sampling an image needs a 2-D impulse function <Math
+      tex="\delta(x,y)"
+    />, with the same defining properties — zero everywhere except the origin, unit volume underneath it, and
+    its own sifting property:
+  </p>
+  <Math
+    tex="\iint_{-\infty}^{\infty} \delta(x,y)\,dx\,dy = 1 \qquad\quad \iint_{-\infty}^{\infty} f(x,y)\,\delta(x-x_0,\,y-y_0)\,dx\,dy = f(x_0, y_0)"
+    display
+  />
+  <p>
+    Sliding the impulse to <Math tex="(x_0, y_0)" /> and sifting against <Math tex="f" /> pulls out the pixel value
+    at that exact location — the direct 2-D analogue of picking a single sample out of a continuous 1-D signal.
+  </p>
+
+  <Quiz
+    question="Why does δ(t − a) inside the integral ∫ f(t)δ(t − a) dt behave like a 'pick out one value' operator?"
+    options={[
+      "Because δ(t − a) equals 1 at t = a and 0 elsewhere",
+      "Because δ(t − a) is zero everywhere except t = a, where it is infinite, and its total area is exactly 1",
+      "Because integration always returns the maximum value of the integrand",
+      "Because f(t) is assumed to be constant",
+    ]}
+    correctIndex={1}
+    correctText="Exactly — the impulse is concentrated entirely at t = a with unit area, so multiplying by f(t) and integrating leaves only f(a) behind. That's the sifting property."
+    incorrectText="The impulse isn't a height-1 rectangle — it's infinitely tall at a single point but with unit area, which is what makes the sifting property exact rather than approximate."
+  />
+</CourseLesson>

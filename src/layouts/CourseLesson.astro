@@ -1,0 +1,161 @@
+---
+import Layout from './Layout.astro';
+import { imageProcessingCourse, findLessonNav } from '../data/courses/image-processing';
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  lessonSlug: string;
+}
+
+const { lessonSlug } = Astro.props;
+const nav = findLessonNav(lessonSlug);
+const courseSlug = imageProcessingCourse.slug;
+---
+
+<Layout title={`${nav.current.title} — Image Processing`}>
+  <div id="course-nav-data" data-course={courseSlug} data-lesson={lessonSlug} hidden></div>
+
+  <nav data-reveal class="text-xs font-mono text-slate-500 flex flex-wrap items-center gap-2 mb-6">
+    <a href={`/courses/${courseSlug}`} class="hover:text-slate-100 transition-colors">Image Processing</a>
+    <span>/</span>
+    <span>{nav.current.unit.title}</span>
+    <span class="text-slate-700">&middot;</span>
+    <span>Lesson {nav.index + 1} of {nav.total}</span>
+  </nav>
+
+  <header class="py-4">
+    <h1 data-reveal class="font-extrabold tracking-tight leading-[1.05] text-[clamp(1.9rem,5vw,3rem)]">
+      {nav.current.title}
+    </h1>
+    <p data-reveal class="mt-3 max-w-2xl text-slate-400 leading-relaxed">
+      {nav.current.summary}
+    </p>
+  </header>
+
+  <article class="prose-course py-6 max-w-2xl">
+    <slot />
+  </article>
+
+  <footer class="mt-12 pt-6 border-t border-slate-800 flex items-center justify-between gap-4 flex-wrap">
+    <div>
+      {
+        nav.prev ? (
+          <a
+            href={`/courses/${courseSlug}/${nav.prev.slug}`}
+            class="text-sm text-slate-400 hover:text-slate-100 transition-colors"
+          >
+            &larr; {nav.prev.title}
+          </a>
+        ) : (
+          <a
+            href={`/courses/${courseSlug}`}
+            class="text-sm text-slate-400 hover:text-slate-100 transition-colors"
+          >
+            &larr; Course overview
+          </a>
+        )
+      }
+    </div>
+    <div class="flex items-center gap-3">
+      <button
+        id="mark-complete-btn"
+        type="button"
+        class="text-xs border border-slate-700 rounded px-3 py-2 hover:border-slate-500 transition-colors font-medium"
+      >
+        Mark complete
+      </button>
+      {
+        nav.next ? (
+          <a
+            href={`/courses/${courseSlug}/${nav.next.slug}`}
+            class="text-sm text-slate-900 bg-slate-100 hover:bg-slate-300 rounded px-4 py-2 font-medium transition-colors"
+          >
+            {nav.next.title} &rarr;
+          </a>
+        ) : (
+          <a
+            href={`/courses/${courseSlug}`}
+            class="text-sm text-slate-900 bg-slate-100 hover:bg-slate-300 rounded px-4 py-2 font-medium transition-colors"
+          >
+            Finish unit &rarr;
+          </a>
+        )
+      }
+    </div>
+  </footer>
+
+  <script>
+    import '../scripts/courses/quiz';
+    import { isLessonComplete, toggleLessonComplete } from '../scripts/courses/progress';
+
+    const dataEl = document.getElementById('course-nav-data');
+    const courseSlug = dataEl?.dataset.course ?? '';
+    const lessonSlug = dataEl?.dataset.lesson ?? '';
+    const button = document.getElementById('mark-complete-btn');
+
+    function render(complete: boolean) {
+      if (!button) return;
+      button.textContent = complete ? '✓ Completed' : 'Mark complete';
+      button.classList.toggle('!border-slate-400', complete);
+      button.classList.toggle('!text-slate-100', complete);
+    }
+
+    if (courseSlug && lessonSlug && button) {
+      render(isLessonComplete(courseSlug, lessonSlug));
+      button.addEventListener('click', () => {
+        render(toggleLessonComplete(courseSlug, lessonSlug));
+      });
+    }
+  </script>
+</Layout>
+
+<style>
+  :global(.prose-course h2) {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-size: 1.35rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  :global(.prose-course h3) {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  :global(.prose-course p) {
+    color: var(--color-slate-300);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+  :global(.prose-course ul),
+  :global(.prose-course ol) {
+    color: var(--color-slate-300);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+    padding-left: 1.25rem;
+  }
+  :global(.prose-course ul) {
+    list-style-type: disc;
+  }
+  :global(.prose-course ol) {
+    list-style-type: decimal;
+  }
+  :global(.prose-course li) {
+    margin-bottom: 0.35rem;
+  }
+  :global(.prose-course strong) {
+    color: var(--color-slate-100);
+    font-weight: 600;
+  }
+  :global(.prose-course code) {
+    font-size: 0.85em;
+    background: var(--color-slate-900);
+    border: 1px solid var(--color-slate-800);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.35rem;
+  }
+  :global(.katex) {
+    font-size: 1.05em;
+  }
+</style>

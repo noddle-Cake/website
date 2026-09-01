@@ -1,0 +1,137 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import OrthogonalRotation from "../../../components/course/widgets/OrthogonalRotation.astro";
+import DftDemo from "../../../components/course/widgets/DftDemo.astro";
+---
+
+<CourseLesson lessonSlug="transform-theory-and-the-2d-dft">
+  <h2>Why transform an image at all</h2>
+  <p>
+    A pixel grid is a perfectly good way to <em>store</em> an image, but a bad way to <em>reason about</em> it.
+    2-D transforms rewrite an image in a different basis — one where enhancement, restoration, coding, and compression
+    all become much simpler operations. This unit covers four of the classic ones: the <strong>Fourier</strong
+    >, <strong>discrete cosine</strong>, <strong>Walsh–Hadamard</strong>, and <strong>Haar</strong> transforms.
+    (A fifth, the data-dependent Karhunen–Loève transform, is worth knowing exists but is out of scope here.)
+  </p>
+
+  <h2>Orthogonal &amp; unitary kernels</h2>
+  <p>
+    Every transform in this unit is built from a <strong>unitary matrix</strong>
+    <Math tex="C" />: one where <Math tex="(C^T)^* = C^{-1}" />. If <Math tex="C" /> is real, that condition simplifies
+    to <Math tex="C^T = C^{-1}" /> — an <strong>orthogonal</strong> matrix. A rotation matrix is the textbook example:
+  </p>
+  <Math
+    tex="R_z = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix} = \begin{bmatrix} v_{1r} \\ v_{2r} \end{bmatrix}"
+    display
+  />
+  <p>
+    Its rows <Math tex="v_1" /> and <Math tex="v_2" /> are unit length and perpendicular for every <Math
+      tex="\theta"
+    /> — <Math tex="v_1 \cdot v_2 = 0" /> and <Math tex="v_1 \cdot v_1 = v_2 \cdot v_2 = 1" />. That's
+    orthonormality, and it's the property every transform kernel in this unit is built to have.
+  </p>
+
+  <OrthogonalRotation />
+
+  <h2>The general transform pair</h2>
+  <p>
+    Every 2-D transform this course covers has the same shape. Given a forward kernel <Math tex="k_f" />, the
+    transform and its inverse are:
+  </p>
+  <Math
+    tex="T(u,v) = k_f(x,u)\, f(x,y)\, k_f(y,v)^{T*} \qquad\qquad f(x,y) = k_i(x,u)\, T(u,v)\, k_i(y,v)^{T*}"
+    display
+  />
+  <p>
+    where <Math tex="k_i = k_f^{-1} = k_f^{T*}" /> when the kernel is orthogonal. When the kernel is also real and
+    symmetric — true for the DCT, Hadamard, and Haar kernels used later in this unit — the forward and inverse kernels
+    collapse to the same matrix <Math tex="K" />, and the whole family reduces to one clean pattern:
+  </p>
+  <Math tex="T = K\,f\,K \qquad\qquad f = K\,T\,K" display />
+  <p>
+    Keep that formula in mind — it's exactly what powers every basis-image widget for the rest of this unit,
+    just with a different <Math tex="K" /> plugged in each time.
+  </p>
+
+  <h2>The discrete Fourier transform of an image</h2>
+  <p>The Fourier transform is the special case where the kernel is a complex exponential:</p>
+  <Math
+    tex="F(u,v) = \frac{1}{N}\sum_{x=0}^{N-1}\sum_{y=0}^{N-1} f(x,y)\, e^{-j2\pi(ux+vy)/N}, \qquad f(x,y) = \sum_{u=0}^{N-1}\sum_{v=0}^{N-1} F(u,v)\, e^{j2\pi(ux+vy)/N}"
+    display
+  />
+  <p>
+    Because <Math tex="e^{-j2\pi(ux+vy)/N} = e^{-j2\pi ux/N} \cdot e^{-j2\pi vy/N}" />, the kernel is <strong
+      >separable</strong
+    >: a full 2-D DFT can be computed as a 1-D DFT of every row, followed by a 1-D DFT of every column of the
+    result. That's what makes 2-D transforms tractable at all — nobody computes the double sum directly.
+  </p>
+
+  <DftDemo />
+
+  <Callout variant="intuition" label="Why the spectrum gets centered and log-scaled">
+    <p>
+      Multiplying <Math tex="f(x,y)" /> by <Math tex="(-1)^{x+y}" /> before transforming shifts the origin of <Math
+        tex="F(u,v)"
+      /> to the middle of the display instead of the corners — purely a display convenience, and exactly what the
+      checkbox above toggles.
+    </p>
+    <p class="mt-2">
+      Separately, real spectra decay so fast with frequency that the high-frequency detail is invisible next
+      to the huge DC term. Displaying <Math tex="D(u,v) = \log(1 + |F(u,v)|)" /> instead of <Math
+        tex="|F(u,v)|"
+      /> directly compresses that huge dynamic range so both ends stay visible — the same trick the widget above
+      uses to render its spectrum panel.
+    </p>
+  </Callout>
+
+  <h2>Properties worth carrying forward</h2>
+  <ul>
+    <li>
+      <strong>Spectrum &amp; power spectrum</strong> — with <Math tex="F(u,v) = R(u,v) + jI(u,v)" />, the
+      magnitude <Math tex="|F(u,v)| = \sqrt{R^2+I^2}" /> is the Fourier spectrum, and <Math
+        tex="|F(u,v)|^2"
+      /> is the power (or energy) spectrum.
+    </li>
+    <li>
+      <strong>Periodicity</strong> — <Math tex="F(u,v) = F(u+N,v) = F(u,v+N)" />: the DFT is inherently
+      periodic, which is also why it can wrap around and alias if you're not careful.
+    </li>
+    <li>
+      <strong>Conjugate symmetry</strong> — for a real image, <Math tex="F(u,v) = F^*(-u,-v)" />, so <Math
+        tex="|F(u,v)| = |F(-u,-v)|"
+      />: the spectrum is mirror-symmetric about the origin.
+    </li>
+    <li>
+      <strong>Distributivity, but not over products</strong> — <Math tex="\mathcal{F}[f_1+f_2] = F_1+F_2" />,
+      but <Math tex="\mathcal{F}[f_1 \cdot f_2] \neq F_1 \cdot F_2" />. Multiplying two images and
+      transforming is not the same as multiplying their transforms — instead, <em>convolution</em> in space corresponds
+      to multiplication in frequency: <Math tex="f * g \;\longleftrightarrow\; F \cdot G" />. That's the
+      identity behind the sampling argument from the previous lesson.
+    </li>
+  </ul>
+
+  <Callout variant="note" label="A fact the continuous Fourier transform doesn't get">
+    <p>
+      The continuous Fourier transform only exists for functions satisfying certain convergence conditions.
+      The <em>discrete</em> Fourier transform has no such worry: because the exponential kernel is orthogonal over
+      a finite sum, <Math tex="F(u,v)" /> exists for <em>every</em> finite discrete image, no exceptions. One less
+      thing to check before you use it.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="Multiplying f(x, y) by (−1)^(x+y) before taking the DFT is done in order to:"
+    options={[
+      "Make the transform run faster",
+      "Guarantee the DFT exists",
+      "Shift the zero-frequency (DC) term to the center of the displayed spectrum",
+      "Convert the image to grayscale",
+    ]}
+    correctIndex={2}
+    correctText="Right — it's a display convenience. The DFT itself is unaffected in content, just shifted so low frequencies sit in the middle of the image instead of the four corners."
+    incorrectText="It's purely cosmetic for viewing: it relocates the DC term from the corners to the center of the spectrum image, which is what the 'center the spectrum' checkbox in the demo above does."
+  />
+</CourseLesson>

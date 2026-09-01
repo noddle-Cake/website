@@ -1,0 +1,121 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import AliasingDemo from "../../../components/course/widgets/AliasingDemo.astro";
+import FourierBuilder from "../../../components/course/widgets/FourierBuilder.astro";
+---
+
+<CourseLesson lessonSlug="nyquist-aliasing-and-the-fourier-transform">
+  <h2>What sampling does to the spectrum</h2>
+  <p>
+    Say a signal <Math tex="f(x)" /> is <strong>bandlimited</strong>: its spectrum <Math tex="F(u)" /> is exactly
+    zero outside <Math tex="[-W, W]" />. Sampling multiplies <Math tex="f(x)" /> by an impulse train <Math
+      tex="s(x)"
+    /> spaced <Math tex="\Delta x" /> apart — and multiplication in space corresponds to <strong
+      >convolution</strong
+    > in frequency. The spectrum of an impulse train is itself an impulse train, spaced <Math
+      tex="1/\Delta x"
+    /> apart, so convolving replicates <Math tex="F(u)" /> at every multiple of <Math tex="1/\Delta x" />:
+  </p>
+  <Math
+    tex="s(x)f(x) \;\longleftrightarrow\; F(u) * S(u) \;=\; \sum_{n=-\infty}^{\infty} F(u - n/\Delta x)"
+    display
+  />
+  <p>
+    Sampling doesn't just discretize the signal — it tiles its spectrum out to infinity, one copy per sample
+    rate.
+  </p>
+
+  <h3>The Nyquist criterion</h3>
+  <p>
+    Those copies of <Math tex="F(u)" /> are each <Math tex="2W" /> wide. If the spacing between them, <Math
+      tex="1/\Delta x"
+    />, is large enough, they sit side by side with no overlap. That requires:
+  </p>
+  <Math
+    tex="\frac{1}{2\Delta x} \geq W \quad\Longleftrightarrow\quad f_s = \frac{1}{\Delta x} \geq 2W"
+    display
+  />
+  <p>
+    <Math tex="2W" /> is the <strong>Nyquist rate</strong>. Sample at or above it and the replicated copies of <Math
+      tex="F(u)"
+    /> never touch. Sample below it and they overlap — high-frequency content folds back down into the low frequencies
+    and corrupts them irreversibly. That folding is <strong>aliasing</strong>.
+  </p>
+
+  <AliasingDemo />
+
+  <Callout variant="intuition" label="Recovering the original signal">
+    <p>
+      When the replicas don't overlap, the original spectrum is sitting right there in the middle, untouched —
+      you just have to isolate it. Multiplying the sampled spectrum by an ideal low-pass filter <Math
+        tex="G(u)"
+      /> (a box of width <Math tex="2W" />) keeps only the central copy and zeroes out the rest:
+    </p>
+    <Math tex="G(u)\big[F(u) * S(u)\big] = F(u)" display />
+    <p>
+      This is exactly why anti-aliasing filters exist: they force <Math tex="W" /> down before sampling, so the
+      Nyquist condition is guaranteed to hold.
+    </p>
+  </Callout>
+
+  <h2>From Fourier series to the Fourier transform</h2>
+  <p>
+    The claim that a signal "has a spectrum" at all traces back to the <strong>Fourier series</strong>: any
+    periodic signal, with period <Math tex="T" />, can be written uniquely as a sum of harmonically related
+    complex exponentials.
+  </p>
+  <Math
+    tex="f(t) = \sum_{n=-\infty}^{\infty} C_n\, e^{j n \omega_0 t}, \qquad C_n = \frac{1}{T}\int_{-T/2}^{T/2} f(t)\, e^{-jn\omega_0 t}\, dt, \qquad \omega_0 = \frac{2\pi}{T}"
+    display
+  />
+  <p>
+    The formula for <Math tex="C_n" /> falls out of one property: multiply both sides by <Math
+      tex="e^{-jm\omega_0 t}"
+    /> and integrate over a period, and the orthogonality of complex exponentials — <Math
+      tex="\int_{-T/2}^{T/2} e^{j(n-m)\omega_0 t}\,dt"
+    /> is <Math tex="T" /> when <Math tex="n=m" /> and 0 otherwise — collapses the infinite sum down to a single
+    term, isolating <Math tex="C_n" />.
+  </p>
+
+  <FourierBuilder />
+
+  <p>
+    A square wave is a clean example: it's built entirely from odd harmonics, each one weighted by <Math
+      tex="1/n"
+    />. Add more harmonics and the approximation sharpens toward the true square edges — but it never quite
+    gets there without infinitely many terms, a wrinkle known as the Gibbs phenomenon.
+  </p>
+
+  <h3>Letting the period run to infinity</h3>
+  <p>
+    A real image or signal usually isn't periodic. To handle that, imagine stretching the period <Math
+      tex="T"
+    /> toward infinity. Two things happen at once: the spacing between harmonics <Math
+      tex="\omega_0 = 2\pi/T"
+    /> shrinks toward a differential <Math tex="d\omega" />, and each individual coefficient <Math
+      tex="C_n"
+    /> shrinks toward zero — but the product <Math tex="T C_n" /> stays finite and turns into a continuous function
+    of frequency. The sum becomes an integral, and out falls the <strong>Fourier transform pair</strong>:
+  </p>
+  <Math
+    tex="f(t) = \frac{1}{2\pi}\int_{-\infty}^{\infty} F(\omega)\, e^{j\omega t}\, d\omega \qquad\qquad F(\omega) = \int_{-\infty}^{\infty} f(t)\, e^{-j\omega t}\, dt"
+    display
+  />
+  <p>
+    A periodic signal has a discrete spectrum — a comb of frequencies. Let the period go to infinity and the
+    teeth of that comb merge into a continuous curve. That continuous curve is exactly the <Math tex="F(u)" /> from
+    the sampling argument above — which is why the Fourier transform, not the Fourier series, is the right tool
+    once signals stop repeating and start living in 2-D as images.
+  </p>
+
+  <Quiz
+    question="A signal is bandlimited to W = 4 kHz. Which sampling rate guarantees no aliasing?"
+    options={["4 kHz", "6 kHz", "8 kHz", "It depends on the amplitude of the signal"]}
+    correctIndex={2}
+    correctText="Correct — the Nyquist rate is 2W = 8 kHz. Sampling at exactly the Nyquist rate is the minimum that keeps the spectral replicas from overlapping."
+    incorrectText="The Nyquist rate is 2W, not W — for a 4 kHz bandlimit that means at least 8 kHz. Anything below that lets the replicated spectra overlap."
+  />
+</CourseLesson>

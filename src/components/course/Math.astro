@@ -1,0 +1,25 @@
+---
+import katex from 'katex';
+
+interface Props {
+  tex: string;
+  display?: boolean;
+  class?: string;
+}
+
+const { tex, display = false, class: className = '' } = Astro.props;
+
+const html = katex.renderToString(tex, {
+  throwOnError: false,
+  displayMode: display,
+  output: 'html',
+});
+---
+
+{
+  display ? (
+    <div class:list={['overflow-x-auto py-1', className]} set:html={html} />
+  ) : (
+    <span class:list={className} set:html={html} />
+  )
+}

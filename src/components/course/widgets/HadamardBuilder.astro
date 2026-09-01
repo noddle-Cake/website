@@ -1,0 +1,27 @@
+---
+---
+
+<div
+  data-widget="hadamard-builder"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">Interactive &middot; Hadamard Matrix</p>
+  <div class="flex flex-wrap items-center gap-2 mb-4">
+    {[2, 4, 8, 16, 32].map((n) => (
+      <button data-order={n} type="button" class="text-xs border border-slate-800 rounded px-2.5 py-1.5 hover:border-slate-500 transition-colors">
+        H{n}
+      </button>
+    ))}
+    <label class="flex items-center gap-2 text-sm text-slate-300 ml-2">
+      <input data-sequency-toggle type="checkbox" class="accent-slate-300" />
+      Sequency order
+    </label>
+  </div>
+  <div data-grid class="grid gap-px w-64 sm:w-80 aspect-square bg-slate-800 border border-slate-800 rounded overflow-hidden"></div>
+  <p data-readout class="mt-4 text-sm font-mono text-slate-400"></p>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/hadamard-builder';
+</script>

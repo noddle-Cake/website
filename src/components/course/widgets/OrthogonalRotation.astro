@@ -1,0 +1,26 @@
+---
+---
+
+<div
+  data-widget="orthogonal-rotation"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">Interactive &middot; Orthogonal Basis</p>
+  <div class="flex flex-col sm:flex-row gap-6 items-center">
+    <canvas class="border border-slate-800 rounded shrink-0"></canvas>
+    <div class="flex-1 w-full">
+      <label class="block text-sm text-slate-300 mb-2" for="theta-slider">Rotation angle θ</label>
+      <input id="theta-slider" type="range" min="0" max="360" step="1" value="30" class="w-full accent-slate-300" />
+      <p data-readout class="mt-3 text-sm font-mono text-slate-400"></p>
+      <p class="mt-3 text-sm text-slate-400 leading-relaxed">
+        v₁ and v₂ are the rows of the rotation matrix R<sub>z</sub>. Spin θ all the way around — the two arrows
+        stay perpendicular and unit-length at every angle, which is exactly what makes R<sub>z</sub> orthogonal.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/orthogonal-rotation';
+</script>

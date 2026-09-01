@@ -1,0 +1,88 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import BasisGallery from "../../../components/course/widgets/BasisGallery.astro";
+import DctReconstruction from "../../../components/course/widgets/DctReconstruction.astro";
+---
+
+<CourseLesson lessonSlug="discrete-cosine-transform">
+  <h2>The problem with a complex transform</h2>
+  <p>
+    The Fourier transform has one real drawback: it's complex-valued, even when the image it's transforming is
+    purely real. Neither the sine nor the cosine function alone forms an orthogonal transform, so neither can
+    replace the complex exponential on its own — but there's a loophole. The Fourier transform of a matrix
+    that is both <strong>real</strong> and <strong>symmetric</strong> turns out to be purely real, with the imaginary
+    part vanishing entirely.
+  </p>
+  <p>
+    That raises a natural question: can a transform be built with the same desirable properties as the DFT —
+    orthogonal, energy-preserving, frequency-domain — but without ever leaving the real numbers? The <strong
+      >discrete cosine transform</strong
+    > (DCT) is the answer.
+  </p>
+
+  <h2>The DCT formula</h2>
+  <Math
+    tex="C(u) = \tau(u) \sum_{x=0}^{N-1} f(x)\, \cos\!\frac{(2x+1)u\pi}{2N}, \qquad \tau(u) = \begin{cases} \sqrt{1/N} & u = 0 \\ \sqrt{2/N} & u = 1,\dots,N-1 \end{cases}"
+    display
+  />
+  <p>
+    It's real, orthogonal, and — like the DFT — separable, so the 2-D version just applies the same cosine
+    kernel along both axes:
+  </p>
+  <Math
+    tex="C(u,v) = \tau(u)\tau(v) \sum_{x=0}^{N-1}\sum_{y=0}^{N-1} f(x,y)\, \cos\!\frac{(2x+1)u\pi}{2N}\, \cos\!\frac{(2y+1)v\pi}{2N}"
+    display
+  />
+  <p>
+    Following the <Math tex="T = KfK" /> pattern from the last lesson, <Math tex="K" /> here is the matrix whose
+    row <Math tex="u" /> is the sampled cosine <Math tex="\tau(u)\cos\!\frac{(2x+1)u\pi}{2N}" />. Each pair <Math
+      tex="(u,v)"
+    /> corresponds to one basis image — row <Math tex="u" />'s cosine multiplied against column <Math
+      tex="v"
+    />'s cosine as an outer product. Here's the full <Math tex="8\times8" /> basis set:
+  </p>
+
+  <BasisGallery kernel="dct" size={8} label="8 × 8 Discrete Cosine basis images" />
+
+  <p>
+    The top-left tile (<Math tex="u=v=0" />) is flat — pure DC, the image's average brightness. Moving right
+    increases horizontal frequency; moving down increases vertical frequency. Every 8×8 block of a real image
+    is, in this basis, just a weighted sum of these 64 tiles.
+  </p>
+
+  <h2>It's a Fourier transform in disguise</h2>
+  <p>
+    The reason the DCT manages to stay real isn't a coincidence — it's a construction trick. Mirror a signal
+    about its endpoint (append a reversed copy of itself) and take the DFT of that doubled, symmetric
+    sequence: the even symmetry forces every imaginary component to cancel, leaving a purely real, cosine-only
+    result. Strip out a constant phase factor and rescale, and what's left is exactly the DCT. In other words:
+    the DCT is what you get by feeding a symmetrized signal through the machinery you already built in the
+    previous lesson — which also means it inherits the DFT's fast <Math tex="O(N\log N)" /> algorithms almost for
+    free.
+  </p>
+
+  <h2>Why this matters: energy compaction</h2>
+  <p>
+    For ordinary photographic images, most of the DCT's energy piles up in a small cluster of low-frequency
+    coefficients near the top-left corner of the coefficient grid. Everything else is small enough to discard
+    with barely any visible loss — which is precisely the mechanism JPEG compression is built on.
+  </p>
+
+  <DctReconstruction />
+
+  <Quiz
+    question="A JPEG-style encoder keeps only the largest DCT coefficients of each 8×8 block and throws the rest away. This works well because:"
+    options={[
+      "The DCT spreads an image's energy evenly across all 64 coefficients",
+      "Most of a typical image block's energy concentrates into a few low-frequency coefficients",
+      "The DCT is identical to quantization",
+      "Discarding coefficients always improves image quality",
+    ]}
+    correctIndex={1}
+    correctText="Right — that concentration (energy compaction) is exactly why dropping the smallest coefficients loses so little perceptible detail."
+    incorrectText="It's the opposite of spreading energy evenly — the DCT's whole value for compression comes from concentrating most of the signal's energy into just a few coefficients, which is what lets the rest be discarded cheaply."
+  />
+</CourseLesson>

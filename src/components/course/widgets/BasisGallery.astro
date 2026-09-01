@@ -1,0 +1,24 @@
+---
+interface Props {
+  kernel: 'dct' | 'hadamard' | 'haar';
+  size?: number;
+  label: string;
+}
+
+const { kernel, size = 8, label } = Astro.props;
+---
+
+<div
+  data-widget="basis-gallery"
+  data-kernel={kernel}
+  data-size={size}
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">{label}</p>
+  <div data-grid class="grid gap-px w-fit bg-slate-800 border border-slate-800 rounded overflow-hidden"></div>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/basis-gallery';
+</script>

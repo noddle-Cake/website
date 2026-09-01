@@ -1,11 +1,11 @@
 # build output
 dist/
 
-# generated types
-.astro/
-
 # dependencies
 node_modules/
+
+# all dotfolders (.astro/, .idea/, .courses/, etc.)
+.*/
 
 # logs
 npm-debug.log*
@@ -19,6 +19,3 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
-
-# jetbrains setting folder
-.idea/

@@ -1,0 +1,108 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import HadamardBuilder from "../../../components/course/widgets/HadamardBuilder.astro";
+import BasisGallery from "../../../components/course/widgets/BasisGallery.astro";
+---
+
+<CourseLesson lessonSlug="walsh-hadamard-transform">
+  <h2>Trading sinusoids for rectangles</h2>
+  <p>
+    The Fourier and cosine transforms both decompose a signal into smooth, curved waveforms. The <strong
+      >Walsh–Hadamard transform</strong
+    > throws that away and decomposes a signal into <strong>rectangular</strong> waveforms instead — basis functions
+    that only ever take the values <Math tex="+1" /> and <Math tex="-1" />. No multiplication by a fractional
+    cosine value, no complex numbers — just additions and sign flips, which made it extremely cheap to compute
+    on early hardware.
+  </p>
+  <p>
+    The idea has three names attached to it because it was built in stages: Hadamard developed the matrix
+    structure in 1893, Rademacher identified a related set of orthonormal rectangular-wave functions in 1922,
+    and Walsh completed the connection between them in 1923. Reordered correctly, a Walsh transform <em>is</em
+    > a Hadamard transform — the two names describe the same idea in two different row orderings.
+  </p>
+
+  <h2>Sequency: frequency for rectangular waves</h2>
+  <p>
+    A sinusoid's rate of oscillation is its frequency. A ±1 rectangular wave doesn't have a frequency in that
+    sense, but it has a direct analogue: <strong>sequency</strong>, defined as half the number of sign changes
+    (zero crossings) per unit interval. Informally: sequency is just "how choppy does this basis vector look."
+  </p>
+
+  <h2>Building the Hadamard matrix recursively</h2>
+  <p>
+    The smallest Hadamard matrix is a 2×2 orthonormal building block, and every larger one is built from it
+    recursively:
+  </p>
+  <Math
+    tex="H_2 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} \qquad\qquad H_{2N} = \frac{1}{\sqrt{2}}\begin{bmatrix} H_N & H_N \\ H_N & -H_N \end{bmatrix}"
+    display
+  />
+  <p>
+    Each step doubles the size by tiling four copies of the previous matrix, negating the bottom-right block.
+    Step through the orders below — in natural order the rows don't look sorted by sequency at all; toggle
+    "sequency order" to see them sorted by zero-crossing count, low to high, the way Walsh originally arranged
+    them.
+  </p>
+
+  <HadamardBuilder />
+
+  <Callout variant="note" label="Reading an entry directly">
+    <p>
+      You never actually need to build the whole matrix to read one entry. Write <Math tex="x" /> and <Math
+        tex="u"
+      /> in binary and let <Math tex="b_i(x)" /> denote bit <Math tex="i" />. Then:
+    </p>
+    <Math
+      tex="H(u,v) = \sum_{x,y} f(x,y)\,(-1)^{\beta}, \qquad \beta = \sum_{i=0}^{n-1} b_i(x)b_i(u) + b_i(y)b_i(v)"
+      display
+    />
+    <p class="mt-2">
+      Worked example, <Math tex="N=8" /> (so <Math tex="n=3" /> bits): for <Math tex="x=6=110_2" /> and <Math
+        tex="u=1=001_2"
+      />, the bits are <Math tex="b_0(x){=}0, b_1(x){=}1, b_2(x){=}1" /> and <Math
+        tex="b_0(u){=}1, b_1(u){=}0, b_2(u){=}0"
+      />. Every term in <Math tex="\sum b_i(x)b_i(u)" /> has at least one zero factor, so <Math
+        tex="\beta = 0"
+      /> and the sign is <Math tex="(-1)^0 = +1" />.
+    </p>
+  </Callout>
+
+  <h2>Basis images</h2>
+  <p>
+    Following the same <Math tex="T = KfK" /> pattern as every transform in this unit, here's the full 8×8 basis
+    set — each tile a product of two ±1 rectangular waves instead of two cosines:
+  </p>
+  <BasisGallery kernel="hadamard" size={8} label="8 × 8 Hadamard basis images (natural order)" />
+  <p>
+    Compare this grid to the DCT's from the previous lesson: same idea (an orthonormal outer-product basis),
+    same increasing complexity moving away from the top-left corner, but hard rectangular edges instead of
+    smooth gradients.
+  </p>
+
+  <h2>Sequency order and the formal Walsh transform</h2>
+  <p>
+    To sort the natural-order Hadamard rows by sequency, Walsh used a set of functions built from cumulative,
+    modulo-2 sums of the bits of <Math tex="u" />: <Math tex="P_0(u) = b_{n-1}(u)" />, <Math
+      tex="P_1(u) = b_{n-1}(u) \oplus b_{n-2}(u)"
+    />, and so on down to <Math tex="P_{n-1}(u) = b_1(u) \oplus b_0(u)" />. Substituting <Math tex="P_i" /> for
+    <Math tex="b_i(u)" /> in the sign formula above reorders the rows so that sequency increases monotonically —
+    exactly the "sequency order" toggle above. Like the Hadamard kernel, the Walsh kernel is separable and symmetric,
+    so its 2-D version is likewise built by two successive applications of the 1-D transform.
+  </p>
+
+  <Quiz
+    question="What does the Walsh–Hadamard transform's basis function actually look like, compared to the DCT's?"
+    options={[
+      "A smooth cosine curve, identical to the DCT",
+      "A rectangular waveform taking only the values +1 and −1",
+      "A random noise pattern",
+      "A single spike at one pixel",
+    ]}
+    correctIndex={1}
+    correctText="Correct — that's the entire appeal: no fractional multiplies, no complex numbers, just additions and sign flips."
+    incorrectText="Hadamard basis functions are 'square waves' — they only take the values +1 and −1, unlike the DCT's smooth cosines. That's what made them so cheap to compute historically."
+  />
+</CourseLesson>
