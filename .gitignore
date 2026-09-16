@@ -7,6 +7,11 @@ node_modules/
 # all dotfolders (.astro/, .idea/, .courses/, etc.)
 .*/
 
+# source material, not for publication — this repo is public.
+# Holds the VAS application source and personal documents; only scrubbed
+# screenshots derived from it belong in public/.
+photos/
+
 # logs
 npm-debug.log*
 yarn-debug.log*
