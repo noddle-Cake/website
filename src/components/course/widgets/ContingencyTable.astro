@@ -1,0 +1,119 @@
+---
+interface Props {
+  labelA?: string;
+  labelB?: string;
+}
+
+const { labelA = 'likes mangoes (A)', labelB = 'likes coconuts (B)' } = Astro.props;
+---
+
+<div
+  data-widget="contingency-table"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Contingency table
+  </p>
+
+  <div class="grid gap-4 sm:grid-cols-3 mb-5">
+    <label class="block text-sm">
+      <span class="text-slate-300">P(A) &mdash; {labelA}</span>
+      <input
+        data-slider="a"
+        type="range"
+        min="1"
+        max="99"
+        step="1"
+        value="40"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300">P(B) &mdash; {labelB}</span>
+      <input
+        data-slider="b"
+        type="range"
+        min="1"
+        max="99"
+        step="1"
+        value="46"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300">P(B<sup>c</sup> | A<sup>c</sup>)</span>
+      <input
+        data-slider="cond"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="40"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-6">
+    <div class="flex-1 min-w-0 overflow-x-auto">
+      <table class="w-full text-sm border-collapse font-mono">
+        <thead>
+          <tr class="text-slate-500 text-xs uppercase tracking-[0.1em]">
+            <th class="border border-slate-800 px-2 py-1.5 text-left"></th>
+            <th class="border border-slate-800 px-2 py-1.5">B</th>
+            <th class="border border-slate-800 px-2 py-1.5">B<sup>c</sup></th>
+            <th class="border border-slate-800 px-2 py-1.5">total</th>
+          </tr>
+        </thead>
+        <tbody class="text-slate-100">
+          <tr>
+            <th class="border border-slate-800 px-2 py-1.5 text-left text-slate-500">A</th>
+            <td data-cell="yy" class="border border-slate-800 px-2 py-1.5 text-center"></td>
+            <td data-cell="yn" class="border border-slate-800 px-2 py-1.5 text-center"></td>
+            <td data-cell="rowA" class="border border-slate-800 px-2 py-1.5 text-center text-slate-400"></td>
+          </tr>
+          <tr>
+            <th class="border border-slate-800 px-2 py-1.5 text-left text-slate-500">A<sup>c</sup></th>
+            <td data-cell="ny" class="border border-slate-800 px-2 py-1.5 text-center"></td>
+            <td data-cell="nn" class="border border-slate-800 px-2 py-1.5 text-center"></td>
+            <td data-cell="rowNotA" class="border border-slate-800 px-2 py-1.5 text-center text-slate-400"></td>
+          </tr>
+          <tr>
+            <th class="border border-slate-800 px-2 py-1.5 text-left text-slate-500">total</th>
+            <td data-cell="colB" class="border border-slate-800 px-2 py-1.5 text-center text-slate-400"></td>
+            <td data-cell="colNotB" class="border border-slate-800 px-2 py-1.5 text-center text-slate-400"></td>
+            <td class="border border-slate-800 px-2 py-1.5 text-center text-slate-400">1</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs font-mono text-slate-400">
+        <dt>P(A ∩ B)</dt>
+        <dd data-cell="joint" class="text-slate-100"></dd>
+        <dt>P(A)·P(B)</dt>
+        <dd data-cell="product" class="text-slate-100"></dd>
+        <dt>P(A | B<sup>c</sup>)</dt>
+        <dd data-cell="aGivenNotB" class="text-slate-100"></dd>
+        <dt>P(B | A)</dt>
+        <dd data-cell="bGivenA" class="text-slate-100"></dd>
+      </dl>
+
+      <p data-verdict class="mt-3 text-sm text-slate-300 leading-relaxed"></p>
+      <p data-warning hidden class="mt-2 text-sm text-slate-400 leading-relaxed"></p>
+    </div>
+
+    <div class="shrink-0">
+      <canvas class="border border-slate-800 rounded"></canvas>
+      <p class="mt-2 text-xs text-slate-500 max-w-[260px] leading-relaxed">
+        Column widths are P(A) and P(A<sup>c</sup>); the split inside each column is the
+        conditional. When the two splits land on the dashed P(B) line, the attributes are
+        independent.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/contingency-table';
+</script>

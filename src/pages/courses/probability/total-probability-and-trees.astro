@@ -1,0 +1,103 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import ProbabilityTree from "../../../components/course/widgets/ProbabilityTree.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="total-probability-and-trees">
+  <h2>Partition the world</h2>
+  <p>
+    A <strong>partition</strong> of <Math tex="S" /> is a set of events{" "}
+    <Math tex="A_1, A_2, \dots, A_n" /> that are pairwise disjoint and together cover everything.
+    Exactly one of them happens, always. The simplest partition is{" "}
+    <Math tex="\{A, A^c\}" />.
+  </p>
+  <p>
+    Given a partition, any event <Math tex="B" /> is chopped into the slices{" "}
+    <Math tex="B \cap A_i" />, which are disjoint. Axiom 3 lets you add them, and the multiplication
+    rule rewrites each slice as a product:
+  </p>
+  <Math display tex="P(B) = \sum_{i=1}^{n} P(B \cap A_i) = \sum_{i=1}^{n} P(B \mid A_i)\,P(A_i)" />
+  <p>
+    That is the <strong>law of total probability</strong>: a weighted average of conditional
+    probabilities, with the weights being how likely each condition is.
+  </p>
+
+  <Callout variant="intuition" label="How to read a tree diagram">
+    <p>
+      Each level of the tree is one stage of the experiment. The branches out of any node are a
+      partition, so their labels sum to 1. <strong>Multiply along a path</strong> to get the
+      probability of that complete story; <strong>add across paths</strong> that end in the outcome
+      you care about. That is literally the formula above, drawn.
+    </p>
+  </Callout>
+
+  <h2>Worked example: the coin-and-die game</h2>
+  <p>
+    A fair coin is flipped and the player calls it. If the call is correct the player rolls a
+    5-sided die; otherwise a 6-sided die. What is the probability of rolling an even number?
+  </p>
+  <p>
+    Stage one partitions on the call: <Math tex="P(\text{right}) = P(\text{wrong}) = \tfrac12" />.
+    Stage two is the die. A d5 shows <Math tex="\{1,2,3,4,5\}" />, of which two are even, so{" "}
+    <Math tex="P(\text{even} \mid \text{d5}) = \tfrac25" />. A d6 has three of six even, so{" "}
+    <Math tex="P(\text{even} \mid \text{d6}) = \tfrac12" />.
+  </p>
+  <Math
+    display
+    tex="P(\text{even}) = \tfrac12 \cdot \tfrac25 + \tfrac12 \cdot \tfrac12 = \tfrac15 + \tfrac14 = \tfrac{9}{20} = 0.45"
+  />
+
+  <h3>Now bias the coin</h3>
+  <p>
+    Suppose the coin lands heads with probability <Math tex="p \ne \tfrac12" /> and you know it. You
+    would naturally call the likelier side, making your chance of calling correctly{" "}
+    <Math tex="q = \max(p, 1-p) > \tfrac12" />. Redo the average with a general{" "}
+    <Math tex="q" />:
+  </p>
+  <Math display tex="P(\text{even}) = q \cdot \tfrac25 + (1-q) \cdot \tfrac12 = \tfrac12 - \tfrac{q}{10}" />
+  <p>
+    The coefficient on <Math tex="q" /> is <em>negative</em>. Calling the flip correctly wins you the
+    d5, and the d5 is the <em>worse</em> die for evens &mdash; only 2 of 5 faces instead of 3 of 6.
+    So a known bias does help, but only if you deliberately call the flip <strong>wrong</strong>,
+    driving <Math tex="q \to 0" /> and <Math tex="P(\text{even}) \to \tfrac12" />.
+  </p>
+
+  <Callout variant="intuition" label="The general lesson">
+    <p>
+      In a weighted average, shifting weight only helps if you shift it toward the larger
+      conditional probability. Always compare <Math tex="P(B \mid A_1)" /> against{" "}
+      <Math tex="P(B \mid A_2)" /> before deciding whether influencing stage one is worth anything.
+    </p>
+  </Callout>
+
+  <p>
+    Drag the die sizes below and watch the verdict flip: with a d6 reward and a d5 penalty, calling
+    correctly suddenly becomes the thing you want.
+  </p>
+
+  <ProbabilityTree />
+
+  <h2>Bayes' rule falls out for free</h2>
+  <p>
+    The multiplication rule can be written two ways, and setting them equal reverses the
+    conditioning:
+  </p>
+  <Math display tex="P(A_i \mid B) = \frac{P(B \mid A_i)\,P(A_i)}{P(B)} = \frac{P(B \mid A_i)\,P(A_i)}{\sum_j P(B \mid A_j)\,P(A_j)}" />
+  <p>
+    The denominator is just the law of total probability again. So "what is the chance the roll was
+    even?" and "given that the roll was even, what is the chance the call was correct?" use the same
+    three numbers. For the fair-coin game:{" "}
+    <Math tex="P(\text{right} \mid \text{even}) = \frac{0.5 \times 0.4}{0.45} = \tfrac{4}{9}" />.
+  </p>
+
+  <Quiz
+    question="A box holds 2 fair coins and 1 two-headed coin. You draw one at random and flip it. What is P(heads)?"
+    options={["1/2", "2/3", "1/3", "5/6"]}
+    correctIndex={1}
+    correctText="Correct: (2/3)(1/2) + (1/3)(1) = 1/3 + 1/3 = 2/3. Partition on which coin was drawn, then average."
+    incorrectText="Partition on the coin: with probability 2/3 it is fair (heads with probability 1/2), with probability 1/3 it is two-headed (heads for certain). That gives (2/3)(1/2) + (1/3)(1) = 2/3."
+  />
+</CourseLesson>

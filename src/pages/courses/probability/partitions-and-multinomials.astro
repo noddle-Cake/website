@@ -1,0 +1,105 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import PartitionCalculator from "../../../components/course/widgets/PartitionCalculator.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="partitions-and-multinomials">
+  <h2>From two piles to many</h2>
+  <p>
+    A binomial coefficient splits <Math tex="n" /> items into two piles &mdash; chosen and not
+    chosen. The <strong>multinomial coefficient</strong> does it for <Math tex="g" /> piles of
+    prescribed sizes <Math tex="n_1 + n_2 + \cdots + n_g = n" />:
+  </p>
+  <Math display tex="\binom{n}{n_1,\, n_2,\, \dots,\, n_g} = \frac{n!}{n_1!\,n_2!\cdots n_g!}" />
+  <p>
+    The reasoning is the same as before: <Math tex="n!" /> orderings of everyone, then divide out the{" "}
+    <Math tex="n_i!" /> internal rearrangements inside each pile, which do not change who is with
+    whom.
+  </p>
+
+  <Callout variant="warning" label="Are the groups labeled?">
+    <p>
+      The formula above counts <strong>labeled</strong> groups &mdash; "Group 1, Group 2, &hellip;"
+      are distinguishable. If the groups are interchangeable and all the same size, every
+      arrangement has been counted <Math tex="g!" /> times, once per relabeling, so divide again:
+    </p>
+    <Math display tex="\frac{n!}{(n/g)!^{\,g} \cdot g!}" />
+    <p>
+      Good news for probability: the <Math tex="g!" /> cancels between numerator and denominator, so
+      the <em>probability</em> is the same either way. Just be consistent.
+    </p>
+  </Callout>
+
+  <h2>Worked example: 6 undergrads in 6 groups</h2>
+  <p>
+    A class of 24 has 6 undergrads and 18 grads, randomly split into 6 groups. What is the chance
+    every group ends up with exactly one undergrad?
+  </p>
+
+  <h3>Equal group sizes</h3>
+  <p>
+    Six equal groups means four students each. Rather than build the ratio of two multinomials, seat
+    the undergrads one at a time and demand that each lands in a group nobody has claimed yet. Think
+    of 24 seats, four in each group:
+  </p>
+  <Math
+    display
+    tex="P = \frac{24}{24}\cdot\frac{20}{23}\cdot\frac{16}{22}\cdot\frac{12}{21}\cdot\frac{8}{20}\cdot\frac{4}{19}"
+  />
+  <p>
+    The first undergrad can sit anywhere. The second must avoid the 3 remaining seats in the first
+    undergrad's group, leaving 20 acceptable seats out of 23, and so on down. The product is
+  </p>
+  <Math display tex="P = \frac{122880}{4037880} \approx 0.0304" />
+  <p>The equivalent counting argument, if you prefer ratios of multinomials, is</p>
+  <Math
+    display
+    tex="P = \frac{g!\,s^{\,g}}{(n)_u} = \frac{6! \cdot 4^6}{24 \cdot 23 \cdot 22 \cdot 21 \cdot 20 \cdot 19} = \frac{2{,}949{,}120}{96{,}909{,}120}"
+  />
+  <p>
+    with <Math tex="(n)_u" /> the falling factorial &mdash; the same 0.0304. Numerator: assign the 6
+    undergrads to the 6 groups bijectively (<Math tex="6!" />) and pick which of the{" "}
+    <Math tex="s = 4" /> seats in each group they take (<Math tex="4^6" />).
+  </p>
+
+  <h3>Unequal groups, at least one student each</h3>
+  <p>
+    Drop the equal-size rule and the sample space changes: now every assignment of 24 distinct
+    students to 6 distinct groups counts, as long as no group is empty. The number of such
+    assignments is a count of <strong>surjections</strong>, given by inclusion&ndash;exclusion over
+    which groups are left empty:
+  </p>
+  <Math display tex="\operatorname{Surj}(n, g) = \sum_{i=0}^{g} (-1)^i \binom{g}{i} (g-i)^n" />
+  <p>
+    For the favorable count, put one undergrad in each group &mdash; <Math tex="6!" /> ways &mdash;
+    and then let the 18 grads go anywhere at all, <Math tex="6^{18}" /> ways. No group can be empty,
+    because each already has an undergrad, so nothing further needs checking:
+  </p>
+  <Math display tex="P = \frac{6!\;6^{18}}{\operatorname{Surj}(24, 6)} \approx \frac{7.312 \times 10^{16}}{4.385 \times 10^{18}} \approx 0.0167" />
+  <p>
+    Lower than the equal-size answer, and that makes sense: allowing lopsided groups creates many
+    more ways to pile two undergrads into one big group.
+  </p>
+
+  <PartitionCalculator />
+
+  <Callout variant="intuition" label="The seat-by-seat trick generalizes">
+    <p>
+      Any "all in different groups" or "no two together" question can be attacked the same way: place
+      the special items one at a time and write down the fraction of still-acceptable slots at each
+      step. It sidesteps factorials entirely and is much harder to get wrong than a ratio of two big
+      multinomial coefficients.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="In how many ways can 12 distinct students be split into 3 labeled groups of 4?"
+    options={["12! / 4!", "12! / (4!)³", "12! / ((4!)³ · 3!)", "C(12,4)"]}
+    correctIndex={1}
+    correctText="Correct — 12!/(4!·4!·4!) = 34,650. Dividing by an extra 3! would be right only if the three groups were interchangeable."
+    incorrectText="This is the multinomial coefficient 12!/(4!·4!·4!) = 34,650. The extra ÷3! applies only when the groups carry no labels."
+  />
+</CourseLesson>

@@ -1,0 +1,62 @@
+<div
+  data-widget="guessing-odds"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Fixed code vs. rolling code
+  </p>
+
+  <div class="grid gap-4 sm:grid-cols-3 mb-5">
+    <label class="block text-sm">
+      <span class="text-slate-300"
+        >Symbols per digit = <span data-out="base" class="font-mono text-slate-100"></span></span
+      >
+      <input data-slider="base" type="range" min="2" max="10" step="1" value="5" class="w-full accent-slate-300 mt-1" />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300"
+        >Digits = <span data-out="digits" class="font-mono text-slate-100"></span></span
+      >
+      <input data-slider="digits" type="range" min="1" max="5" step="1" value="4" class="w-full accent-slate-300 mt-1" />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300"
+        >Attempt k = <span data-out="k" class="font-mono text-slate-100"></span></span
+      >
+      <input data-slider="k" type="range" min="1" max="625" step="1" value="3" class="w-full accent-slate-300 mt-1" />
+    </label>
+  </div>
+
+  <div class="overflow-x-auto">
+    <canvas class="border border-slate-800 rounded"></canvas>
+  </div>
+  <p class="mt-2 text-xs text-slate-500">
+    Solid line: fixed code, never repeating a guess &mdash; a straight ramp to certainty. Dashed
+    line: rolling code &mdash; each attempt is an independent shot, so it approaches 1 but never
+    reaches it.
+  </p>
+
+  <div class="mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs font-mono">
+    <div class="flex justify-between gap-3">
+      <span class="text-slate-500">code space N</span><span data-out="N" class="text-slate-100"></span>
+    </div>
+    <div></div>
+    <div class="flex justify-between gap-3">
+      <span class="text-slate-500">fixed: exactly on k</span><span data-out="fixedExact" class="text-slate-100"></span>
+    </div>
+    <div class="flex justify-between gap-3">
+      <span class="text-slate-500">fixed: within k</span><span data-out="fixedCum" class="text-slate-100"></span>
+    </div>
+    <div class="flex justify-between gap-3">
+      <span class="text-slate-500">rolling: exactly on k</span><span data-out="rollExact" class="text-slate-100"></span>
+    </div>
+    <div class="flex justify-between gap-3">
+      <span class="text-slate-500">rolling: within k</span><span data-out="rollCum" class="text-slate-100"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/guessing-odds';
+</script>

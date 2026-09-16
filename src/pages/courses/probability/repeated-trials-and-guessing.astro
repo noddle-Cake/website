@@ -1,0 +1,98 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import GuessingOdds from "../../../components/course/widgets/GuessingOdds.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="repeated-trials-and-guessing">
+  <h2>Two very different kinds of "try again"</h2>
+  <p>
+    A system is locked with a 4-digit code using the numbers 1 through 5. The product rule gives the
+    size of the code space:
+  </p>
+  <Math display tex="N = 5^4 = 625" />
+  <p>
+    Now someone starts guessing. Everything depends on one question: <strong>does a failed attempt
+    tell the attacker anything?</strong>
+  </p>
+
+  <h3>Fixed code: sampling without replacement</h3>
+  <p>
+    Against a code that never changes, a sensible attacker never repeats a guess. Each wrong attempt
+    eliminates one candidate, so the conditional probability rises as the pool shrinks:
+  </p>
+  <Math
+    display
+    tex="P(\text{3rd attempt wins}) = \frac{624}{625}\cdot\frac{623}{624}\cdot\frac{1}{623} = \frac{1}{625} = 0.0016"
+  />
+  <p>
+    Look at how the telescoping product collapses. The answer is <Math tex="1/N" /> for{" "}
+    <em>every</em> attempt number &mdash; and it must be, by symmetry: the true code is equally
+    likely to be in any position of the attacker's list. Attempt 3 is no more or less special than
+    attempt 1.
+  </p>
+  <p>Success within the first <Math tex="k" /> attempts is then just a count of list positions:</p>
+  <Math display tex="P(\text{win by attempt } k) = \frac{k}{N}, \qquad P(\text{win by 3}) = \frac{3}{625} = 0.0048" />
+  <p>
+    This is a linear ramp that reaches certainty at <Math tex="k = N" />. Given 625 attempts, the
+    attacker <em>always</em> wins.
+  </p>
+
+  <h3>Rolling code: independent repeated trials</h3>
+  <p>
+    Now the code changes after every attempt. Nothing is learned, nothing is eliminated, and each
+    attempt is an independent trial with success probability <Math tex="1/N" />. The number of
+    attempts up to and including the first success has the <strong>geometric distribution</strong>:
+  </p>
+  <Math display tex="P(\text{first success on attempt } k) = \left(1 - \tfrac{1}{N}\right)^{k-1}\cdot\tfrac{1}{N}" />
+  <Math
+    display
+    tex="P(\text{3rd attempt wins}) = \left(\tfrac{624}{625}\right)^{2}\cdot\tfrac{1}{625} \approx 0.0015949"
+  />
+  <p>
+    Slightly <em>lower</em> than the fixed-code case, because the attacker might already have
+    stumbled onto it &mdash; and could also waste attempt 3 on a guess they already tried. The
+    cumulative version is the complement of "missed every time":
+  </p>
+  <Math display tex="P(\text{win by attempt } k) = 1 - \left(1 - \tfrac{1}{N}\right)^{k}" />
+
+  <Callout variant="intuition" label="Ramp vs. curve">
+    <p>
+      The fixed-code attacker's cumulative probability is a straight line hitting 1 at{" "}
+      <Math tex="k = N" />. The rolling-code attacker's is an exponential saturation curve that
+      approaches 1 but never arrives &mdash; at <Math tex="k = N" /> it stands at{" "}
+      <Math tex="1 - (1 - 1/N)^N \approx 1 - e^{-1} \approx 0.632" />. Rolling the code does not make
+      a break-in impossible; it removes the attacker's guarantee.
+    </p>
+  </Callout>
+
+  <GuessingOdds />
+
+  <h2>Expected number of attempts</h2>
+  <p>
+    For the geometric distribution the mean is <Math tex="1/p = N = 625" /> attempts. For the
+    systematic attacker on a fixed code, the mean is <Math tex="(N+1)/2 = 313" /> &mdash; twice as
+    fast on average, plus a hard guarantee at 625. That factor of two is the concrete security value
+    of a rolling code, and it is much smaller than most people expect; the real defence is rate
+    limiting, which caps <Math tex="k" /> instead of changing the per-attempt odds.
+  </p>
+
+  <Callout variant="warning" label="Do not mix the two models">
+    <p>
+      Multiplying <Math tex="1/N" /> by <Math tex="k" /> is only valid for the without-replacement
+      attacker, and only while <Math tex="k \le N" />. For independent trials the correct union is{" "}
+      <Math tex="1 - (1-1/N)^k" />, which stays below 1 forever. Adding independent probabilities
+      double-counts the outcomes where more than one attempt would have succeeded.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="A fair 6-sided die is rolled repeatedly. What is the probability the first 6 appears on the 4th roll?"
+    options={["1/6", "(5/6)⁴", "(5/6)³ · (1/6) ≈ 0.0965", "4/6"]}
+    correctIndex={2}
+    correctText="Correct — three misses at 5/6 each, then a hit at 1/6: (5/6)³(1/6) ≈ 0.0965. Rolls are independent, so this is the geometric distribution."
+    incorrectText="The rolls are independent with replacement, so you need three misses followed by a hit: (5/6)³ × (1/6) ≈ 0.0965."
+  />
+</CourseLesson>

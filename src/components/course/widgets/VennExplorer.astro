@@ -1,0 +1,60 @@
+---
+const presets = [
+  { key: 'a', label: 'X OR Y' },
+  { key: 'b', label: 'X XOR Y' },
+  { key: 'c', label: 'Exactly 1 of 3' },
+  { key: 'd', label: 'X or Y, not Z' },
+  { key: 'e', label: 'At least 1' },
+];
+---
+
+<div
+  data-widget="venn-explorer"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Venn explorer
+  </p>
+  <div class="flex flex-col lg:flex-row gap-6">
+    <canvas class="border border-slate-800 rounded shrink-0 cursor-pointer max-w-full"></canvas>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm text-slate-400 leading-relaxed">
+        Click any region &mdash; including the area outside all three circles &mdash; to shade it.
+        The expression below is rebuilt from scratch each time, as a union of the eight disjoint
+        intersection terms.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {
+          presets.map((p) => (
+            <button
+              type="button"
+              data-preset={p.key}
+              class="text-xs border border-slate-800 rounded px-2.5 py-1.5 text-slate-300 hover:border-slate-500 transition-colors"
+            >
+              {p.key}. {p.label}
+            </button>
+          ))
+        }
+        <button
+          type="button"
+          data-clear
+          class="text-xs border border-slate-800 rounded px-2.5 py-1.5 text-slate-500 hover:border-slate-500 transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+      <p class="mt-4 font-mono text-xs uppercase tracking-[0.15em] text-slate-500">Expression</p>
+      <p
+        data-expression
+        class="mt-1.5 font-mono text-sm text-slate-100 leading-relaxed break-words"
+      >
+      </p>
+      <p data-hint class="mt-2 text-xs text-slate-400"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/venn-explorer';
+</script>

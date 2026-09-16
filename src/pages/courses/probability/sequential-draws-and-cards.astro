@@ -1,0 +1,118 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import CardPosition from "../../../components/course/widgets/CardPosition.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="sequential-draws-and-cards">
+  <h2>The chain rule</h2>
+  <p>
+    Dealing cards is sampling <strong>without replacement</strong>: each draw changes what is left.
+    The multiplication rule, applied repeatedly, handles it exactly:
+  </p>
+  <Math
+    display
+    tex="P(A_1 \cap A_2 \cap \cdots \cap A_n) = P(A_1)\,P(A_2 \mid A_1)\,P(A_3 \mid A_1 \cap A_2)\cdots"
+  />
+  <p>
+    Walk the deal one card at a time, writing the fraction of acceptable cards remaining at each
+    step. That single technique solves nearly every card question you will meet.
+  </p>
+
+  <h2>"The 4th card was the first spade"</h2>
+  <p>
+    A 52-card deck has 13 spades and 39 non-spades. The event says cards 1&ndash;3 were non-spades
+    and card 4 was a spade:
+  </p>
+  <Math
+    display
+    tex="P = \frac{39}{52}\cdot\frac{38}{51}\cdot\frac{37}{50}\cdot\frac{13}{49} = \frac{712{,}842}{6{,}497{,}400} \approx 0.1097"
+  />
+  <p>
+    Each denominator drops by one because a card has left the deck; the numerators track how many
+    cards of the required kind are still available.
+  </p>
+
+  <Callout variant="intuition" label="The counting view of the same answer">
+    <p>
+      There are <Math tex="(52)_4 = 52\cdot51\cdot50\cdot49" /> equally likely ordered openings.
+      Favorable ones: pick three non-spades in order, <Math tex="(39)_3" />, then any of 13 spades.
+      The ratio is identical. Sequential conditioning and ordered counting are the same computation
+      written two ways &mdash; use whichever you find easier to keep straight.
+    </p>
+  </Callout>
+
+  <h2>The general position formula</h2>
+  <p>
+    Deck of <Math tex="N" /> cards containing <Math tex="S" /> "special" ones. The probability that
+    the <Math tex="j" />-th special card lands at deal position <Math tex="p" /> is
+  </p>
+  <Math
+    display
+    tex="P = \frac{\dbinom{p-1}{j-1}\,(S)_j\,(N-S)_{p-j}}{(N)_p}"
+  />
+  <p>
+    Read it left to right: choose which of the first <Math tex="p-1" /> positions hold the earlier{" "}
+    <Math tex="j-1" /> specials; deal <Math tex="j" /> specific special cards in order into the{" "}
+    <Math tex="j" /> special slots (position <Math tex="p" /> being the last of them); fill the
+    remaining <Math tex="p-j" /> slots with ordinary cards; divide by all ordered openings of length{" "}
+    <Math tex="p" />. With <Math tex="j = 1" /> the binomial is 1 and it collapses to the spade
+    computation above.
+  </p>
+
+  <CardPosition />
+
+  <h2>"The 4th card was the third and last king"</h2>
+  <p>
+    Five cards are dealt. Two conditions now: the third king appears at position 4, <em>and</em> no
+    king appears at position 5. Handle them in that order.
+  </p>
+  <p>Position part, using the formula with <Math tex="S = 4" />, <Math tex="j = 3" />, <Math tex="p = 4" />:</p>
+  <Math
+    display
+    tex="P(\text{3rd king at 4}) = \frac{\binom{3}{2}\,(4)_3\,(48)_1}{(52)_4} = \frac{3 \cdot 24 \cdot 48}{6{,}497{,}400} = \frac{3456}{6{,}497{,}400}"
+  />
+  <p>
+    Then the fifth card must be one of the 47 non-kings among the 48 cards left, since all 4 kings
+    minus the 3 already dealt leaves exactly 1 king in the remaining deck:
+  </p>
+  <Math
+    display
+    tex="P = \frac{3456}{6{,}497{,}400}\cdot\frac{47}{48} = \frac{162{,}432}{311{,}875{,}200} \approx 5.208 \times 10^{-4}"
+  />
+
+  <h2>"&hellip;and it was the king of hearts"</h2>
+  <p>
+    Same event, but now the card at position 4 is pinned to one specific king. By symmetry the four
+    kings are equally likely to be the one that arrives third, so the answer is a quarter of the
+    position probability:
+  </p>
+  <Math
+    display
+    tex="P = \tfrac14 \cdot \frac{3456}{6{,}497{,}400} = \frac{864}{6{,}497{,}400} \approx 1.330 \times 10^{-4}"
+  />
+  <p>
+    Counting it out confirms the shortcut: choose which 2 of the first 3 positions hold kings
+    (<Math tex="3" />), deal 2 of the 3 non-heart kings into them in order (<Math tex="3 \cdot 2 = 6" />),
+    put any of 48 non-kings in the leftover slot, and place the king of hearts at position 4 &mdash;{" "}
+    <Math tex="3 \cdot 6 \cdot 48 = 864" /> favorable openings.
+  </p>
+
+  <Callout variant="warning" label="Order the deck, or do not — but pick one">
+    <p>
+      Treating the deal as ordered (<Math tex="(52)_p" /> openings) and unordered (<Math tex="\binom{52}{5}" />{" "}
+      hands) both work, but position-specific questions like these need the ordered view: an
+      unordered hand has no "4th card". If a question mentions a position, deal in order.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="Two cards are dealt from a full deck. What is the probability both are hearts?"
+    options={["(13/52)²", "(13/52)(12/51)", "(13/52)(13/51)", "C(13,2)/52"]}
+    correctIndex={1}
+    correctText="Correct: 13/52 for the first heart, then only 12 hearts remain among 51 cards — (13/52)(12/51) = 1/17 ≈ 0.0588."
+    incorrectText="Without replacement, the second draw sees a changed deck: 12 hearts left out of 51 cards. So it is (13/52)(12/51), not (13/52)²."
+  />
+</CourseLesson>

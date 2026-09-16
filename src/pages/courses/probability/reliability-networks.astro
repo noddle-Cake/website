@@ -1,0 +1,105 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import ReliabilityNetwork from "../../../components/course/widgets/ReliabilityNetwork.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="reliability-networks">
+  <h2>What a block diagram means</h2>
+  <p>
+    A reliability network is a picture of an event, not a circuit. Each block is a component that
+    works with probability <Math tex="p_i" />, independently of the others. The system works when a
+    connected path of working blocks runs from the input to the output.
+  </p>
+  <p>Two patterns generate everything else.</p>
+
+  <h3>Series: every block must work</h3>
+  <p>
+    A path through <Math tex="n" /> blocks in a row needs all of them, and independence turns the
+    intersection into a product:
+  </p>
+  <Math display tex="p_{\text{series}} = p_1 p_2 \cdots p_n" />
+  <p>
+    Since each factor is at most 1, a chain is never more reliable than its weakest link &mdash; it
+    is strictly worse than every one of them.
+  </p>
+
+  <h3>Parallel: at least one must work</h3>
+  <p>
+    "At least one" is the complement of "none", exactly as in the axioms lesson. Every block must
+    fail for a parallel bank to fail, and failures are independent, so:
+  </p>
+  <Math display tex="p_{\text{parallel}} = 1 - (1-p_1)(1-p_2)\cdots(1-p_n)" />
+  <p>
+    Redundancy compounds: three mediocre 0.6 blocks in parallel give{" "}
+    <Math tex="1 - 0.4^3 = 0.936" />, better than any single one of them.
+  </p>
+
+  <Callout variant="intuition" label="Work in failure probabilities">
+    <p>
+      Write <Math tex="q_i = 1 - p_i" />. Then series multiplies the <Math tex="p" />'s and parallel
+      multiplies the <Math tex="q" />'s &mdash; the two rules are mirror images. Switching to
+      whichever number is small keeps the arithmetic accurate and makes the structure obvious.
+    </p>
+  </Callout>
+
+  <h2>Reducing a network</h2>
+  <p>
+    The method is mechanical: find any sub-block that is purely series or purely parallel, replace it
+    with a single equivalent block, and repeat until one block remains. Take the network in the
+    widget below &mdash; a three-branch parallel bank, one lone block, then a two-branch parallel
+    bank.
+  </p>
+  <ol>
+    <li>
+      The bottom-left branch is two blocks in series:{" "}
+      <Math tex="0.9 \times 0.2 = 0.18" />. Notice how badly the 0.2 drags down the 0.9.
+    </li>
+    <li>
+      That branch now sits in parallel with 0.8 and 0.6:{" "}
+      <Math tex="1 - (0.2)(0.4)(0.82) = 1 - 0.0656 = 0.9344" />.
+    </li>
+    <li>The upper-right branch is series: <Math tex="0.6 \times 0.5 = 0.30" />.</li>
+    <li>
+      In parallel with the 0.4 branch:{" "}
+      <Math tex="1 - (0.70)(0.60) = 1 - 0.42 = 0.58" />.
+    </li>
+    <li>
+      The three survivors are in series:{" "}
+      <Math tex="0.9344 \times 0.40 \times 0.58 \approx 0.2168" />.
+    </li>
+  </ol>
+  <Math display tex="p_{\text{system}} \approx 0.2168" />
+  <p>
+    The lesson is in the shape of the answer: a strong redundant bank (0.9344) is thrown away by a
+    single unbacked 0.4 block sitting in series with it. In a series chain, the cheapest reliability
+    improvement is always the worst block.
+  </p>
+
+  <ReliabilityNetwork />
+
+  <Callout variant="warning" label="Not every network reduces this way">
+    <p>
+      Series&ndash;parallel reduction only works when the diagram really is nested series and
+      parallel pieces. A bridge network &mdash; where a cross-link joins two otherwise separate
+      branches &mdash; has no such decomposition, and you must condition on the bridge component:
+      compute the system reliability once assuming it works and once assuming it fails, then average
+      with the law of total probability. That fallback always works.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="Two components with p = 0.9 each. How much more reliable is putting them in parallel rather than in series?"
+    options={[
+      "0.81 vs 0.99 — parallel is better by 0.18",
+      "0.99 vs 0.81 — parallel is better by 0.18",
+      "They are the same",
+      "0.90 vs 0.81 — parallel is better by 0.09",
+    ]}
+    correctIndex={1}
+    correctText="Correct: series gives 0.9 × 0.9 = 0.81; parallel gives 1 − 0.1 × 0.1 = 0.99. Redundancy squares the failure probability instead of the success probability."
+    incorrectText="Series multiplies successes: 0.9 × 0.9 = 0.81. Parallel multiplies failures: 1 − (0.1)(0.1) = 0.99. Parallel wins by 0.18."
+  />
+</CourseLesson>

@@ -1,0 +1,72 @@
+<div
+  data-widget="counting-lab"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Sequence counter
+  </p>
+
+  <div class="grid gap-4 sm:grid-cols-3 mb-5">
+    <label class="block text-sm">
+      <span class="text-slate-300"
+        >Length n = <span data-out="nvalue" class="font-mono text-slate-100"></span></span
+      >
+      <input
+        data-slider="n"
+        type="range"
+        min="1"
+        max="20"
+        step="1"
+        value="6"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300"
+        >States per symbol k = <span data-out="kvalue" class="font-mono text-slate-100"></span></span
+      >
+      <input
+        data-slider="k"
+        type="range"
+        min="2"
+        max="6"
+        step="1"
+        value="2"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300"
+        >At most m = <span data-out="mvalue" class="font-mono text-slate-100"></span> zeros</span
+      >
+      <input
+        data-slider="m"
+        type="range"
+        min="0"
+        max="20"
+        step="1"
+        value="2"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+  </div>
+
+  <div class="overflow-x-auto">
+    <canvas class="border border-slate-800 rounded"></canvas>
+  </div>
+
+  <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-xs font-mono">
+    <dt class="text-slate-500">total sequences</dt>
+    <dd data-out="total" class="text-slate-100"></dd>
+    <dt class="text-slate-500">at most m zeros</dt>
+    <dd data-out="atmost" class="text-slate-100"></dd>
+    <dt class="text-slate-500">as a probability</dt>
+    <dd data-out="prob" class="text-slate-100"></dd>
+  </dl>
+  <p data-out="breakdown" class="mt-3 font-mono text-[11px] text-slate-400 leading-relaxed break-words"></p>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/counting-lab';
+</script>

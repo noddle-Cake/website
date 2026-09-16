@@ -1,0 +1,102 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import GeometricProbability from "../../../components/course/widgets/GeometricProbability.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="geometric-probability">
+  <h2>When the sample space is a region</h2>
+  <p>
+    Not every experiment has a finite list of outcomes. "Pick a number uniformly between{" "}
+    <Math tex="-1" /> and <Math tex="1" />" has uncountably many, and no single one can carry
+    positive probability &mdash; if each of infinitely many equally likely outcomes had probability{" "}
+    <Math tex="\varepsilon > 0" />, the total would exceed 1.
+  </p>
+  <p>
+    So probability attaches to <em>regions</em>, in proportion to their size. If{" "}
+    <Math tex="(x, y)" /> is uniform over a region <Math tex="R" />, then for any{" "}
+    <Math tex="A \subseteq R" />:
+  </p>
+  <Math display tex="P\bigl((x,y) \in A\bigr) = \frac{\operatorname{area}(A)}{\operatorname{area}(R)}" />
+  <p>
+    Two independent uniform draws on <Math tex="[-1, 1]" /> give a point uniform on the square{" "}
+    <Math tex="[-1,1] \times [-1,1]" />, whose area is 4. Every question below is now a geometry
+    problem divided by 4.
+  </p>
+
+  <h2>A line has probability zero</h2>
+  <p>
+    What is <Math tex="P(y = 2x)" />? The set of points satisfying it is a line segment through the
+    square. A line has zero area, so
+  </p>
+  <Math display tex="P(y = 2x) = \frac{0}{4} = 0" />
+  <p>
+    The honest way to see it is as a limit. Thicken the line into a strip of half-width{" "}
+    <Math tex="\varepsilon" />, compute the strip's probability, and let it shrink:
+  </p>
+  <Math display tex="P\bigl(|y - 2x| \le \varepsilon\bigr) \xrightarrow[\varepsilon \to 0]{} 0" />
+  <p>
+    Drag the <Math tex="\varepsilon" /> slider in the widget below to watch that happen. The shaded
+    band gets thinner, its probability drops smoothly toward zero, and at{" "}
+    <Math tex="\varepsilon = 0" /> nothing is left.
+  </p>
+
+  <Callout variant="warning" label="Probability zero is not impossibility">
+    <p>
+      The point <em>does</em> land somewhere, and wherever it lands is a specific pair{" "}
+      <Math tex="(x_0, y_0)" /> whose probability was zero beforehand. In a continuous sample space,
+      "probability 0" means <em>negligible</em>, not <em>cannot happen</em> &mdash; and symmetrically
+      "probability 1" means <em>almost surely</em>, not <em>guaranteed</em>. This is why continuous
+      random variables are described by densities over intervals rather than by point
+      probabilities.
+    </p>
+  </Callout>
+
+  <h2>Regions with actual area</h2>
+  <p>
+    Now something non-degenerate: <Math tex="P(y > |x|)" />. The two lines <Math tex="y = x" /> and{" "}
+    <Math tex="y = -x" /> cut the square into four congruent triangles &mdash; north, south, east,
+    west. The condition <Math tex="y > |x|" /> is exactly the northern one, with vertices{" "}
+    <Math tex="(-1,1)" />, <Math tex="(1,1)" />, and the origin:
+  </p>
+  <Math
+    display
+    tex="\operatorname{area} = \tfrac12 \cdot \text{base} \cdot \text{height} = \tfrac12 \cdot 2 \cdot 1 = 1 \quad\Longrightarrow\quad P = \tfrac{1}{4}"
+  />
+  <p>
+    You can also get there without integrating anything: the four triangles are related by the
+    symmetries of the square and the uniform distribution, they are disjoint, and they cover
+    everything except a set of lines with probability zero. Four equally likely cases, so each is{" "}
+    <Math tex="1/4" />.
+  </p>
+
+  <GeometricProbability />
+
+  <Callout variant="intuition" label="Symmetry beats integration">
+    <p>
+      Before setting up an integral, ask whether the region is one of <Math tex="k" /> congruent
+      pieces the symmetry group maps onto each other. <Math tex="P(y > x) = 1/2" /> by reflection
+      across the diagonal. <Math tex="P(|x| + |y| < 1) = 1/2" /> because the tilted inner square has
+      area 2 out of 4. Both are one-line answers.
+    </p>
+  </Callout>
+
+  <h2>Checking yourself with darts</h2>
+  <p>
+    The Monte Carlo button throws uniform points and reports the fraction that land in the shaded
+    region. It converges on the exact answer at a rate of about{" "}
+    <Math tex="1/\sqrt{n}" />, so a few thousand darts pins down two decimal places &mdash; enough to
+    catch a factor-of-two error in your geometry, which is the error you are actually likely to
+    make.
+  </p>
+
+  <Quiz
+    question="x and y are independent and uniform on [-1, 1]. What is P(x + y > 0)?"
+    options={["1/4", "1/3", "1/2", "3/4"]}
+    correctIndex={2}
+    correctText="Correct — the line x + y = 0 is the anti-diagonal of the square, splitting it into two congruent halves, and the line itself has probability zero."
+    incorrectText="x + y = 0 is the anti-diagonal through the square's centre. It cuts the square into two congruent triangles of area 2 each, so the probability is 2/4 = 1/2."
+  />
+</CourseLesson>

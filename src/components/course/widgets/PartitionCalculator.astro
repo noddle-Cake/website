@@ -1,0 +1,68 @@
+<div
+  data-widget="partition-calculator"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Group-splitting calculator
+  </p>
+
+  <div class="grid grid-cols-3 gap-3 mb-5">
+    <label class="block text-xs">
+      <span class="text-slate-500">people n</span>
+      <input
+        data-input="n"
+        type="number"
+        min="1"
+        max="30"
+        step="1"
+        value="24"
+        class="w-full mt-1 bg-slate-900 border border-slate-800 rounded px-2 py-1 font-mono text-sm text-slate-100"
+      />
+    </label>
+    <label class="block text-xs">
+      <span class="text-slate-500">marked (undergrads) u</span>
+      <input
+        data-input="u"
+        type="number"
+        min="0"
+        max="30"
+        step="1"
+        value="6"
+        class="w-full mt-1 bg-slate-900 border border-slate-800 rounded px-2 py-1 font-mono text-sm text-slate-100"
+      />
+    </label>
+    <label class="block text-xs">
+      <span class="text-slate-500">groups g</span>
+      <input
+        data-input="g"
+        type="number"
+        min="1"
+        max="12"
+        step="1"
+        value="6"
+        class="w-full mt-1 bg-slate-900 border border-slate-800 rounded px-2 py-1 font-mono text-sm text-slate-100"
+      />
+    </label>
+  </div>
+
+  <dl class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-xs font-mono items-baseline">
+    <dt class="text-slate-500">equal-size split</dt>
+    <dd data-out="sizes" class="text-slate-100 text-right"></dd>
+    <dt class="text-slate-500">ways, groups labeled</dt>
+    <dd data-out="labeled" class="text-slate-100 text-right"></dd>
+    <dt class="text-slate-500">ways, groups interchangeable</dt>
+    <dd data-out="unlabeled" class="text-slate-100 text-right"></dd>
+    <dt class="text-slate-500">P(one marked per group), equal sizes</dt>
+    <dd data-out="pEqual" class="text-slate-100 text-right"></dd>
+    <dt class="text-slate-500">ways with no empty group</dt>
+    <dd data-out="surj" class="text-slate-100 text-right"></dd>
+    <dt class="text-slate-500">P(one marked per group), any sizes</dt>
+    <dd data-out="pAny" class="text-slate-100 text-right"></dd>
+  </dl>
+  <p data-out="pEqualChain" class="mt-3 font-mono text-[11px] text-slate-400 break-words"></p>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/partition-calculator';
+</script>

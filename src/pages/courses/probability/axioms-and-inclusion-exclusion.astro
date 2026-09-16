@@ -1,0 +1,123 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import VennExplorer from "../../../components/course/widgets/VennExplorer.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="axioms-and-inclusion-exclusion">
+  <h2>Three axioms</h2>
+  <p>
+    A probability is a function <Math tex="P(\cdot)" /> that assigns a number to each event, subject
+    to exactly three rules. Everything else in this course is a consequence of them.
+  </p>
+  <ol>
+    <li><strong>Non-negativity.</strong> <Math tex="P(A) \ge 0" /> for every event <Math tex="A" />.</li>
+    <li><strong>Normalization.</strong> <Math tex="P(S) = 1" /> &mdash; something happens.</li>
+    <li>
+      <strong>Additivity.</strong> If <Math tex="A \cap B = \varnothing" />, then{" "}
+      <Math tex="P(A \cup B) = P(A) + P(B)" />.
+    </li>
+  </ol>
+  <p>
+    Notice how narrow the third one is. It says nothing at all about overlapping events &mdash; and
+    that restriction is what the rest of this lesson is about.
+  </p>
+
+  <h3>Immediate consequences</h3>
+  <ul>
+    <li>
+      <Math tex="P(A^c) = 1 - P(A)" />, because <Math tex="A" /> and <Math tex="A^c" /> are disjoint
+      and their union is <Math tex="S" />.
+    </li>
+    <li><Math tex="P(\varnothing) = 0" />, taking <Math tex="A = S" /> above.</li>
+    <li>
+      <Math tex="0 \le P(A) \le 1" />, and if <Math tex="A \subseteq B" /> then{" "}
+      <Math tex="P(A) \le P(B)" />.
+    </li>
+  </ul>
+
+  <h2>Why the additive rule breaks</h2>
+  <p>
+    If <Math tex="A" /> and <Math tex="B" /> overlap and you write <Math tex="P(A) + P(B)" />, the
+    outcomes in <Math tex="A \cap B" /> get counted twice &mdash; once as members of{" "}
+    <Math tex="A" />, once as members of <Math tex="B" />. The repair is to subtract the double
+    count:
+  </p>
+  <Math display tex="P(A \cup B) = P(A) + P(B) - P(A \cap B)" />
+  <p>For three events the pattern continues, alternating signs:</p>
+  <Math
+    display
+    tex="P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C)"
+  />
+  <p>
+    That is <strong>inclusion&ndash;exclusion</strong>: add the singles, subtract the pairs, add the
+    triple back. The triple intersection is removed three times by the pair terms after being added
+    three times by the singles, so it needs one addition to survive.
+  </p>
+
+  <h2>The same answer without a single subtraction</h2>
+  <p>
+    Inclusion&ndash;exclusion is a repair job: over-count, then correct. There is a cleaner route
+    that never over-counts in the first place &mdash; <strong>disjointify</strong>. Break the union
+    into non-overlapping pieces and use axiom 3 directly, which is the only additive rule you
+    actually have.
+  </p>
+  <p>
+    From the previous lesson, the three circles cut <Math tex="S" /> into eight disjoint regions.
+    Seven of them make up <Math tex="A \cup B \cup C" />, so:
+  </p>
+  <Math
+    display
+    tex="\begin{aligned} P(A \cup B \cup C) = \;& P(A \cap B^c \cap C^c) + P(A^c \cap B \cap C^c) + P(A^c \cap B^c \cap C) \\ &+ P(A \cap B \cap C^c) + P(A \cap B^c \cap C) + P(A^c \cap B \cap C) \\ &+ P(A \cap B \cap C) \end{aligned}"
+  />
+  <p>
+    Every term is a probability of a region no other term touches, so the sum is exact &mdash; no
+    corrections needed. A more compact version of the same idea peels the events off one at a time:
+  </p>
+  <Math
+    display
+    tex="P(A \cup B \cup C) = P(A) + P(A^c \cap B) + P(A^c \cap B^c \cap C)"
+  />
+  <p>
+    Read it as: take all of <Math tex="A" />; then whatever of <Math tex="B" /> is new; then whatever
+    of <Math tex="C" /> is new after both. Three disjoint slices, three additions, no subtraction.
+  </p>
+
+  <Callout variant="intuition" label="Which form should you use?">
+    <p>
+      Use inclusion&ndash;exclusion when the problem hands you the pairwise and triple
+      intersections. Use the disjoint form when it hands you the atoms directly &mdash; or when it
+      forbids subtraction, which is really a way of forcing you to prove you understand{" "}
+      <em>why</em> the subtraction was needed.
+    </p>
+  </Callout>
+
+  <p>
+    Shade "at least 1 event occurred" in the explorer below and count: seven regions, one per term
+    in the expansion above.
+  </p>
+
+  <VennExplorer />
+
+  <h2>The complement shortcut</h2>
+  <p>
+    For a union of many events, the eighth region is often the fastest path of all:
+  </p>
+  <Math display tex="P(A \cup B \cup C) = 1 - P(A^c \cap B^c \cap C^c)" />
+  <p>
+    If the events are also independent &mdash; a notion the next lesson makes precise &mdash; that
+    last term factors into <Math tex="\bigl(1-P(A)\bigr)\bigl(1-P(B)\bigr)\bigl(1-P(C)\bigr)" />, and
+    a messy seven-term expansion collapses to one line. This is exactly the move behind parallel
+    reliability blocks later in the course.
+  </p>
+
+  <Quiz
+    question="P(A) = 0.5, P(B) = 0.4, P(A ∩ B) = 0.3. What is P(A ∪ B)?"
+    options={["0.9", "0.7", "0.6", "0.2"]}
+    correctIndex={2}
+    correctText="Correct: 0.5 + 0.4 − 0.3 = 0.6. The overlap was counted in both marginals, so it comes off once."
+    incorrectText="Adding 0.5 + 0.4 counts the 0.3 overlap twice, so subtract it once: 0.5 + 0.4 − 0.3 = 0.6."
+  />
+</CourseLesson>

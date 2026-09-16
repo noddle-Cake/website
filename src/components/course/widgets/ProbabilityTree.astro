@@ -1,0 +1,69 @@
+<div
+  data-widget="probability-tree"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Two-stage tree
+  </p>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-5">
+    <label class="block text-sm">
+      <span class="text-slate-300">P(heads) = <span data-shows="bias" class="font-mono"></span></span>
+      <input
+        data-slider="bias"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300">Die if called right: d<span data-shows="sidesA" class="font-mono"></span></span>
+      <input
+        data-slider="sidesA"
+        type="range"
+        min="2"
+        max="12"
+        step="1"
+        value="5"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300">Die if called wrong: d<span data-shows="sidesB" class="font-mono"></span></span>
+      <input
+        data-slider="sidesB"
+        type="range"
+        min="2"
+        max="12"
+        step="1"
+        value="6"
+        class="w-full accent-slate-300 mt-1"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="text-slate-300">Calling strategy</span>
+      <select
+        data-strategy
+        class="w-full mt-1 bg-slate-900 border border-slate-800 rounded px-2 py-1.5 text-sm text-slate-100"
+      >
+        <option value="fixed">Call heads</option>
+        <option value="favoured">Call likelier side</option>
+        <option value="unfavoured">Call unlikelier side</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="overflow-x-auto">
+    <canvas class="border border-slate-800 rounded"></canvas>
+  </div>
+  <p data-readout class="mt-3 font-mono text-sm text-slate-100"></p>
+  <p data-verdict class="mt-2 text-sm text-slate-400 leading-relaxed"></p>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/probability-tree';
+</script>

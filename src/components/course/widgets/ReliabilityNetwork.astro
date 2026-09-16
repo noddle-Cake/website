@@ -1,0 +1,54 @@
+---
+const blocks = [
+  { id: 'a1', label: 'top left', value: '0.8' },
+  { id: 'a2', label: 'mid left', value: '0.6' },
+  { id: 'a3', label: 'low left A', value: '0.9' },
+  { id: 'a4', label: 'low left B', value: '0.2' },
+  { id: 'm', label: 'middle', value: '0.4' },
+  { id: 'b1', label: 'top right A', value: '0.6' },
+  { id: 'b2', label: 'top right B', value: '0.5' },
+  { id: 'b3', label: 'low right', value: '0.4' },
+];
+---
+
+<div
+  data-widget="reliability-network"
+  data-reveal
+  class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
+>
+  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-4">
+    Interactive &middot; Network reduction
+  </p>
+
+  <div class="overflow-x-auto">
+    <canvas class="border border-slate-800 rounded"></canvas>
+  </div>
+
+  <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+    {
+      blocks.map((b) => (
+        <label class="block text-xs">
+          <span class="text-slate-500">{b.label}</span>
+          <input
+            data-block={b.id}
+            type="number"
+            min="0"
+            max="1"
+            step="0.05"
+            value={b.value}
+            class="w-full mt-1 bg-slate-900 border border-slate-800 rounded px-2 py-1 font-mono text-sm text-slate-100"
+          />
+        </label>
+      ))
+    }
+  </div>
+
+  <ol data-steps class="mt-5 space-y-1.5 font-mono text-[11px] text-slate-400 leading-relaxed pl-5"></ol>
+  <p class="mt-3 text-sm text-slate-300">
+    System reliability: <span data-total class="font-mono text-slate-100 text-base"></span>
+  </p>
+</div>
+
+<script>
+  import '../../../scripts/courses/widgets/reliability-network';
+</script>

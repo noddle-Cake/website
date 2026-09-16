@@ -1,0 +1,107 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import CountingLab from "../../../components/course/widgets/CountingLab.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="counting-permutations-and-combinations">
+  <h2>Why counting is a probability topic</h2>
+  <p>
+    When every outcome in a finite sample space is equally likely, probability is pure arithmetic:
+  </p>
+  <Math display tex="P(A) = \frac{|A|}{|S|} = \frac{\text{outcomes in } A}{\text{outcomes in } S}" />
+  <p>
+    The whole difficulty moves into counting the two sets correctly &mdash; and above all into
+    counting them <em>the same way</em>. If the numerator counts ordered arrangements, the
+    denominator must too.
+  </p>
+
+  <h2>The product rule</h2>
+  <p>
+    If a task splits into <Math tex="k" /> stages with <Math tex="n_1, n_2, \dots, n_k" /> choices
+    each, and the count at each stage does not depend on what you picked earlier, the total is{" "}
+    <Math tex="n_1 n_2 \cdots n_k" />. Every other formula below is this rule in disguise.
+  </p>
+  <p>{" "}
+    <strong>Sequences with repetition.</strong> A code of length <Math tex="n" /> over an alphabet of{" "}
+    <Math tex="k" /> symbols has
+  </p>
+  <Math display tex="k^n \text{ possible sequences.}" />
+  <p>
+    Six bits gives <Math tex="2^6 = 64" />. If a transistor lets each digit hold three states{" "}
+    <Math tex="\{0,1,2\}" /> instead of two, the same six positions give{" "}
+    <Math tex="3^6 = 729" /> &mdash; a reminder that the alphabet size sits in the base, where growth
+    is dramatic, while the length sits in the exponent.
+  </p>
+
+  <h2>Ordered vs. unordered selection</h2>
+  <p>{" "}
+    <strong>Permutations</strong> count ordered selections of <Math tex="r" /> items from{" "}
+    <Math tex="n" /> distinct items, no repeats:
+  </p>
+  <Math display tex="P(n, r) = \frac{n!}{(n-r)!} = n(n-1)\cdots(n-r+1)" />
+  <p>{" "}
+    <strong>Combinations</strong> count the same selections when order does not matter. Every
+    unordered set of <Math tex="r" /> items was counted <Math tex="r!" /> times as permutations, so
+    divide it out:
+  </p>
+  <Math display tex="\binom{n}{r} = \frac{n!}{r!\,(n-r)!}" />
+
+  <Callout variant="intuition" label="The one question to ask first">
+    <p>
+      "If I swap two of the things I picked, is it a different outcome?" Yes &rarr; permutations.
+      No &rarr; combinations. A hand of cards does not care what order it was dealt in, so hands are
+      combinations. A PIN does care, so PINs are permutations (with repetition allowed, they are
+      just <Math tex="k^n" />).
+    </p>
+  </Callout>
+
+  <h2>Counting positions instead of objects</h2>
+  <p>
+    Here is the move that solves most "how many sequences have property X" problems: instead of
+    counting sequences, count <strong>which positions</strong> carry the special symbol.
+  </p>
+  <p>
+    How many binary sequences of length 6 have exactly <Math tex="j" /> zeros? Choose the{" "}
+    <Math tex="j" /> positions that hold a zero &mdash; <Math tex="\binom{6}{j}" /> ways &mdash; and
+    the rest are forced to be ones. So the count is <Math tex="\binom{6}{j}" />, and "at most 2
+    zeros" is a sum over cases:
+  </p>
+  <Math display tex="\binom{6}{0} + \binom{6}{1} + \binom{6}{2} = 1 + 6 + 15 = 22" />
+  <p>
+    Now the ternary version. With three states per digit, choosing the <Math tex="j" /> zero
+    positions no longer forces the rest &mdash; each of the other <Math tex="6-j" /> positions still
+    has 2 non-zero choices. So the count picks up a factor:
+  </p>
+  <Math display tex="N_j = \binom{6}{j}\,(k-1)^{6-j}, \qquad k = 3" />
+  <Math
+    display
+    tex="\binom{6}{0}2^6 + \binom{6}{1}2^5 + \binom{6}{2}2^4 = 64 + 192 + 240 = 496"
+  />
+  <p>
+    Out of <Math tex="3^6 = 729" /> sequences, that is a probability of{" "}
+    <Math tex="496/729 \approx 0.680" />. Sanity check the general formula by summing over all{" "}
+    <Math tex="j" />: <Math tex="\sum_j \binom{n}{j}(k-1)^{n-j} = k^n" />, which is the binomial
+    theorem &mdash; a good way to confirm you have not lost a case.
+  </p>
+
+  <CountingLab />
+
+  <Callout variant="warning" label="Watch the boundary words">
+    <p>
+      "At most 2" means <Math tex="j \in \{0,1,2\}" /> &mdash; three terms. "Fewer than 2" means two
+      terms. "At least 2" is usually fastest as <Math tex="1 - P(j \le 1)" />. Miscounting the case
+      list is a far more common error than miscomputing any single binomial coefficient.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="How many 6-symbol sequences over the alphabet {0, 1, 2} contain exactly one zero?"
+    options={["6", "64", "192", "243"]}
+    correctIndex={2}
+    correctText="Correct: C(6,1) = 6 choices for which position is the zero, times 2^5 = 32 ways to fill the rest with non-zeros — 6 × 32 = 192."
+    incorrectText="Pick the position for the single zero — C(6,1) = 6 ways — then each of the remaining 5 positions independently takes one of the 2 non-zero symbols: 6 × 2^5 = 192."
+  />
+</CourseLesson>

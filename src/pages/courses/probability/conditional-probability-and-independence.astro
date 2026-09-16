@@ -1,0 +1,135 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import ContingencyTable from "../../../components/course/widgets/ContingencyTable.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="conditional-probability-and-independence">
+  <h2>Conditioning shrinks the sample space</h2>
+  <p>{" "}
+    <Math tex="P(A \mid B)" /> is the probability of <Math tex="A" /> once you already know{" "}
+    <Math tex="B" /> happened. Knowing <Math tex="B" /> throws away every outcome outside{" "}
+    <Math tex="B" />, so <Math tex="B" /> becomes the new sample space and everything is rescaled to
+    keep the total at 1:
+  </p>
+  <Math display tex="P(A \mid B) = \frac{P(A \cap B)}{P(B)}, \qquad P(B) > 0" />
+  <p>Rearranged, that is the <strong>multiplication rule</strong>, which is how you build joints:</p>
+  <Math display tex="P(A \cap B) = P(A \mid B)\,P(B) = P(B \mid A)\,P(A)" />
+
+  <Callout variant="warning" label="Read the conditioning bar carefully">
+    <p>{" "}
+      <Math tex="P(A \mid B)" /> and <Math tex="P(B \mid A)" /> are different numbers, and mixing
+      them up is the single most common error in this whole subject. The denominator is always the
+      event you are told happened. "Out of the students who do not like coconuts, how many like
+      mangoes?" is <Math tex="P(M \mid C^c)" /> &mdash; the group you are standing in goes on the
+      right.
+    </p>
+  </Callout>
+
+  <h2>Joint, marginal, conditional</h2>
+  <p>
+    With two yes/no attributes there are only four joint probabilities, and they must sum to 1. Put
+    them in a 2&times;2 table and the row and column totals are the <strong>marginals</strong>:
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th></th><th>C</th><th>C<sup>c</sup></th><th>total</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>M</th><td>P(M &cap; C)</td><td>P(M &cap; C<sup>c</sup>)</td><td>P(M)</td></tr>
+        <tr><th>M<sup>c</sup></th><td>P(M<sup>c</sup> &cap; C)</td><td>P(M<sup>c</sup> &cap; C<sup>c</sup>)</td><td>P(M<sup>c</sup>)</td></tr>
+        <tr><th>total</th><td>P(C)</td><td>P(C<sup>c</sup>)</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Every conditional is one cell divided by its row or column total. Fill the table and the problem
+    is over &mdash; which is why the table, not the formula, is the practical tool.
+  </p>
+
+  <h2>Worked example: mangoes and coconuts</h2>
+  <p>
+    In a class, 40% like mangoes and 46% like coconuts. Of the students who do{" "}
+    <em>not</em> like mangoes, 40% do not like coconuts. So{" "}
+    <Math tex="P(M) = 0.40" />, <Math tex="P(C) = 0.46" />, and{" "}
+    <Math tex="P(C^c \mid M^c) = 0.40" />.
+  </p>
+  <p>Start with the one conditional you were given, and turn it into a joint:</p>
+  <Math display tex="P(M^c \cap C^c) = P(C^c \mid M^c)\,P(M^c) = 0.40 \times 0.60 = 0.24" />
+  <p>
+    Now the table fills itself by subtraction along the margins. <Math tex="P(C^c) = 0.54" />, so{" "}
+    <Math tex="P(M \cap C^c) = 0.54 - 0.24 = 0.30" />. Then{" "}
+    <Math tex="P(M \cap C) = P(M) - P(M \cap C^c) = 0.40 - 0.30 = 0.10" />, and the last cell is{" "}
+    <Math tex="0.46 - 0.10 = 0.36" />.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th></th><th>C</th><th>C<sup>c</sup></th><th>total</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>M</th><td>0.10</td><td>0.30</td><td>0.40</td></tr>
+        <tr><th>M<sup>c</sup></th><td>0.36</td><td>0.24</td><td>0.60</td></tr>
+        <tr><th>total</th><td>0.46</td><td>0.54</td><td>1.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul>
+    <li>
+      <strong>Likes both:</strong> <Math tex="P(M \cap C) = 0.10" />.
+    </li>
+    <li>
+      <strong>Independent?</strong> <Math tex="P(M)P(C) = 0.40 \times 0.46 = 0.184" />, which is not{" "}
+      <Math tex="0.10" />. So mango and coconut preference are <em>dependent</em> &mdash; and
+      negatively so, since liking one makes liking the other less likely than chance.
+    </li>
+    <li>
+      <strong>Mangoes among the coconut-averse:</strong>{" "}
+      <Math tex="P(M \mid C^c) = \dfrac{0.30}{0.54} = \dfrac{5}{9} \approx 0.5556" />.
+    </li>
+  </ul>
+
+  <h2>Independence</h2>
+  <p>Two events are <strong>independent</strong> when</p>
+  <Math display tex="P(A \cap B) = P(A)\,P(B)" />
+  <p>
+    which is equivalent to <Math tex="P(A \mid B) = P(A)" /> whenever <Math tex="P(B) > 0" />:
+    learning <Math tex="B" /> tells you nothing about <Math tex="A" />. Independence is a{" "}
+    <em>numerical coincidence</em>, not something you can see in a Venn diagram &mdash; you have to
+    check the product.
+  </p>
+
+  <Callout variant="warning" label="Independent is not the same as mutually exclusive">
+    <p>
+      Mutually exclusive events with non-zero probability are the <em>most</em> dependent events
+      there are: if <Math tex="A" /> happened, <Math tex="B" /> definitely did not, so{" "}
+      <Math tex="P(B \mid A) = 0 \ne P(B)" />. Disjointness is a statement about the sets;
+      independence is a statement about the numbers.
+    </p>
+  </Callout>
+
+  <p>
+    In the widget below, the mosaic on the right makes independence visible: the two column splits
+    line up with the dashed <Math tex="P(B)" /> line exactly when the product rule holds. Start from
+    the defaults (0.40, 0.46, 0.40) to reproduce the table above, then drag{" "}
+    <Math tex="P(B^c \mid A^c)" /> until the steps flatten out.
+  </p>
+
+  <ContingencyTable />
+
+  <Quiz
+    question="P(A) = 0.4, P(B) = 0.5, and P(A ∩ B) = 0.2. Which statement is true?"
+    options={[
+      "A and B are mutually exclusive",
+      "A and B are independent",
+      "A and B are dependent, since P(A | B) = 0.4",
+      "Not enough information",
+    ]}
+    correctIndex={1}
+    correctText="Correct: 0.4 × 0.5 = 0.2 = P(A ∩ B), so they are independent. P(A | B) = 0.2/0.5 = 0.4 = P(A), which says the same thing a second way."
+    incorrectText="Check the product: P(A)·P(B) = 0.4 × 0.5 = 0.2, which is exactly P(A ∩ B). That is the definition of independence — and P(A | B) = 0.4 = P(A) confirms it."
+  />
+</CourseLesson>

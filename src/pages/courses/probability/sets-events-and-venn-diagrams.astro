@@ -1,0 +1,142 @@
+---
+import CourseLesson from "../../../layouts/CourseLesson.astro";
+import Math from "../../../components/course/Math.astro";
+import Callout from "../../../components/course/Callout.astro";
+import Quiz from "../../../components/course/Quiz.astro";
+import VennExplorer from "../../../components/course/widgets/VennExplorer.astro";
+---
+
+<CourseLesson course="probability" lessonSlug="sets-events-and-venn-diagrams">
+  <h2>The vocabulary</h2>
+  <p>
+    Every probability problem starts with an <strong>experiment</strong> &mdash; something with an
+    uncertain result. The set of every result it could produce is the <strong>sample space</strong>{" "}
+    <Math tex="S" />, and a single result is an <strong>outcome</strong>.
+  </p>
+  <p>
+    An <strong>event</strong> is any subset of <Math tex="S" />. That one sentence is the whole
+    trick: once events are sets, every English phrase you meet in a word problem &mdash; "or", "and",
+    "not", "at least one", "exactly one" &mdash; becomes a set operation you can manipulate on paper.
+  </p>
+
+  <h2>Three operations, and nothing else</h2>
+  <ul>
+    <li>
+      <strong>Union</strong>, <Math tex="A \cup B" /> &mdash; outcomes in <Math tex="A" />, in{" "}
+      <Math tex="B" />, or in both. English: <em>or</em>.
+    </li>
+    <li>
+      <strong>Intersection</strong>, <Math tex="A \cap B" /> &mdash; outcomes in both at once.
+      English: <em>and</em>.
+    </li>
+    <li>
+      <strong>Complement</strong>, <Math tex="A^c" /> &mdash; everything in <Math tex="S" /> that is
+      not in <Math tex="A" />. English: <em>not</em>.
+    </li>
+  </ul>
+  <p>
+    Two events are <strong>mutually exclusive</strong> (disjoint) when{" "}
+    <Math tex="A \cap B = \varnothing" /> &mdash; they cannot both happen. They are{" "}
+    <strong>collectively exhaustive</strong> when their union is all of <Math tex="S" />. An event
+    and its complement are always both.
+  </p>
+
+  <Callout variant="intuition" label="De Morgan's laws">
+    <p>{" "}
+      <Math tex="(A \cup B)^c = A^c \cap B^c" /> and <Math tex="(A \cap B)^c = A^c \cup B^c" />.
+    </p>
+    <p class="mt-2">
+      In words: "not (A or B)" means "neither"; "not (A and B)" means "at least one of them
+      failed". These two identities are how you get rid of a complement that sits outside a
+      parenthesis, and they are the workhorse of almost every rewrite in this lesson.
+    </p>
+  </Callout>
+
+  <h2>The eight regions</h2>
+  <p>
+    Draw three overlapping circles <Math tex="X" />, <Math tex="Y" />, <Math tex="Z" /> inside a
+    rectangle for <Math tex="S" />. You get exactly <Math tex="2^3 = 8" /> regions, one for each
+    answer to the three yes/no questions "in <Math tex="X" />?", "in <Math tex="Y" />?", "in{" "}
+    <Math tex="Z" />?". Seven live inside at least one circle; the eighth is the outside corner,{" "}
+    <Math tex="X^c \cap Y^c \cap Z^c" />.
+  </p>
+  <p>
+    Those eight regions are <strong>disjoint</strong> and they <strong>cover</strong>{" "}
+    <Math tex="S" />. So every event you can describe with three circles is a union of some subset
+    of them &mdash; and that is the recipe: <em>shade what the sentence describes, then read off the
+    regions you shaded and join them with unions</em>.
+  </p>
+
+  <VennExplorer />
+
+  <h2>Translating English into sets</h2>
+
+  <h3>"X or Y"</h3>
+  <p>
+    In ordinary math language, "or" is inclusive &mdash; it allows both. So this is simply{" "}
+    <Math tex="X \cup Y" />, four of the eight regions.
+  </p>
+
+  <h3>"X XOR Y" &mdash; exclusive or</h3>
+  <p>
+    Now "or" excludes the overlap: one of them happened but not both.
+  </p>
+  <Math display tex="X \oplus Y = (X \cap Y^c) \cup (X^c \cap Y)" />
+  <p>
+    An equivalent form worth recognising is <Math tex="(X \cup Y) \cap (X \cap Y)^c" /> &mdash; take
+    the union, then carve out the middle. Both describe the same two regions. Note that{" "}
+    <Math tex="Z" /> is unconstrained here, so on a three-circle diagram each of those two "regions"
+    is really two of the eight atoms.
+  </p>
+
+  <h3>"Exactly one of three events occurred"</h3>
+  <p>
+    Exactly one means one <em>in</em> and two <em>out</em>. There are three ways to pick the one that
+    is in, and the three cases are disjoint:
+  </p>
+  <Math
+    display
+    tex="(X \cap Y^c \cap Z^c) \;\cup\; (X^c \cap Y \cap Z^c) \;\cup\; (X^c \cap Y^c \cap Z)"
+  />
+
+  <h3>"Either X or Y occurred, but not Z"</h3>
+  <p>
+    Two clauses joined by "and": the <Math tex="X \cup Y" /> part, intersected with the{" "}
+    <Math tex="Z^c" /> part.
+  </p>
+  <Math display tex="(X \cup Y) \cap Z^c" />
+
+  <h3>"At least one event occurred"</h3>
+  <p>
+    Directly, this is <Math tex="X \cup Y \cup Z" />. But the far more useful form is its
+    complement: "at least one" is the opposite of "none", and "none" is a single clean
+    intersection.
+  </p>
+  <Math display tex="X \cup Y \cup Z = \left(X^c \cap Y^c \cap Z^c\right)^c" />
+  <p>
+    That is De Morgan's law again, and it is the single most reused rewrite in probability &mdash;
+    "at least one" problems are almost always easier through the back door.
+  </p>
+
+  <Callout variant="warning" label="A sanity check that always works">
+    <p>
+      Count regions. "At least one of three" should shade 7 of the 8; "exactly one" should shade 3;
+      "X or Y" should shade 6 on a three-circle diagram (four of the union's regions plus the two
+      where <Math tex="Z" /> also occurs). If your expression shades a different number of regions
+      than your sentence implies, the expression is wrong.
+    </p>
+  </Callout>
+
+  <Quiz
+    question="Which expression describes 'at most one of X, Y, Z occurred'?"
+    options={[
+      "(X ∩ Y ∩ Z)ᶜ",
+      "(Xᶜ ∩ Yᶜ ∩ Zᶜ) ∪ (X ∩ Yᶜ ∩ Zᶜ) ∪ (Xᶜ ∩ Y ∩ Zᶜ) ∪ (Xᶜ ∩ Yᶜ ∩ Z)",
+      "X ∪ Y ∪ Z",
+      "(X ∩ Yᶜ) ∪ (Xᶜ ∩ Y)",
+    ]}
+    correctIndex={1}
+    correctText="Right — 'at most one' means zero or one, so it is the none-region plus the three exactly-one regions: 4 of the 8 atoms."
+    incorrectText="'At most one' covers two cases: none of them occurred, or exactly one did. That is the outside region plus the three exactly-one regions — four atoms in total."
+  />
+</CourseLesson>
