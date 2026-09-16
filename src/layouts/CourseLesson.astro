@@ -1,22 +1,25 @@
 ---
 import Layout from './Layout.astro';
-import { imageProcessingCourse, findLessonNav } from '../data/courses/image-processing';
+import { getCourse } from '../data/courses/registry';
+import { lessonNav } from '../data/courses/types';
 import 'katex/dist/katex.min.css';
 
 interface Props {
   lessonSlug: string;
+  course?: string;
 }
 
-const { lessonSlug } = Astro.props;
-const nav = findLessonNav(lessonSlug);
-const courseSlug = imageProcessingCourse.slug;
+const { lessonSlug, course: courseSlugProp = 'image-processing' } = Astro.props;
+const course = getCourse(courseSlugProp);
+const nav = lessonNav(course, lessonSlug);
+const courseSlug = course.slug;
 ---
 
-<Layout title={`${nav.current.title} — Image Processing`}>
+<Layout title={`${nav.current.title} — ${course.title}`}>
   <div id="course-nav-data" data-course={courseSlug} data-lesson={lessonSlug} hidden></div>
 
   <nav data-reveal class="text-xs font-mono text-slate-500 flex flex-wrap items-center gap-2 mb-6">
-    <a href={`/courses/${courseSlug}`} class="hover:text-slate-100 transition-colors">Image Processing</a>
+    <a href={`/courses/${courseSlug}`} class="hover:text-slate-100 transition-colors">{course.title}</a>
     <span>/</span>
     <span>{nav.current.unit.title}</span>
     <span class="text-slate-700">&middot;</span>
@@ -154,6 +157,27 @@ const courseSlug = imageProcessingCourse.slug;
     border: 1px solid var(--color-slate-800);
     border-radius: 0.25rem;
     padding: 0.1rem 0.35rem;
+  }
+  :global(.prose-course table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin: 1.5rem 0;
+    color: var(--color-slate-300);
+  }
+  :global(.prose-course th),
+  :global(.prose-course td) {
+    border: 1px solid var(--color-slate-800);
+    padding: 0.45rem 0.7rem;
+    text-align: left;
+  }
+  :global(.prose-course th) {
+    color: var(--color-slate-100);
+    font-weight: 600;
+    background: var(--color-slate-900);
+  }
+  :global(.prose-course .table-wrap) {
+    overflow-x: auto;
   }
   :global(.katex) {
     font-size: 1.05em;

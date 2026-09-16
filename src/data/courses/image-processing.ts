@@ -1,16 +1,9 @@
-export interface Lesson {
-  slug: string;
-  title: string;
-  summary: string;
-}
+import type { Course, Unit } from './types';
+import { lessonNav, lessonSlugs } from './types';
 
-export interface Unit {
-  id: string;
-  title: string;
-  lessons: Lesson[];
-}
+export type { Lesson, Unit } from './types';
 
-export const imageProcessingCourse = {
+export const imageProcessingCourse: Course = {
   slug: 'image-processing',
   title: 'Image Processing',
   topic: 'Computer Vision',
@@ -68,22 +61,9 @@ export const imageProcessingCourse = {
 };
 
 export function findLessonNav(lessonSlug: string) {
-  const flat = imageProcessingCourse.units.flatMap((unit) =>
-    unit.lessons.map((lesson) => ({ ...lesson, unit }))
-  );
-  const index = flat.findIndex((lesson) => lesson.slug === lessonSlug);
-  if (index === -1) {
-    throw new Error(`Unknown lesson slug: ${lessonSlug}`);
-  }
-  return {
-    current: flat[index],
-    prev: index > 0 ? flat[index - 1] : null,
-    next: index < flat.length - 1 ? flat[index + 1] : null,
-    index,
-    total: flat.length,
-  };
+  return lessonNav(imageProcessingCourse, lessonSlug);
 }
 
 export function allLessonSlugs(): string[] {
-  return imageProcessingCourse.units.flatMap((unit) => unit.lessons.map((l) => l.slug));
+  return lessonSlugs(imageProcessingCourse);
 }
