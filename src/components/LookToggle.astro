@@ -1,0 +1,51 @@
+---
+import { looks, DEFAULT_LOOK } from '../data/appearance';
+---
+
+<div class="flex items-center gap-3 font-mono text-xs uppercase" role="group" aria-label="Site look" data-look-toggle={DEFAULT_LOOK}>
+  {
+    looks.map((l) => (
+      <button
+        type="button"
+        class="look-choice text-slate-500 hover:text-slate-100 aria-pressed:text-slate-100 transition-colors"
+        data-look-choice={l.id}
+        aria-pressed="false"
+      >
+        {l.name}
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  const STORAGE_KEY = 'look';
+
+  function initLookToggle() {
+    const toggle = document.querySelector<HTMLElement>('[data-look-toggle]');
+    if (!toggle) return;
+    const buttons = [...toggle.querySelectorAll<HTMLButtonElement>('[data-look-choice]')];
+
+    const markActive = (id: string) => {
+      for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.lookChoice === id));
+    };
+
+    markActive(document.documentElement.dataset.look ?? toggle.dataset.lookToggle ?? '');
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const id = button.dataset.lookChoice;
+        if (!id) return;
+        document.documentElement.dataset.look = id;
+        try {
+          localStorage.setItem(STORAGE_KEY, id);
+        } catch {
+          // ignore — choice just won't persist across reloads
+        }
+        markActive(id);
+      });
+    }
+  }
+
+  initLookToggle();
+  document.addEventListener('astro:after-swap', initLookToggle);
+</script>

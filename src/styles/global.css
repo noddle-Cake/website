@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "./palettes.css";
+@import "./look-minimal.css";
 @source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
 
 html {
@@ -16,93 +18,445 @@ body {
     sans-serif;
 }
 
-/* ---- Gruvbox Light (default) ---- */
-@theme {
-  --color-slate-950: #fbf1c7; /* bg0 — page background */
-  --color-slate-900: #f2e5bc; /* bg0_s */
-  --color-slate-800: #ebdbb2; /* bg1 — cards, borders */
-  --color-slate-700: #d5c4a1; /* bg2 — hover borders */
-  --color-slate-600: #bdae93; /* bg3 */
-  --color-slate-500: #a89984; /* bg4 */
-  --color-slate-400: #7c6f64; /* fg4 — muted text */
-  --color-slate-300: #665c54; /* fg3 */
-  --color-slate-200: #504945; /* fg2 */
-  --color-slate-100: #3c3836; /* fg1 — primary text */
-  --color-slate-50: #282828;  /* fg0 — darkest text */
+/*
+ * ---- Palette → Tailwind tokens ----
+ * The active palette (data-palette on <html>, see palettes.css) supplies --light-* and --dark-*
+ * values; these blocks pick the set for the current mode. Components only ever use the tokens
+ * below, so swapping palettes never touches markup. `static` keeps every variable emitted
+ * because the canvas widgets read some of them from JS (scripts/courses/canvas.ts).
+ */
+@theme static {
+  --color-slate-950: var(--light-950); /* page background */
+  --color-slate-900: var(--light-900);
+  --color-slate-800: var(--light-800); /* cards, borders */
+  --color-slate-700: var(--light-700); /* hover borders */
+  --color-slate-600: var(--light-600);
+  --color-slate-500: var(--light-500);
+  --color-slate-400: var(--light-400); /* muted text */
+  --color-slate-300: var(--light-300);
+  --color-slate-200: var(--light-200);
+  --color-slate-100: var(--light-100); /* primary text */
+  --color-slate-50: var(--light-50);
+  --color-accent: var(--light-accent);
+  --color-accent-2: var(--light-accent-2);
+  --color-sky-top: var(--light-sky-top);
+  --color-sky-bottom: var(--light-sky-bottom);
+  --color-sun: var(--light-sun);
+  --color-cloud: var(--light-cloud);
+
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
 }
 
-/* ---- Gruvbox Dark — applied when system prefers dark AND no manual override is set ---- */
+:root {
+  /* Derived dreamscape colors — tuned per mode rather than per palette. */
+  --dream-sclera: #ffffff;
+  --dream-eye-line: var(--light-100);
+  --dream-pupil: var(--light-50);
+  --dream-iris: var(--light-sky-top);
+  --dream-iris-edge: color-mix(in oklab, var(--light-accent-2) 45%, var(--light-sky-top));
+  --dream-sun-opacity: 0.85;
+  --dream-grain-opacity: 0.35;
+}
+
+/* Dark — applied when the system prefers dark AND no manual override is set */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-slate-950: #1d2021;
-    --color-slate-900: #282828;
-    --color-slate-800: #3c3836;
-    --color-slate-700: #504945;
-    --color-slate-600: #665c54;
-    --color-slate-500: #7c6f64;
-    --color-slate-400: #a89984;
-    --color-slate-300: #bdae93;
-    --color-slate-200: #d5c4a1;
-    --color-slate-100: #ebdbb2;
-    --color-slate-50: #fbf1c7;
+    --color-slate-950: var(--dark-950);
+    --color-slate-900: var(--dark-900);
+    --color-slate-800: var(--dark-800);
+    --color-slate-700: var(--dark-700);
+    --color-slate-600: var(--dark-600);
+    --color-slate-500: var(--dark-500);
+    --color-slate-400: var(--dark-400);
+    --color-slate-300: var(--dark-300);
+    --color-slate-200: var(--dark-200);
+    --color-slate-100: var(--dark-100);
+    --color-slate-50: var(--dark-50);
+    --color-accent: var(--dark-accent);
+    --color-accent-2: var(--dark-accent-2);
+    --color-sky-top: var(--dark-sky-top);
+    --color-sky-bottom: var(--dark-sky-bottom);
+    --color-sun: var(--dark-sun);
+    --color-cloud: var(--dark-cloud);
+    --dream-sclera: var(--dark-100);
+    --dream-eye-line: var(--dark-500);
+    --dream-pupil: var(--dark-950);
+    --dream-iris: color-mix(in oklab, var(--dark-sky-top) 55%, var(--dark-300));
+    --dream-iris-edge: color-mix(in oklab, var(--dark-accent-2) 50%, var(--dark-sky-top));
+    --dream-sun-opacity: 0.4;
+    --dream-grain-opacity: 0.18;
   }
 }
 
-/* ---- Manual override via toggle (wins regardless of system preference) ---- */
-[data-theme="dark"] {
-  --color-slate-950: #1d2021;
-  --color-slate-900: #282828;
-  --color-slate-800: #3c3836;
-  --color-slate-700: #504945;
-  --color-slate-600: #665c54;
-  --color-slate-500: #7c6f64;
-  --color-slate-400: #a89984;
-  --color-slate-300: #bdae93;
-  --color-slate-200: #d5c4a1;
-  --color-slate-100: #ebdbb2;
-  --color-slate-50: #fbf1c7;
+/* Manual override via the theme toggle (wins regardless of system preference) */
+:root[data-theme="dark"] {
+  --color-slate-950: var(--dark-950);
+  --color-slate-900: var(--dark-900);
+  --color-slate-800: var(--dark-800);
+  --color-slate-700: var(--dark-700);
+  --color-slate-600: var(--dark-600);
+  --color-slate-500: var(--dark-500);
+  --color-slate-400: var(--dark-400);
+  --color-slate-300: var(--dark-300);
+  --color-slate-200: var(--dark-200);
+  --color-slate-100: var(--dark-100);
+  --color-slate-50: var(--dark-50);
+  --color-accent: var(--dark-accent);
+  --color-accent-2: var(--dark-accent-2);
+  --color-sky-top: var(--dark-sky-top);
+  --color-sky-bottom: var(--dark-sky-bottom);
+  --color-sun: var(--dark-sun);
+  --color-cloud: var(--dark-cloud);
+  --dream-sclera: var(--dark-100);
+  --dream-eye-line: var(--dark-500);
+  --dream-pupil: var(--dark-950);
+  --dream-iris: color-mix(in oklab, var(--dark-sky-top) 55%, var(--dark-300));
+  --dream-iris-edge: color-mix(in oklab, var(--dark-accent-2) 50%, var(--dark-sky-top));
+  --dream-sun-opacity: 0.4;
+  --dream-grain-opacity: 0.18;
 }
 
-[data-theme="light"] {
-  --color-slate-950: #fbf1c7;
-  --color-slate-900: #f2e5bc;
-  --color-slate-800: #ebdbb2;
-  --color-slate-700: #d5c4a1;
-  --color-slate-600: #bdae93;
-  --color-slate-500: #a89984;
-  --color-slate-400: #7c6f64;
-  --color-slate-300: #665c54;
-  --color-slate-200: #504945;
-  --color-slate-100: #3c3836;
-  --color-slate-50: #282828;
+/* ---- Typography ---- */
+/* Headings get the soft, slightly "wonky" Fraunces cut; utilities (e.g. font-mono labels) still win. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-variation-settings:
+      "SOFT" 100,
+      "WONK" 1;
+  }
+}
+
+.font-display {
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 1;
+}
+
+/* Wonky italics swap in a hooked "l" that reads as "(" — keep italics soft but upright-shaped. */
+:is(h1, h2, h3, .font-display) :is(em, i, .italic) {
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 0;
+}
+
+/* Pieces that only exist in the minimal look (styles/look-minimal.css shows them). */
+.only-minimal {
+  display: none;
 }
 
 /* ---- Scroll-reveal ---- */
+/* Things drift up out of a haze, like details surfacing in a dream. */
 [data-reveal] {
   opacity: 0;
   transform: translateY(1rem);
+  filter: blur(6px);
   transition:
-    opacity 0.6s cubic-bezier(0.2, 0.6, 0.2, 1),
-    transform 0.6s cubic-bezier(0.2, 0.6, 0.2, 1);
+    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+    filter 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
 [data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
   }
 }
 
+/* ---- Dreamscape backdrop (components/Dreamscape.astro) ---- */
+.dreamscape {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dream-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--color-sky-top), var(--color-sky-bottom) 70%);
+}
+
+.dream-sun {
+  position: absolute;
+  top: 5.5rem;
+  right: 1.25rem;
+  width: 4.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: var(--dream-sun-opacity);
+  background: radial-gradient(
+    circle at 38% 34%,
+    color-mix(in oklab, var(--color-sun) 55%, white) 0%,
+    var(--color-sun) 55%,
+    color-mix(in oklab, var(--color-sun) 80%, black) 100%
+  );
+  box-shadow: 0 0 90px 24px color-mix(in oklab, var(--color-sun) 30%, transparent);
+  animation: dream-bob 14s ease-in-out infinite;
+}
+
+/* On wide screens the sun hangs in the empty gutter beside the content column. */
+@media (min-width: 88rem) {
+  .dream-sun {
+    top: 16vh;
+    right: max(1rem, calc((50vw - 32rem - 8rem) / 2));
+    width: 8rem;
+  }
+}
+
+.dream-cloud {
+  position: absolute;
+  left: 0;
+  top: var(--top);
+  width: var(--width);
+  color: var(--color-cloud);
+  opacity: 0.9;
+  animation: dream-drift var(--duration) linear infinite;
+  animation-delay: var(--delay);
+}
+
+.dream-grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--dream-grain-opacity);
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Quiet mode (lesson pages): keep the sky and grain, drop the moving parts. */
+.dreamscape.is-quiet .dream-sun,
+.dreamscape.is-quiet .dream-cloud {
+  display: none;
+}
+
+@keyframes dream-drift {
+  from {
+    transform: translateX(-40vw);
+  }
+  to {
+    transform: translateX(110vw);
+  }
+}
+
+@keyframes dream-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ---- Melting text ---- */
+/* The #melt SVG filter lives in Dreamscape.astro; it drips glyphs downward with slow noise. */
+.melt {
+  display: inline-block;
+  filter: url(#melt);
+  padding-bottom: 0.12em;
+}
+
+/* ---- The floating eye (components/SurrealEye.astro) ---- */
+.surreal-eye {
+  position: absolute;
+  top: 0.1em;
+  right: 0;
+  width: 2.4em;
+  pointer-events: none;
+  animation: dream-bob 9s ease-in-out infinite;
+}
+
+@media (min-width: 40rem) {
+  .surreal-eye {
+    width: 2.9em;
+  }
+}
+
+.surreal-eye .eye-lid {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: eye-blink 7s infinite;
+}
+
+.surreal-eye [data-eye-iris] {
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes eye-blink {
+  0%,
+  93%,
+  100% {
+    transform: scaleY(1);
+  }
+  95.5% {
+    transform: scaleY(0.06);
+  }
+}
+
+@layer components {
+  /* ---- Organic cards that float and cast a long colored shadow ---- */
+  .dream-card {
+    border-radius: 1.4rem 0.45rem 1.6rem 0.6rem;
+    background: color-mix(in oklab, var(--color-slate-950) 72%, transparent);
+    backdrop-filter: blur(8px);
+    transition:
+      border-radius 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.4s ease,
+      border-color 0.3s ease,
+      translate 0.3s ease;
+  }
+
+  .dream-card:hover {
+    border-radius: 0.5rem 1.7rem 0.6rem 1.9rem;
+    box-shadow: 12px 14px 0 -2px color-mix(in oklab, var(--color-accent) 25%, transparent);
+  }
+
+  /* ---- Primary button with a hard, offset shadow ---- */
+  .dream-button {
+    box-shadow: 4px 5px 0 var(--color-accent);
+    transition:
+      translate 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .dream-button:hover {
+    translate: -2px -2px;
+    box-shadow: 7px 8px 0 var(--color-accent);
+  }
+}
+
+/* ---- Footer piazza: a receding checkerboard with a ball floating above its own shadow ---- */
+.dream-piazza {
+  position: relative;
+  height: 11rem;
+  overflow: hidden;
+}
+
+.dream-floor {
+  position: absolute;
+  inset: auto -60% 0;
+  height: 24rem;
+  background: repeating-conic-gradient(var(--color-slate-700) 0 25%, transparent 0 50%) 50% 100% / 80px 80px;
+  transform: perspective(24rem) rotateX(64deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, #000 15%, transparent 95%);
+}
+
+.dream-horizon {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-slate-700), transparent);
+}
+
+.dream-ball-shadow {
+  position: absolute;
+  bottom: 1.6rem;
+  right: calc(22% + 0.5rem);
+  width: 11rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--color-slate-50) 28%, transparent);
+  filter: blur(3px);
+  transform: skewX(-50deg);
+  transform-origin: right center;
+}
+
+.dream-ball {
+  position: absolute;
+  bottom: 3.4rem;
+  right: 22%;
+  width: 2.75rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 30%,
+    color-mix(in oklab, var(--color-sun) 55%, white),
+    var(--color-accent) 58%,
+    color-mix(in oklab, var(--color-accent) 50%, black)
+  );
+  animation: dream-bob 6s ease-in-out infinite;
+}
+
+/* ---- Palette picker swatches (components/PalettePicker.astro) ---- */
+/* Each swatch carries its own data-palette, so its --light-/--dark- vars are that palette's. */
+.palette-swatch {
+  --sw-sky: var(--light-sky-top);
+  --sw-accent: var(--light-accent);
+  --sw-sun: var(--light-sun);
+  --sw-ground: var(--light-950);
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-slate-700);
+  background: conic-gradient(
+    from -45deg,
+    var(--sw-sky) 0 25%,
+    var(--sw-sun) 0 50%,
+    var(--sw-accent) 0 75%,
+    var(--sw-ground) 0
+  );
+  transition: transform 0.2s ease;
+}
+
+.palette-swatch:hover {
+  transform: scale(1.15);
+}
+
+.palette-swatch[aria-pressed="true"] {
+  outline: 2px solid var(--color-slate-100);
+  outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .palette-swatch {
+  --sw-sky: var(--dark-sky-top);
+  --sw-accent: var(--dark-accent);
+  --sw-sun: var(--dark-sun);
+  --sw-ground: var(--dark-950);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .palette-swatch {
+    --sw-sky: var(--dark-sky-top);
+    --sw-accent: var(--dark-accent);
+    --sw-sun: var(--dark-sun);
+    --sw-ground: var(--dark-950);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dream-sun,
+  .dream-cloud,
+  .dream-ball,
+  .surreal-eye,
+  .surreal-eye .eye-lid {
+    animation: none;
+  }
+
+  .melt {
+    filter: none;
+  }
+}
+
 /* ---- Signal mode (easter egg) ---- */
-/* Oscilloscope/CRT terminal skin, toggled independently of the light/dark theme. */
-[data-signal="on"] {
+/* Oscilloscope/CRT terminal skin, toggled independently of the light/dark theme and palette.
+   `:root` keeps its specificity level with the dark-mode mapping above, so source order wins. */
+:root[data-signal="on"] {
   --color-slate-950: #030a03;
   --color-slate-900: #05130a;
   --color-slate-800: #0a2013;
@@ -114,8 +468,19 @@ body {
   --color-slate-200: #8fe89f;
   --color-slate-100: #baffc4;
   --color-slate-50: #e4ffe8;
+  --color-accent: #8fe89f;
+  --color-accent-2: #6fd583;
   font-family:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+:root[data-signal="on"] :is(h1, h2, h3, .font-display) {
+  font-family: inherit;
+  font-variation-settings: normal;
+}
+
+:root[data-signal="on"] .melt {
+  filter: none;
 }
 
 [data-signal="on"] body {

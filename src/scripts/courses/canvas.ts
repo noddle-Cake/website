@@ -9,11 +9,11 @@ function ensureObserver() {
   });
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ['data-theme', 'data-signal'],
+    attributeFilter: ['data-theme', 'data-signal', 'data-palette', 'data-look'],
   });
 }
 
-/** Registers a redraw callback that reruns whenever the light/dark/signal theme changes. */
+/** Registers a redraw callback that reruns whenever the light/dark/signal theme or palette changes. */
 export function onThemeChange(cb: () => void) {
   ensureObserver();
   redrawCallbacks.add(cb);

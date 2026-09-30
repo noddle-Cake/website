@@ -15,7 +15,7 @@ const nav = lessonNav(course, lessonSlug);
 const courseSlug = course.slug;
 ---
 
-<Layout title={`${nav.current.title} — ${course.title}`}>
+<Layout title={`${nav.current.title} — ${course.title}`} quietBackdrop>
   <div id="course-nav-data" data-course={courseSlug} data-lesson={lessonSlug} hidden></div>
 
   <nav data-reveal class="text-xs font-mono text-slate-500 flex flex-wrap items-center gap-2 mb-6">

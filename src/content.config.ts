@@ -5,6 +5,8 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
+    /** Short product-style code shown in the minimal look, e.g. "IR-01". */
+    code: z.string().optional().default(''),
     stack: z.array(z.string()),
     summary: z.string(),
     github: z.string().optional().default(''),

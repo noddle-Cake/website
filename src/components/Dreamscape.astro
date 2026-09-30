@@ -1,0 +1,62 @@
+---
+// Fixed, decorative backdrop behind every page: a sky that fades into the page background,
+// a hovering sun, drifting Magritte clouds and a paper grain. Also hosts the shared SVG defs
+// (cloud shape, #melt filter) that other components reference.
+interface Props {
+  /** Drop the sun and moving clouds — for pages meant for focused reading. */
+  quiet?: boolean;
+}
+
+const { quiet = false } = Astro.props;
+
+// Negative delays start each cloud mid-journey so the sky isn't empty on load.
+const clouds = [
+  { top: '14vh', width: 'clamp(9rem, 22vw, 18rem)', duration: '150s', delay: '-40s' },
+  { top: '34vh', width: 'clamp(6rem, 14vw, 11rem)', duration: '210s', delay: '-150s' },
+  { top: '6vh', width: 'clamp(5rem, 11vw, 9rem)', duration: '180s', delay: '-110s' },
+];
+---
+
+<div class:list={['dreamscape hide-in-signal', { 'is-quiet': quiet }]} aria-hidden="true">
+  <div class="dream-sky"></div>
+  <div class="dream-sun"></div>
+  {
+    clouds.map((c) => (
+      <svg
+        class="dream-cloud"
+        viewBox="0 0 220 90"
+        style={`--top: ${c.top}; --width: ${c.width}; --duration: ${c.duration}; --delay: ${c.delay}`}
+      >
+        <use href="#dream-cloud-shape" />
+      </svg>
+    ))
+  }
+  <div class="dream-grain"></div>
+</div>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="dream-cloud-shape" viewBox="0 0 220 90">
+      <g fill="currentColor">
+        <ellipse cx="110" cy="66" rx="102" ry="20"></ellipse>
+        <circle cx="62" cy="54" r="28"></circle>
+        <circle cx="104" cy="38" r="36"></circle>
+        <circle cx="146" cy="46" r="30"></circle>
+        <circle cx="180" cy="60" r="18"></circle>
+      </g>
+      <ellipse cx="112" cy="78" rx="88" ry="7" fill="black" opacity="0.06"></ellipse>
+    </symbol>
+
+    <filter id="melt" x="-5%" y="-25%" width="110%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03 0.006" numOctaves="2" seed="7" result="noise">
+        <animate
+          attributeName="baseFrequency"
+          dur="18s"
+          values="0.03 0.006; 0.042 0.009; 0.03 0.006"
+          repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"
+      ></feDisplacementMap>
+    </filter>
+  </defs>
+</svg>
