@@ -34,10 +34,16 @@ const paletteIds = palettes.map((p) => p.id);
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
     <script is:inline define:vars={{ lookIds, paletteIds }}>
-      // Pick the look and palette before first paint (theme-init.js does the same for light/dark).
-      // Each is chosen at random once per visit (browser tab session), so pages within a visit
-      // stay consistent but each new visit looks different. The footer controls change them for
-      // the rest of the visit.
+      // Apply the look and palette before first paint (theme-init.js does the same for light/dark).
+      // The look is a saved preference: surreal (the server-rendered default) until a visitor picks
+      // another in the footer. The palette is picked at random once per visit (browser tab session),
+      // so pages within a visit stay consistent but each new visit gets new colors.
+      try {
+        const look = localStorage.getItem('look');
+        if (look && lookIds.includes(look)) document.documentElement.dataset.look = look;
+      } catch (e) {
+        // localStorage unavailable — the server-rendered default stays
+      }
       function pickForVisit(key, ids) {
         let id = null;
         try {
@@ -55,7 +61,6 @@ const paletteIds = palettes.map((p) => p.id);
         }
         return id;
       }
-      document.documentElement.dataset.look = pickForVisit('look', lookIds);
       document.documentElement.dataset.palette = pickForVisit('palette', paletteIds);
     </script>
     <script is:inline src="/theme-init.js"></script>
