@@ -13,6 +13,8 @@ interface Props {
 }
 
 const { id, code, title, stack, summary, github, demo } = Astro.props;
+// Demos on other sites open in a new tab; on-site demos (e.g. /vas-demo) stay in this one.
+const demoIsExternal = demo?.startsWith('http');
 ---
 
 <div
@@ -29,6 +31,8 @@ const { id, code, title, stack, summary, github, demo } = Astro.props;
       {demo && (
         <a
           href={demo}
+          target={demoIsExternal ? '_blank' : undefined}
+          rel={demoIsExternal ? 'noopener noreferrer' : undefined}
           class="text-xs text-slate-900 bg-slate-100 hover:bg-slate-300 rounded px-2 py-1 font-medium transition-colors"
         >
           Live demo &rarr;

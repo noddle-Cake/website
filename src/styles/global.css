@@ -146,6 +146,12 @@ body {
     "WONK" 0;
 }
 
+/* Keep in-page jumps (#about, #experience, #contact) clear of the sticky header. */
+section[id],
+footer[id] {
+  scroll-margin-top: 5rem;
+}
+
 /* Pieces that only exist in the minimal look (styles/look-minimal.css shows them). */
 .only-minimal {
   display: none;
