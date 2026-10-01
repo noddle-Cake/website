@@ -37,9 +37,9 @@ import { looks, DEFAULT_LOOK } from '../data/appearance';
         if (!id) return;
         document.documentElement.dataset.look = id;
         try {
-          sessionStorage.setItem(STORAGE_KEY, id);
+          localStorage.setItem(STORAGE_KEY, id);
         } catch {
-          // ignore — choice just won't persist to the next page
+          // ignore — choice just won't persist across reloads
         }
         markActive(id);
       });
