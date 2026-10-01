@@ -7,6 +7,9 @@
  * Everything is scoped to :root[data-look="minimal"] and unlayered, so it outranks Tailwind
  * utilities without touching the markup the surreal look relies on. Palettes don't apply here:
  * the block below replaces their colors with pure monochrome (inverted in dark mode).
+ *
+ * The lucid look (look-lucid.css) reuses this layout, so most rules here also match
+ * data-look="lucid". The colors, stripping the dream and the motion resets stay minimal-only.
  */
 
 :root[data-look="minimal"] {
@@ -48,8 +51,8 @@
 }
 
 /* ---- One typeface, one weight, all caps ---- */
-:root[data-look="minimal"] body,
-:root[data-look="minimal"] body * {
+:root:is([data-look="minimal"], [data-look="lucid"]) body,
+:root:is([data-look="minimal"], [data-look="lucid"]) body * {
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-weight: 400;
   font-style: normal;
@@ -57,16 +60,16 @@
   letter-spacing: 0;
 }
 
-:root[data-look="minimal"] body {
+:root:is([data-look="minimal"], [data-look="lucid"]) body {
   text-transform: uppercase;
 }
 
 /* Browsers don't let form controls inherit text-transform by default. */
-:root[data-look="minimal"] :is(button, input, select, textarea) {
+:root:is([data-look="minimal"], [data-look="lucid"]) :is(button, input, select, textarea) {
   text-transform: inherit;
 }
 
-:root[data-look="minimal"] :is(h1, h2, h3) {
+:root:is([data-look="minimal"], [data-look="lucid"]) :is(h1, h2, h3) {
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -74,10 +77,6 @@
 /* ---- Strip the dream ---- */
 :root[data-look="minimal"] :is(.dreamscape, .surreal-eye, .dream-piazza, .hide-in-minimal) {
   display: none;
-}
-
-:root[data-look="minimal"] .only-minimal {
-  display: block;
 }
 
 :root[data-look="minimal"] .melt {
@@ -92,74 +91,79 @@
   transition: none;
 }
 
+/* Glyphs and product codes (shared with the lucid look). */
+:root:is([data-look="minimal"], [data-look="lucid"]) .only-minimal {
+  display: block;
+}
+
 /* ---- Header: edge-to-edge, borderless ---- */
-:root[data-look="minimal"] header {
+:root:is([data-look="minimal"], [data-look="lucid"]) header {
   border-color: transparent;
   background: var(--color-slate-950);
   backdrop-filter: none;
 }
 
-:root[data-look="minimal"] header nav {
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav {
   max-width: none;
   padding: 1.75rem 2rem;
   font-size: 1rem;
 }
 
-:root[data-look="minimal"] header nav > div {
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav > div {
   font-size: 1rem;
 }
 
-:root[data-look="minimal"] header nav a {
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav a {
   color: var(--color-slate-300);
 }
 
-:root[data-look="minimal"] header nav a:hover,
-:root[data-look="minimal"] header nav > a:first-child {
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav a:hover,
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav > a:first-child {
   color: var(--color-slate-100);
 }
 
-:root[data-look="minimal"] #theme-toggle {
+:root:is([data-look="minimal"], [data-look="lucid"]) #theme-toggle {
   border: 0;
   padding: 0;
   font-size: 1rem;
   color: var(--color-slate-500);
 }
 
-:root[data-look="minimal"] #theme-toggle:hover {
+:root:is([data-look="minimal"], [data-look="lucid"]) #theme-toggle:hover {
   color: var(--color-slate-100);
 }
 
-:root[data-look="minimal"] main {
+:root:is([data-look="minimal"], [data-look="lucid"]) main {
   max-width: none;
   padding-inline: 2rem;
 }
 
 /* ---- Hero: a single centered line in a lot of white ---- */
-:root[data-look="minimal"] .hero {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero {
   align-items: center;
   text-align: center;
   min-height: calc(100vh - 14rem);
 }
 
-:root[data-look="minimal"] .hero-label {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-label {
   font-size: 0.75rem;
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .hero-title {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-title {
   margin-top: 1.25rem;
 }
 
-:root[data-look="minimal"] .hero-title > span[data-reveal] {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-title > span[data-reveal] {
   display: inline-block;
   margin-inline: 0.6em;
 }
 
-:root[data-look="minimal"] .hero-title .text-accent {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-title .text-accent {
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .hero-tagline {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-tagline {
   max-width: 46ch;
   margin-inline: auto;
   margin-top: 2rem;
@@ -168,14 +172,14 @@
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .hero-actions {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-actions {
   justify-content: center;
   align-items: center;
   gap: 2rem;
   margin-top: 2.5rem;
 }
 
-:root[data-look="minimal"] .dream-button {
+:root:is([data-look="minimal"], [data-look="lucid"]) .dream-button {
   border-radius: 0;
   box-shadow: none;
   translate: none;
@@ -183,7 +187,7 @@
   font-size: 1rem;
 }
 
-:root[data-look="minimal"] .hero-actions a:not(.dream-button) {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-actions a:not(.dream-button) {
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -193,65 +197,65 @@
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .hero-actions a:not(.dream-button):hover {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-actions a:not(.dream-button):hover {
   color: var(--color-slate-100);
 }
 
-:root[data-look="minimal"] .hero-scroll {
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-scroll {
   display: none;
 }
 
 /* ---- Sections: centered, no rules between them ---- */
-:root[data-look="minimal"] :is(.home-section, .page-head, .page-body) {
+:root:is([data-look="minimal"], [data-look="lucid"]) :is(.home-section, .page-head, .page-body) {
   display: block;
   border-top: 0;
   text-align: center;
 }
 
-:root[data-look="minimal"] .home-section {
+:root:is([data-look="minimal"], [data-look="lucid"]) .home-section {
   padding-block: 5rem;
 }
 
-:root[data-look="minimal"] .section-label {
+:root:is([data-look="minimal"], [data-look="lucid"]) .section-label {
   margin-bottom: 3rem;
   font-size: 0.75rem;
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .page-head .section-label {
+:root:is([data-look="minimal"], [data-look="lucid"]) .page-head .section-label {
   margin-bottom: 0;
 }
 
-:root[data-look="minimal"] .page-head h1 {
+:root:is([data-look="minimal"], [data-look="lucid"]) .page-head h1 {
   margin-top: 0.5rem;
 }
 
-:root[data-look="minimal"] .education {
+:root:is([data-look="minimal"], [data-look="lucid"]) .education {
   max-width: none;
 }
 
-:root[data-look="minimal"] .education > div {
+:root:is([data-look="minimal"], [data-look="lucid"]) .education > div {
   flex-direction: column;
   align-items: center;
   gap: 0.2rem;
 }
 
-:root[data-look="minimal"] .education span {
+:root:is([data-look="minimal"], [data-look="lucid"]) .education span {
   font-size: 0.8125rem;
 }
 
-:root[data-look="minimal"] .education span + span {
+:root:is([data-look="minimal"], [data-look="lucid"]) .education span + span {
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .skills {
+:root:is([data-look="minimal"], [data-look="lucid"]) .skills {
   justify-content: center;
   gap: 0.4rem 1.5rem;
   max-width: 60rem;
   margin: 3rem auto 0;
 }
 
-:root[data-look="minimal"] .skills span {
+:root:is([data-look="minimal"], [data-look="lucid"]) .skills span {
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -260,15 +264,15 @@
 }
 
 /* ---- Project grid: silhouette, code, then the fine print ---- */
-:root[data-look="minimal"] .project-grid {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-grid {
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 5rem 2rem;
   max-width: 96rem;
   margin-inline: auto;
 }
 
-:root[data-look="minimal"] .dream-card,
-:root[data-look="minimal"] .dream-card:hover {
+:root:is([data-look="minimal"], [data-look="lucid"]) .dream-card,
+:root:is([data-look="minimal"], [data-look="lucid"]) .dream-card:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -282,7 +286,7 @@
   text-align: center;
 }
 
-:root[data-look="minimal"] .project-glyph {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-glyph {
   width: 100%;
   max-width: 12rem;
   aspect-ratio: 4 / 3;
@@ -290,24 +294,24 @@
   color: var(--color-slate-100);
 }
 
-:root[data-look="minimal"] .project-code {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-code {
   font-size: 1rem;
   color: var(--color-slate-100);
 }
 
-:root[data-look="minimal"] .project-head {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-head {
   flex-direction: column;
   align-items: center;
   gap: 0.6rem;
   margin-top: 0.4rem;
 }
 
-:root[data-look="minimal"] .project-head h3 {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-head h3 {
   font-size: 0.75rem;
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .project-links a {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-links a {
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -317,7 +321,7 @@
   text-underline-offset: 3px;
 }
 
-:root[data-look="minimal"] .project-summary {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-summary {
   max-width: 34ch;
   margin-inline: auto;
   font-size: 0.6875rem;
@@ -325,13 +329,13 @@
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .project-stack {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-stack {
   justify-content: center;
   gap: 0 0.9rem;
   margin-top: 0.75rem;
 }
 
-:root[data-look="minimal"] .project-stack span {
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-stack span {
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -340,18 +344,18 @@
 }
 
 /* ---- Footer: a centered row of gray links ---- */
-:root[data-look="minimal"] footer {
+:root:is([data-look="minimal"], [data-look="lucid"]) footer {
   margin-top: 4rem;
   border-top: 0;
   background: transparent;
   backdrop-filter: none;
 }
 
-:root[data-look="minimal"] .footer-statement {
+:root:is([data-look="minimal"], [data-look="lucid"]) .footer-statement {
   display: none;
 }
 
-:root[data-look="minimal"] .footer-row {
+:root:is([data-look="minimal"], [data-look="lucid"]) .footer-row {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
@@ -360,16 +364,16 @@
   color: var(--color-slate-400);
 }
 
-:root[data-look="minimal"] .footer-row > div {
+:root:is([data-look="minimal"], [data-look="lucid"]) .footer-row > div {
   justify-content: center;
   gap: 1rem 2rem;
 }
 
-:root[data-look="minimal"] .look-choice {
+:root:is([data-look="minimal"], [data-look="lucid"]) .look-choice {
   font-size: 0.8125rem;
 }
 
-:root[data-look="minimal"] #signal-toggle {
+:root:is([data-look="minimal"], [data-look="lucid"]) #signal-toggle {
   border: 0;
   padding: 0;
 }

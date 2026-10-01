@@ -1,0 +1,113 @@
+/*
+ * ---- Lucid look ----
+ * The minimal look's layout (centered, IBM Plex Mono in uppercase, projects as glyphs over
+ * product codes) set inside the surreal look's world: the palette's colors, the sky with its
+ * sun and clouds, the watching eye, one melting serif headline, and the piazza underfoot.
+ *
+ * Layout comes from look-minimal.css, whose shared rules also match data-look="lucid". The
+ * rules below have the same specificity and load later, so they win wherever they differ.
+ */
+
+/* ---- The one serif line: the headline keeps its wonky Fraunces and melts ---- */
+:root[data-look="lucid"] .hero-title,
+:root[data-look="lucid"] .hero-title * {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: none;
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 1;
+}
+
+:root[data-look="lucid"] .hero-title {
+  margin-top: 1.5rem;
+  font-size: clamp(2.25rem, 7vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+:root[data-look="lucid"] .hero-title > span[data-reveal] {
+  margin-inline: 0.2em;
+}
+
+:root[data-look="lucid"] .hero-title .italic,
+:root[data-look="lucid"] .hero-title .italic * {
+  font-style: italic;
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 0;
+}
+
+:root[data-look="lucid"] .hero-title .text-accent {
+  color: var(--color-accent);
+}
+
+/* The eye floats centered above the headline instead of off its shoulder, over its shadow. */
+:root[data-look="lucid"] .surreal-eye {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: block;
+  width: clamp(6rem, 13vw, 9rem);
+  margin: 0 auto 1.25rem;
+}
+
+:root[data-look="lucid"] .surreal-eye .eye-shadow {
+  display: inline;
+}
+
+/* ---- Translucent chrome so the sky shows through ---- */
+:root[data-look="lucid"] header {
+  background: color-mix(in oklab, var(--color-slate-950) 55%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+:root[data-look="lucid"] .dream-button {
+  box-shadow: 4px 5px 0 var(--color-accent);
+}
+
+:root[data-look="lucid"] .dream-button:hover {
+  translate: -2px -2px;
+  box-shadow: 7px 8px 0 var(--color-accent);
+}
+
+/* ---- Small colored details in an otherwise gray mono page ---- */
+:root[data-look="lucid"] .section-label {
+  color: var(--color-accent-2);
+}
+
+:root[data-look="lucid"] .project-code {
+  color: var(--color-accent);
+}
+
+/* Glyphs stand like objects in a de Chirico square, each casting a long flat shadow. */
+:root[data-look="lucid"] .project-glyph {
+  filter: drop-shadow(14px 10px 0 color-mix(in oklab, var(--color-accent-2) 22%, transparent));
+  transition: translate 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:root[data-look="lucid"] .dream-card:hover .project-glyph {
+  translate: 0 -6px;
+}
+
+/* ---- Footer: the statement comes back, centered, above the piazza ---- */
+:root[data-look="lucid"] footer {
+  background: transparent;
+}
+
+:root[data-look="lucid"] .footer-statement {
+  display: block;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: none;
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
+}
+
+:root[data-look="lucid"] .footer-statement em {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  color: var(--color-accent);
+}

@@ -34,30 +34,29 @@ const paletteIds = palettes.map((p) => p.id);
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
     <script is:inline define:vars={{ lookIds, paletteIds }}>
-      // Apply the look and palette before first paint (theme-init.js does the same for light/dark).
-      // The look is a saved preference; the palette is picked at random once per visit (browser
-      // tab session) so pages within a visit stay consistent but each new visit gets a new one.
-      try {
-        const look = localStorage.getItem('look');
-        if (look && lookIds.includes(look)) document.documentElement.dataset.look = look;
-      } catch (e) {
-        // localStorage unavailable — the server-rendered default stays
-      }
-      let palette = null;
-      try {
-        palette = sessionStorage.getItem('palette');
-      } catch (e) {
-        // sessionStorage unavailable — still pick a random palette for this page
-      }
-      if (!palette || !paletteIds.includes(palette)) {
-        palette = paletteIds[Math.floor(Math.random() * paletteIds.length)];
+      // Pick the look and palette before first paint (theme-init.js does the same for light/dark).
+      // Each is chosen at random once per visit (browser tab session), so pages within a visit
+      // stay consistent but each new visit looks different. The footer controls change them for
+      // the rest of the visit.
+      function pickForVisit(key, ids) {
+        let id = null;
         try {
-          sessionStorage.setItem('palette', palette);
+          id = sessionStorage.getItem(key);
         } catch (e) {
-          // ignore — the next page just rolls again
+          // sessionStorage unavailable — still pick at random for this page
         }
+        if (!id || !ids.includes(id)) {
+          id = ids[Math.floor(Math.random() * ids.length)];
+          try {
+            sessionStorage.setItem(key, id);
+          } catch (e) {
+            // ignore — the next page just rolls again
+          }
+        }
+        return id;
       }
-      document.documentElement.dataset.palette = palette;
+      document.documentElement.dataset.look = pickForVisit('look', lookIds);
+      document.documentElement.dataset.palette = pickForVisit('palette', paletteIds);
     </script>
     <script is:inline src="/theme-init.js"></script>
   </head>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./palettes.css";
 @import "./look-minimal.css";
+@import "./look-lucid.css";
 @source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
 
 html {
@@ -50,10 +51,11 @@ body {
 :root {
   /* Derived dreamscape colors — tuned per mode rather than per palette. */
   --dream-sclera: #ffffff;
-  --dream-eye-line: var(--light-100);
   --dream-pupil: var(--light-50);
-  --dream-iris: var(--light-sky-top);
-  --dream-iris-edge: color-mix(in oklab, var(--light-accent-2) 45%, var(--light-sky-top));
+  --dream-flesh-light: color-mix(in oklab, var(--light-sky-top) 35%, #ffffff);
+  --dream-flesh: color-mix(in oklab, var(--light-sky-top) 60%, var(--light-600));
+  --dream-flesh-dark: color-mix(in oklab, var(--light-sky-top) 30%, var(--light-400));
+  --dream-iris-ring: color-mix(in oklab, var(--light-50) 55%, var(--light-500));
   --dream-sun-opacity: 0.85;
   --dream-grain-opacity: 0.35;
 }
@@ -79,10 +81,11 @@ body {
     --color-sun: var(--dark-sun);
     --color-cloud: var(--dark-cloud);
     --dream-sclera: var(--dark-100);
-    --dream-eye-line: var(--dark-500);
     --dream-pupil: var(--dark-950);
-    --dream-iris: color-mix(in oklab, var(--dark-sky-top) 55%, var(--dark-300));
-    --dream-iris-edge: color-mix(in oklab, var(--dark-accent-2) 50%, var(--dark-sky-top));
+    --dream-flesh-light: color-mix(in oklab, var(--dark-sky-top) 30%, var(--dark-200));
+    --dream-flesh: color-mix(in oklab, var(--dark-sky-top) 50%, var(--dark-500));
+    --dream-flesh-dark: color-mix(in oklab, var(--dark-sky-top) 40%, var(--dark-600));
+    --dream-iris-ring: color-mix(in oklab, var(--dark-950) 45%, var(--dark-500));
     --dream-sun-opacity: 0.4;
     --dream-grain-opacity: 0.18;
   }
@@ -108,10 +111,11 @@ body {
   --color-sun: var(--dark-sun);
   --color-cloud: var(--dark-cloud);
   --dream-sclera: var(--dark-100);
-  --dream-eye-line: var(--dark-500);
   --dream-pupil: var(--dark-950);
-  --dream-iris: color-mix(in oklab, var(--dark-sky-top) 55%, var(--dark-300));
-  --dream-iris-edge: color-mix(in oklab, var(--dark-accent-2) 50%, var(--dark-sky-top));
+  --dream-flesh-light: color-mix(in oklab, var(--dark-sky-top) 30%, var(--dark-200));
+  --dream-flesh: color-mix(in oklab, var(--dark-sky-top) 50%, var(--dark-500));
+  --dream-flesh-dark: color-mix(in oklab, var(--dark-sky-top) 40%, var(--dark-600));
+  --dream-iris-ring: color-mix(in oklab, var(--dark-950) 45%, var(--dark-500));
   --dream-sun-opacity: 0.4;
   --dream-grain-opacity: 0.18;
 }
@@ -272,9 +276,10 @@ body {
 /* ---- The floating eye (components/SurrealEye.astro) ---- */
 .surreal-eye {
   position: absolute;
-  top: 0.1em;
+  top: 0;
   right: 0;
   width: 2.4em;
+  overflow: visible;
   pointer-events: none;
   animation: dream-bob 9s ease-in-out infinite;
 }
@@ -289,6 +294,37 @@ body {
   transform-box: fill-box;
   transform-origin: center;
   animation: eye-blink 7s infinite;
+}
+
+/* The drips slowly lengthen and draw back, like wax that never quite falls. */
+.surreal-eye .eye-drips path {
+  transform-box: fill-box;
+  transform-origin: top;
+  animation: eye-drip 5s ease-in-out infinite alternate;
+}
+
+.surreal-eye .eye-drips path:nth-child(2n) {
+  animation-duration: 6.5s;
+  animation-delay: -2s;
+}
+
+.surreal-eye .eye-drips path:nth-child(3n) {
+  animation-duration: 8s;
+  animation-delay: -4s;
+}
+
+/* Only the lucid look gives the eye a ground to cast a shadow on. */
+.surreal-eye .eye-shadow {
+  display: none;
+}
+
+@keyframes eye-drip {
+  from {
+    transform: scaleY(0.8);
+  }
+  to {
+    transform: scaleY(1.15);
+  }
 }
 
 .surreal-eye [data-eye-iris] {
@@ -444,7 +480,8 @@ body {
   .dream-cloud,
   .dream-ball,
   .surreal-eye,
-  .surreal-eye .eye-lid {
+  .surreal-eye .eye-lid,
+  .surreal-eye .eye-drips path {
     animation: none;
   }
 
