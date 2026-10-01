@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import SurrealEye from '../components/SurrealEye.astro';
 import { profile } from '../data/profile';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
@@ -13,28 +14,29 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
 ---
 
 <Layout>
-  <section class="min-h-[70vh] flex flex-col justify-center py-12">
-    <p data-reveal class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
+  <section class="hero min-h-[70vh] flex flex-col justify-center py-12">
+    <p data-reveal class="hero-label font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
       {profile.name}<span class="signal-cursor signal-only">_</span>
     </p>
-    <h1 class="mt-4 font-extrabold tracking-tight leading-[0.95] text-[clamp(2.75rem,9vw,6.5rem)]">
+    <h1 class="hero-title relative mt-4 font-extrabold tracking-tight leading-[0.95] text-[clamp(2.75rem,9vw,6.5rem)]">
+      <SurrealEye />
       <span data-reveal class="block">Engineer.</span>
       <span data-reveal class="block">Builder.</span>
-      <span data-reveal class="block text-slate-400">Signal&nbsp;chaser.</span>
+      <span data-reveal class="block italic text-accent"><span class="melt">Signal&nbsp;chaser.</span></span>
     </h1>
-    <p data-reveal class="text-slate-400 mt-6 leading-relaxed max-w-2xl text-base sm:text-lg">
+    <p data-reveal class="hero-tagline text-slate-400 mt-6 leading-relaxed max-w-2xl text-base sm:text-lg">
       {profile.tagline}
     </p>
-    <div data-reveal class="flex flex-wrap gap-4 mt-8">
+    <div data-reveal class="hero-actions flex flex-wrap gap-4 mt-8">
       <a
         href={`mailto:${profile.email}`}
-        class="text-sm bg-slate-100 text-slate-900 rounded px-5 py-2.5 font-medium hover:bg-slate-300 transition-colors"
+        class="dream-button text-sm bg-slate-100 text-slate-900 rounded px-5 py-2.5 font-medium hover:bg-slate-300"
       >
         Get in touch
       </a>
       <a
         href="/projects"
-        class="text-sm border border-slate-700 rounded px-5 py-2.5 font-medium hover:border-slate-500 transition-colors"
+        class="text-sm border border-slate-700 bg-slate-950/60 backdrop-blur rounded px-5 py-2.5 font-medium hover:border-slate-500 transition-colors"
       >
         View all projects
       </a>
@@ -59,18 +61,18 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
       ></path>
     </svg>
 
-    <div data-reveal class="mt-16 font-mono text-xs text-slate-600 flex items-center gap-2">
+    <div data-reveal class="hero-scroll mt-16 font-mono text-xs text-slate-600 flex items-center gap-2">
       <span class="inline-block animate-bounce">&darr;</span>
       Scroll
     </div>
   </section>
 
-  <section id="about" class="py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
-    <h2 data-reveal class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 sm:pt-1">
+  <section id="about" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
+    <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
       01 / About
     </h2>
     <div>
-      <div class="space-y-4 max-w-2xl">
+      <div class="education space-y-4 max-w-2xl">
         {profile.education.map((ed) => (
           <div data-reveal class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
             <span class="text-slate-100 font-medium">{ed.degree}</span>
@@ -78,7 +80,7 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
           </div>
         ))}
       </div>
-      <div class="mt-8 flex flex-wrap gap-2">
+      <div class="skills mt-8 flex flex-wrap gap-2">
         {allSkills.map((skill) => (
           <span
             data-reveal
@@ -91,13 +93,15 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
     </div>
   </section>
 
-  <section id="projects" class="py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
-    <h2 data-reveal class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 sm:pt-1">
+  <section id="projects" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
+    <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
       02 / Projects
     </h2>
-    <div class="grid sm:grid-cols-2 gap-4">
+    <div class="project-grid grid sm:grid-cols-2 gap-4">
       {featured.map((project: CollectionEntry<'projects'>) => (
         <ProjectCard
+          id={project.id}
+          code={project.data.code}
           title={project.data.title}
           stack={project.data.stack}
           summary={project.data.summary}

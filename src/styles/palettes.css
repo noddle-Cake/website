@@ -1,0 +1,213 @@
+/*
+ * ---- Color palettes ----
+ *
+ * Each palette is one block keyed by `data-palette` on <html>. It defines every color twice,
+ * `--light-*` and `--dark-*`, and global.css maps whichever set matches the current light/dark
+ * mode onto the Tailwind tokens the site uses (`slate-*`, `accent`, `sky-*`, ...).
+ *
+ *   950 → 50   neutral ramp: 950 = page background, 800 = cards/borders, 400 = muted text,
+ *              100 = body text, 50 = strongest text (inverted in dark mode)
+ *   accent     primary highlight — must stay readable as text on 950
+ *   accent-2   secondary highlight (section labels, small details)
+ *   sky-top    top of the dreamscape sky; it fades into sky-bottom (keep sky-bottom ≈ 950)
+ *   sun        the floating sun / moon / lamp
+ *   cloud      drifting clouds
+ *
+ * To add a palette: copy a block, rename it, and register the id in src/data/palettes.ts.
+ * To change the default: edit DEFAULT_PALETTE in that same file.
+ */
+
+/* Magritte — bowler-hat charcoal, Son of Man apple, daylight sky over a night street */
+[data-palette="magritte"] {
+  --light-950: #f1f4f5;
+  --light-900: #e6ecef;
+  --light-800: #d6e0e5;
+  --light-700: #bccad3;
+  --light-600: #9fb0bc;
+  --light-500: #718390;
+  --light-400: #4f5f6b;
+  --light-300: #3d4b56;
+  --light-200: #2c3842;
+  --light-100: #1d262e;
+  --light-50: #11171c;
+  --light-accent: #2f6b28;
+  --light-accent-2: #a8322c;
+  --light-sky-top: #c6dcec;
+  --light-sky-bottom: #f1f4f5;
+  --light-sun: #f2cf73;
+  --light-cloud: #ffffff;
+
+  --dark-950: #0d1419;
+  --dark-900: #131c23;
+  --dark-800: #1c2831;
+  --dark-700: #2a3843;
+  --dark-600: #3b4b57;
+  --dark-500: #687a88;
+  --dark-400: #93a5b2;
+  --dark-300: #b1c0ca;
+  --dark-200: #cdd8df;
+  --dark-100: #e4ebef;
+  --dark-50: #f5f8fa;
+  --dark-accent: #8cc56b;
+  --dark-accent-2: #f08a7e;
+  --dark-sky-top: #1f3a55;
+  --dark-sky-bottom: #0d1419;
+  --dark-sun: #f5c86a;
+  --dark-cloud: #2d4862;
+}
+
+/* Dalí — ochre cliffs, burnt sienna, cobalt sea, a gold dusk for melting clocks */
+[data-palette="dali"] {
+  --light-950: #f6ecd9;
+  --light-900: #efe0c5;
+  --light-800: #e4d0ad;
+  --light-700: #d0b88e;
+  --light-600: #b59a6d;
+  --light-500: #85704f;
+  --light-400: #62503a;
+  --light-300: #53412b;
+  --light-200: #3f3120;
+  --light-100: #2c2116;
+  --light-50: #1b140c;
+  --light-accent: #a13f1b;
+  --light-accent-2: #285f94;
+  --light-sky-top: #f0c889;
+  --light-sky-bottom: #f6ecd9;
+  --light-sun: #e59a33;
+  --light-cloud: #fff7e8;
+
+  --dark-950: #15110d;
+  --dark-900: #1d1812;
+  --dark-800: #2a221a;
+  --dark-700: #3a2f23;
+  --dark-600: #4f4030;
+  --dark-500: #7d6a52;
+  --dark-400: #ad9674;
+  --dark-300: #c7b08c;
+  --dark-200: #dccaa9;
+  --dark-100: #efe2c8;
+  --dark-50: #fbf4e6;
+  --dark-accent: #f08a4b;
+  --dark-accent-2: #7fb2e0;
+  --dark-sky-top: #163340;
+  --dark-sky-bottom: #15110d;
+  --dark-sun: #e9a23b;
+  --dark-cloud: #2c4650;
+}
+
+/* de Chirico — terracotta arcades, vermilion, a green metaphysical sky, long afternoon shadows */
+[data-palette="dechirico"] {
+  --light-950: #f4e4d4;
+  --light-900: #edd6c1;
+  --light-800: #e3c4a9;
+  --light-700: #d1a987;
+  --light-600: #b88a67;
+  --light-500: #8a6147;
+  --light-400: #6b4631;
+  --light-300: #5a3a28;
+  --light-200: #452c1e;
+  --light-100: #2f1e15;
+  --light-50: #1c110b;
+  --light-accent: #9f2f2a;
+  --light-accent-2: #2c5a48;
+  --light-sky-top: #b9d1bd;
+  --light-sky-bottom: #f4e4d4;
+  --light-sun: #f0b44c;
+  --light-cloud: #fbf0e3;
+
+  --dark-950: #0f1512;
+  --dark-900: #151d19;
+  --dark-800: #1e2a24;
+  --dark-700: #2b3a32;
+  --dark-600: #3e5046;
+  --dark-500: #667b6f;
+  --dark-400: #93a79a;
+  --dark-300: #b8c7bc;
+  --dark-200: #d3ddd5;
+  --dark-100: #ebe9dc;
+  --dark-50: #f7f5ec;
+  --dark-accent: #ee7d4f;
+  --dark-accent-2: #e8c170;
+  --dark-sky-top: #1b3d31;
+  --dark-sky-bottom: #0f1512;
+  --dark-sun: #f0b44c;
+  --dark-cloud: #2a4238;
+}
+
+/* Carrington — lavender dusk, plum, ghostly teal, a pale moon */
+[data-palette="carrington"] {
+  --light-950: #f3eff6;
+  --light-900: #e9e2ef;
+  --light-800: #dad0e4;
+  --light-700: #c2b3d1;
+  --light-600: #a391b7;
+  --light-500: #76638c;
+  --light-400: #574669;
+  --light-300: #473859;
+  --light-200: #352944;
+  --light-100: #241b30;
+  --light-50: #150f1d;
+  --light-accent: #85356f;
+  --light-accent-2: #2f6b5c;
+  --light-sky-top: #d4c2ea;
+  --light-sky-bottom: #f3eff6;
+  --light-sun: #f2d7a0;
+  --light-cloud: #ffffff;
+
+  --dark-950: #120e18;
+  --dark-900: #1a1422;
+  --dark-800: #251d31;
+  --dark-700: #342a44;
+  --dark-600: #483b5d;
+  --dark-500: #796a92;
+  --dark-400: #a293b8;
+  --dark-300: #c2b5d6;
+  --dark-200: #d9cfe8;
+  --dark-100: #ece6f5;
+  --dark-50: #f8f5fc;
+  --dark-accent: #e58ccf;
+  --dark-accent-2: #7fd1b9;
+  --dark-sky-top: #2e2150;
+  --dark-sky-bottom: #120e18;
+  --dark-sun: #f3e3b5;
+  --dark-cloud: #3a2e58;
+}
+
+/* Gruvbox — the site's original colors, kept so you can always go back */
+[data-palette="gruvbox"] {
+  --light-950: #fbf1c7;
+  --light-900: #f2e5bc;
+  --light-800: #ebdbb2;
+  --light-700: #d5c4a1;
+  --light-600: #bdae93;
+  --light-500: #a89984;
+  --light-400: #7c6f64;
+  --light-300: #665c54;
+  --light-200: #504945;
+  --light-100: #3c3836;
+  --light-50: #282828;
+  --light-accent: #9d3a0a;
+  --light-accent-2: #076678;
+  --light-sky-top: #e8d9a8;
+  --light-sky-bottom: #fbf1c7;
+  --light-sun: #d79921;
+  --light-cloud: #fdf6dc;
+
+  --dark-950: #1d2021;
+  --dark-900: #282828;
+  --dark-800: #3c3836;
+  --dark-700: #504945;
+  --dark-600: #665c54;
+  --dark-500: #7c6f64;
+  --dark-400: #a89984;
+  --dark-300: #bdae93;
+  --dark-200: #d5c4a1;
+  --dark-100: #ebdbb2;
+  --dark-50: #fbf1c7;
+  --dark-accent: #fe8019;
+  --dark-accent-2: #83a598;
+  --dark-sky-top: #32302f;
+  --dark-sky-bottom: #1d2021;
+  --dark-sun: #fabd2f;
+  --dark-cloud: #3c3836;
+}

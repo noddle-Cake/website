@@ -1,0 +1,52 @@
+---
+import { palettes, DEFAULT_PALETTE } from '../data/appearance';
+---
+
+<div class="hide-in-minimal flex items-center gap-2" role="group" aria-label="Color palette" data-palette-picker={DEFAULT_PALETTE}>
+  {
+    palettes.map((p) => (
+      <button
+        type="button"
+        class="palette-swatch"
+        data-palette={p.id}
+        data-palette-choice={p.id}
+        title={p.name}
+        aria-label={`${p.name} palette`}
+        aria-pressed="false"
+      />
+    ))
+  }
+</div>
+
+<script>
+  const STORAGE_KEY = 'palette';
+
+  function initPalettePicker() {
+    const picker = document.querySelector<HTMLElement>('[data-palette-picker]');
+    if (!picker) return;
+    const buttons = [...picker.querySelectorAll<HTMLButtonElement>('[data-palette-choice]')];
+
+    const markActive = (id: string) => {
+      for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.paletteChoice === id));
+    };
+
+    markActive(document.documentElement.dataset.palette ?? picker.dataset.palettePicker ?? '');
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const id = button.dataset.paletteChoice;
+        if (!id) return;
+        document.documentElement.dataset.palette = id;
+        try {
+          sessionStorage.setItem(STORAGE_KEY, id);
+        } catch {
+          // ignore — choice just won't persist to the next page
+        }
+        markActive(id);
+      });
+    }
+  }
+
+  initPalettePicker();
+  document.addEventListener('astro:after-swap', initPalettePicker);
+</script>

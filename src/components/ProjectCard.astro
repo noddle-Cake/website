@@ -1,5 +1,10 @@
 ---
+import ProjectGlyph from './ProjectGlyph.astro';
+
 interface Props {
+  /** Content id — picks the silhouette shown in the minimal look. */
+  id: string;
+  code?: string;
   title: string;
   stack: string[];
   summary: string;
@@ -7,16 +12,20 @@ interface Props {
   demo?: string;
 }
 
-const { title, stack, summary, github, demo } = Astro.props;
+const { id, code, title, stack, summary, github, demo } = Astro.props;
 ---
 
 <div
   data-reveal
-  class="group border border-slate-800 rounded-lg p-5 transition-all duration-300 hover:border-slate-500 hover:-translate-y-1 hover:shadow-lg"
+  class="dream-card group border border-slate-800 p-5 hover:border-slate-500 hover:-translate-y-1"
 >
-  <div class="flex items-start justify-between gap-3">
+  <div class="project-glyph only-minimal">
+    <ProjectGlyph name={id} />
+  </div>
+  {code && <p class="project-code only-minimal">{code}</p>}
+  <div class="project-head flex items-start justify-between gap-3">
     <h3 class="font-semibold text-slate-100 group-hover:text-slate-50 transition-colors">{title}</h3>
-    <div class="flex items-center gap-3 shrink-0">
+    <div class="project-links flex items-center gap-3 shrink-0">
       {demo && (
         <a
           href={demo}
@@ -37,8 +46,8 @@ const { title, stack, summary, github, demo } = Astro.props;
       )}
     </div>
   </div>
-  <p class="text-sm text-slate-400 mt-2 leading-relaxed">{summary}</p>
-  <div class="flex flex-wrap gap-2 mt-4">
+  <p class="project-summary text-sm text-slate-400 mt-2 leading-relaxed">{summary}</p>
+  <div class="project-stack flex flex-wrap gap-2 mt-4">
     {stack.map((tech) => (
       <span class="text-xs bg-slate-800 text-slate-300 rounded px-2 py-1 transition-colors group-hover:bg-slate-700">
         {tech}

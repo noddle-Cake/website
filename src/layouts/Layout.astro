@@ -2,17 +2,23 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Dreamscape from '../components/Dreamscape.astro';
 import { profile } from '../data/profile';
+import { looks, palettes, DEFAULT_LOOK, DEFAULT_PALETTE } from '../data/appearance';
 
 interface Props {
   title?: string;
+  /** Calmer backdrop (no sun or drifting clouds) for long-form reading pages. */
+  quietBackdrop?: boolean;
 }
 
-const { title = profile.name } = Astro.props;
+const { title = profile.name, quietBackdrop = false } = Astro.props;
+const lookIds = looks.map((l) => l.id);
+const paletteIds = palettes.map((p) => p.id);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-look={DEFAULT_LOOK} data-palette={DEFAULT_PALETTE}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,9 +27,41 @@ const { title = profile.name } = Astro.props;
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+    <script is:inline define:vars={{ lookIds, paletteIds }}>
+      // Pick the look and palette before first paint (theme-init.js does the same for light/dark).
+      // Each is chosen at random once per visit (browser tab session), so pages within a visit
+      // stay consistent but each new visit looks different. The footer controls change them for
+      // the rest of the visit.
+      function pickForVisit(key, ids) {
+        let id = null;
+        try {
+          id = sessionStorage.getItem(key);
+        } catch (e) {
+          // sessionStorage unavailable — still pick at random for this page
+        }
+        if (!id || !ids.includes(id)) {
+          id = ids[Math.floor(Math.random() * ids.length)];
+          try {
+            sessionStorage.setItem(key, id);
+          } catch (e) {
+            // ignore — the next page just rolls again
+          }
+        }
+        return id;
+      }
+      document.documentElement.dataset.look = pickForVisit('look', lookIds);
+      document.documentElement.dataset.palette = pickForVisit('palette', paletteIds);
+    </script>
     <script is:inline src="/theme-init.js"></script>
   </head>
-  <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-slate-100 selection:text-slate-950">
+  <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-accent selection:text-slate-950">
+    <Dreamscape quiet={quietBackdrop} />
     <div class="scanlines"></div>
     <Nav />
     <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-12">

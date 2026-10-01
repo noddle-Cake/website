@@ -1,0 +1,111 @@
+---
+// Flat black "product shot" silhouettes for the minimal look's project grid — one object per
+// project, drawn in currentColor with details knocked out in the page background color.
+interface Props {
+  /** Project content id (its filename without .md). */
+  name: string;
+}
+
+const { name } = Astro.props;
+const cut = 'fill: var(--color-slate-950)';
+---
+
+<svg viewBox="0 0 160 120" fill="currentColor" aria-hidden="true" focusable="false">
+  {
+    name === 'esp32-ir-repeater' && (
+      <g>
+        {Array.from({ length: 12 }, (_, i) => (
+          <>
+            <rect x={30 + i * 9} y="26" width="4" height="10" />
+            <rect x={30 + i * 9} y="84" width="4" height="10" />
+          </>
+        ))}
+        <rect x="22" y="34" width="118" height="52" rx="3" />
+        <rect x="76" y="41" width="56" height="38" rx="2" style={cut} />
+        <rect x="80" y="45" width="48" height="30" rx="1" />
+        <rect x="6" y="52" width="20" height="16" rx="8" />
+        <rect x="136" y="50" width="14" height="20" rx="2" />
+        <circle cx="46" cy="60" r="7" style={cut} />
+      </g>
+    )
+  }
+  {
+    name === 'fishbowl-inventory-lookup' && (
+      <g>
+        <rect x="52" y="4" width="56" height="112" rx="10" />
+        <rect x="58" y="16" width="44" height="86" rx="2" style={cut} />
+        {[0, 5, 8, 14, 17, 20, 26, 29, 35].map((x, i) => (
+          <rect x={63 + x} y="44" width={i % 3 === 0 ? 3 : 1.5} height="30" />
+        ))}
+        <rect x="56" y="58" width="48" height="1.5" />
+        <rect x="72" y="107" width="16" height="3" rx="1.5" style={cut} />
+      </g>
+    )
+  }
+  {
+    name === 'nicegui-document-portal' && (
+      <g>
+        <path d="M58 6 h42 l18 18 v74 h-60 z" opacity="0.35" />
+        <path d="M42 16 h42 l18 18 v78 h-60 z" />
+        <path d="M84 16 v18 h18" style={cut} />
+        {[46, 56, 66, 76].map((y, i) => (
+          <rect x="52" y={y} width={i === 3 ? 22 : 38} height="3" style={cut} />
+        ))}
+        <circle cx="110" cy="88" r="15" style={cut} />
+        <circle cx="110" cy="88" r="15" fill="none" stroke="currentColor" stroke-width="6" />
+        <rect x="119" y="97" width="17" height="7" rx="3.5" transform="rotate(45 119 97)" />
+      </g>
+    )
+  }
+  {
+    name === 'novel-downloader-epub' && (
+      <g>
+        <path d="M78 30 C 60 20, 36 18, 14 24 V 98 C 36 92, 60 94, 78 104 Z" />
+        <path d="M82 30 C 100 20, 124 18, 146 24 V 98 C 124 92, 100 94, 82 104 Z" />
+        {[40, 50, 60, 70, 80].map((y) => (
+          <>
+            <path d={`M26 ${y - 2} C 42 ${y - 5}, 56 ${y - 4}, 68 ${y + 1}`} fill="none" stroke-width="2.5" style="stroke: var(--color-slate-950)" />
+            <path d={`M92 ${y + 1} C 104 ${y - 4}, 118 ${y - 5}, 134 ${y - 2}`} fill="none" stroke-width="2.5" style="stroke: var(--color-slate-950)" />
+          </>
+        ))}
+      </g>
+    )
+  }
+  {
+    name === 'orgill-etl-pipeline' && (
+      <g>
+        <rect x="58" y="4" width="13" height="13" transform="rotate(-12 64 10)" />
+        <rect x="76" y="8" width="13" height="13" transform="rotate(8 82 14)" />
+        <rect x="93" y="2" width="13" height="13" transform="rotate(-4 99 8)" />
+        <path d="M26 30 H134 L94 72 V104 L66 116 V72 Z" />
+        <rect x="40" y="38" width="80" height="3" style={cut} />
+      </g>
+    )
+  }
+  {
+    name === 'vas-inventory-platform' && (
+      <g>
+        <rect x="30" y="64" width="48" height="46" />
+        <rect x="82" y="64" width="48" height="46" />
+        <rect x="56" y="14" width="48" height="46" />
+        <rect x="51" y="64" width="6" height="16" style={cut} />
+        <rect x="103" y="64" width="6" height="16" style={cut} />
+        <rect x="77" y="14" width="6" height="16" style={cut} />
+      </g>
+    )
+  }
+  {
+    name === 'zebra-label-printer' && (
+      <g>
+        <path d="M34 44 C 34 26, 52 18, 80 18 C 108 18, 126 26, 126 44 Z" />
+        <rect x="24" y="44" width="112" height="46" rx="8" />
+        <rect x="46" y="78" width="68" height="4" style={cut} />
+        <rect x="50" y="80" width="60" height="36" style={cut} />
+        <rect x="50" y="80" width="60" height="36" fill="none" stroke="currentColor" stroke-width="3" />
+        {[0, 4, 7, 12, 15, 18, 24, 27, 33, 36, 40].map((x, i) => (
+          <rect x={60 + x} y="90" width={i % 4 === 0 ? 2.5 : 1.25} height="17" />
+        ))}
+      </g>
+    )
+  }
+</svg>

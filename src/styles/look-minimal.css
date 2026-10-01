@@ -1,0 +1,379 @@
+/*
+ * ---- Minimal look ----
+ * A stark alternate design (inspired by yeezy.com): white page, black IBM Plex Mono in
+ * uppercase at a single size, gray for anything secondary, no borders, cards, shadows or
+ * motion, and projects shown as black object silhouettes over short product codes.
+ *
+ * Everything is scoped to :root[data-look="minimal"] and unlayered, so it outranks Tailwind
+ * utilities without touching the markup the surreal look relies on. Palettes don't apply here:
+ * the block below replaces their colors with pure monochrome (inverted in dark mode).
+ *
+ * The lucid look (look-lucid.css) reuses this layout, so most rules here also match
+ * data-look="lucid". The colors, stripping the dream and the motion resets stay minimal-only.
+ */
+
+:root[data-look="minimal"] {
+  --light-950: #ffffff;
+  --light-900: #f7f7f7;
+  --light-800: #ededed;
+  --light-700: #dcdcdc;
+  --light-600: #c4c4c4;
+  --light-500: #8c8c8c;
+  --light-400: #636363;
+  --light-300: #343434;
+  --light-200: #1c1c1c;
+  --light-100: #000000;
+  --light-50: #000000;
+  --light-accent: #000000;
+  --light-accent-2: #636363;
+  --light-sky-top: #ffffff;
+  --light-sky-bottom: #ffffff;
+  --light-sun: #000000;
+  --light-cloud: #ffffff;
+
+  --dark-950: #000000;
+  --dark-900: #0b0b0b;
+  --dark-800: #161616;
+  --dark-700: #262626;
+  --dark-600: #3d3d3d;
+  --dark-500: #7a7a7a;
+  --dark-400: #a3a3a3;
+  --dark-300: #d0d0d0;
+  --dark-200: #e8e8e8;
+  --dark-100: #ffffff;
+  --dark-50: #ffffff;
+  --dark-accent: #ffffff;
+  --dark-accent-2: #a3a3a3;
+  --dark-sky-top: #000000;
+  --dark-sky-bottom: #000000;
+  --dark-sun: #ffffff;
+  --dark-cloud: #000000;
+}
+
+/* ---- One typeface, one weight, all caps ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) body,
+:root:is([data-look="minimal"], [data-look="lucid"]) body * {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) body {
+  text-transform: uppercase;
+}
+
+/* Browsers don't let form controls inherit text-transform by default. */
+:root:is([data-look="minimal"], [data-look="lucid"]) :is(button, input, select, textarea) {
+  text-transform: inherit;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) :is(h1, h2, h3) {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ---- Strip the dream ---- */
+:root[data-look="minimal"] :is(.dreamscape, .surreal-eye, .dream-piazza, .hide-in-minimal) {
+  display: none;
+}
+
+:root[data-look="minimal"] .melt {
+  filter: none;
+  padding: 0;
+}
+
+:root[data-look="minimal"] [data-reveal] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
+/* Glyphs and product codes (shared with the lucid look). */
+:root:is([data-look="minimal"], [data-look="lucid"]) .only-minimal {
+  display: block;
+}
+
+/* ---- Header: edge-to-edge, borderless ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) header {
+  border-color: transparent;
+  background: var(--color-slate-950);
+  backdrop-filter: none;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav {
+  max-width: none;
+  padding: 1.75rem 2rem;
+  font-size: 1rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav > div {
+  font-size: 1rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav a {
+  color: var(--color-slate-300);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav a:hover,
+:root:is([data-look="minimal"], [data-look="lucid"]) header nav > a:first-child {
+  color: var(--color-slate-100);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) #theme-toggle {
+  border: 0;
+  padding: 0;
+  font-size: 1rem;
+  color: var(--color-slate-500);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) #theme-toggle:hover {
+  color: var(--color-slate-100);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) main {
+  max-width: none;
+  padding-inline: 2rem;
+}
+
+/* ---- Hero: a single centered line in a lot of white ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero {
+  align-items: center;
+  text-align: center;
+  min-height: calc(100vh - 14rem);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-label {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-title {
+  margin-top: 1.25rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-title > span[data-reveal] {
+  display: inline-block;
+  margin-inline: 0.6em;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-title .text-accent {
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-tagline {
+  max-width: 46ch;
+  margin-inline: auto;
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-actions {
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .dream-button {
+  border-radius: 0;
+  box-shadow: none;
+  translate: none;
+  padding: 0.95rem 3.5rem;
+  font-size: 1rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-actions a:not(.dream-button) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  padding: 0;
+  font-size: 1rem;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-actions a:not(.dream-button):hover {
+  color: var(--color-slate-100);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .hero-scroll {
+  display: none;
+}
+
+/* ---- Sections: centered, no rules between them ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) :is(.home-section, .page-head, .page-body) {
+  display: block;
+  border-top: 0;
+  text-align: center;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .home-section {
+  padding-block: 5rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .section-label {
+  margin-bottom: 3rem;
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .page-head .section-label {
+  margin-bottom: 0;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .page-head h1 {
+  margin-top: 0.5rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .education {
+  max-width: none;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .education > div {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .education span {
+  font-size: 0.8125rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .education span + span {
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .skills {
+  justify-content: center;
+  gap: 0.4rem 1.5rem;
+  max-width: 60rem;
+  margin: 3rem auto 0;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .skills span {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+/* ---- Project grid: silhouette, code, then the fine print ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-grid {
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 5rem 2rem;
+  max-width: 96rem;
+  margin-inline: auto;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .dream-card,
+:root:is([data-look="minimal"], [data-look="lucid"]) .dream-card:hover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+  translate: none;
+  text-align: center;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-glyph {
+  width: 100%;
+  max-width: 12rem;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 2rem;
+  color: var(--color-slate-100);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-code {
+  font-size: 1rem;
+  color: var(--color-slate-100);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-head {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-head h3 {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-links a {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.6875rem;
+  color: var(--color-slate-100);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-summary {
+  max-width: 34ch;
+  margin-inline: auto;
+  font-size: 0.6875rem;
+  line-height: 1.8;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-stack {
+  justify-content: center;
+  gap: 0 0.9rem;
+  margin-top: 0.75rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .project-stack span {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.625rem;
+  color: var(--color-slate-500);
+}
+
+/* ---- Footer: a centered row of gray links ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) footer {
+  margin-top: 4rem;
+  border-top: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .footer-statement {
+  display: none;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .footer-row {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0;
+  font-size: 0.8125rem;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .footer-row > div {
+  justify-content: center;
+  gap: 1rem 2rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .look-choice {
+  font-size: 0.8125rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) #signal-toggle {
+  border: 0;
+  padding: 0;
+}
