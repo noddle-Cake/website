@@ -93,9 +93,32 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
     </div>
   </section>
 
+  <section id="experience" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
+    <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
+      02 / Experience
+    </h2>
+    <div class="experience space-y-10 max-w-2xl">
+      {profile.experience.map((job) => (
+        <div data-reveal class="job">
+          <div class="job-head flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+            <h3 class="font-sans text-base text-slate-100 font-medium">
+              {job.role} <span class="job-org text-slate-400">&middot; {job.org}</span>
+            </h3>
+            <span class="job-date text-slate-500 text-sm font-mono shrink-0">{job.date}</span>
+          </div>
+          <ul class="job-highlights mt-3 space-y-2 text-sm text-slate-400 leading-relaxed list-disc pl-5 marker:text-slate-600">
+            {job.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
   <section id="projects" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
     <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
-      02 / Projects
+      03 / Projects
     </h2>
     <div class="project-grid grid sm:grid-cols-2 gap-4">
       {featured.map((project: CollectionEntry<'projects'>) => (

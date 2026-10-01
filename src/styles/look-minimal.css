@@ -263,6 +263,36 @@
   color: var(--color-slate-400);
 }
 
+/* ---- Experience: centered roles, highlights as fine print ---- */
+:root:is([data-look="minimal"], [data-look="lucid"]) .experience {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .job-head {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .job-head h3 {
+  font-size: 0.8125rem;
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .job-date {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+:root:is([data-look="minimal"], [data-look="lucid"]) .job-highlights {
+  max-width: 60ch;
+  margin: 1.25rem auto 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.6875rem;
+  line-height: 1.8;
+}
+
 /* ---- Project grid: silhouette, code, then the fine print ---- */
 :root:is([data-look="minimal"], [data-look="lucid"]) .project-grid {
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
