@@ -108,4 +108,75 @@ const cut = 'fill: var(--color-slate-950)';
       </g>
     )
   }
+  {
+    name === 'gridmerge' && (
+      <g>
+        <rect x="0" y="35" width="160" height="1.5" />
+        <rect x="0" y="63" width="160" height="1.5" />
+        <path d="M74 4 H86 L89 30 H124 V38 H90 L92 58 H114 V66 H93 L104 116 H92 L80 70 L68 116 H56 L67 66 H46 V58 H68 L70 38 H36 V30 H71 Z" />
+        <path d="M80 40 L86 56 H74 Z" style={cut} />
+        <rect x="38" y="38" width="4" height="10" />
+        <rect x="118" y="38" width="4" height="10" />
+        <rect x="48" y="66" width="4" height="10" />
+        <rect x="108" y="66" width="4" height="10" />
+      </g>
+    )
+  }
+  {
+    name === 'foundry' && (
+      <g>
+        <rect x="72" y="4" width="5" height="12" transform="rotate(-25 74 10)" />
+        <rect x="84" y="2" width="5" height="14" />
+        <rect x="96" y="4" width="5" height="12" transform="rotate(25 98 10)" />
+        <path d="M18 28 H118 C 132 28, 146 34, 154 44 C 140 46, 128 50, 120 56 H104 C 98 62, 96 70, 98 78 H62 C 64 70, 62 62, 56 56 H40 C 28 56, 18 46, 18 28 Z" />
+        <rect x="52" y="78" width="56" height="10" />
+        <path d="M36 88 H124 L132 112 H28 Z" />
+        <rect x="24" y="34" width="90" height="3" style={cut} />
+      </g>
+    )
+  }
+  {
+    name === 'family-tracker' && (
+      <g>
+        <rect x="108" y="18" width="12" height="30" />
+        <path d="M80 8 L144 60 H130 V114 H30 V60 H16 Z" />
+        <rect x="70" y="80" width="20" height="34" style={cut} />
+        <rect x="42" y="70" width="16" height="16" style={cut} />
+        <rect x="102" y="70" width="16" height="16" style={cut} />
+        <path d="M80 34 C 74 26, 64 32, 70 40 L80 50 L90 40 C 96 32, 86 26, 80 34 Z" style={cut} />
+      </g>
+    )
+  }
+  {
+    name === 'trades-marketplace' && (
+      <g>
+        <g transform="rotate(-35 80 60)">
+          <rect x="74" y="34" width="12" height="84" rx="3" />
+          <rect x="40" y="14" width="76" height="22" rx="3" />
+          <path d="M116 16 C 130 18, 138 26, 142 38 H128 C 126 32, 122 30, 116 30 Z" />
+        </g>
+        <g transform="rotate(40 80 60)">
+          <rect x="75" y="30" width="10" height="80" rx="4" />
+          <path d="M64 8 H96 V28 C 96 34, 90 38, 80 38 C 70 38, 64 34, 64 28 Z" />
+          <rect x="74" y="4" width="12" height="16" style={cut} />
+        </g>
+      </g>
+    )
+  }
+  {
+    name === 'local-ai-stack' && (
+      <g>
+        <rect x="46" y="4" width="68" height="112" rx="4" />
+        {[0, 1, 2, 3].map((i) => (
+          <>
+            <rect x="54" y={14 + i * 25} width="52" height="17" rx="2" style={cut} />
+            <circle cx="62" cy={22.5 + i * 25} r="3" />
+            {[0, 1, 2, 3, 4].map((j) => (
+              <rect x={74 + j * 6} y={18 + i * 25} width="2.5" height="9" />
+            ))}
+          </>
+        ))}
+      </g>
+    )
+  }
 </svg>
