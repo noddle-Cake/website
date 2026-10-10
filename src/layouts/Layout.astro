@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Dreamscape from '../components/Dreamscape.astro';
+import PageRail from '../components/PageRail.astro';
 import { profile } from '../data/profile';
 import { looks, palettes, DEFAULT_LOOK, DEFAULT_PALETTE } from '../data/appearance';
 
@@ -31,11 +32,11 @@ const paletteIds = palettes.map((p) => p.id);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@400..700&display=swap"
     />
     <script is:inline define:vars={{ lookIds, paletteIds }}>
       // Apply the look and palette before first paint (theme-init.js does the same for light/dark).
-      // The look is a saved preference: surreal (the server-rendered default) until a visitor picks
+      // The look is a saved preference: blueprint (the server-rendered default) until a visitor picks
       // another in the footer. The palette is picked at random once per visit (browser tab session),
       // so pages within a visit stay consistent but each new visit gets new colors.
       try {
@@ -69,10 +70,11 @@ const paletteIds = palettes.map((p) => p.id);
     <Dreamscape quiet={quietBackdrop} />
     <div class="scanlines"></div>
     <Nav />
-    <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-12">
+    <main id="main" class="flex-1 w-full max-w-5xl mx-auto px-6 py-12">
       <slot />
     </main>
     <Footer />
+    <PageRail />
     <script>
       import '../scripts/reveal';
     </script>

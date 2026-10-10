@@ -2,6 +2,7 @@
 @import "./palettes.css";
 @import "./look-minimal.css";
 @import "./look-lucid.css";
+@import "./look-blueprint.css";
 @source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
 
 html {
@@ -154,6 +155,11 @@ footer[id] {
 
 /* Pieces that only exist in the minimal look (styles/look-minimal.css shows them). */
 .only-minimal {
+  display: none;
+}
+
+/* Pieces that only exist in the blueprint look (styles/look-blueprint.css shows them). */
+.only-blueprint {
   display: none;
 }
 
