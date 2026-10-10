@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SurrealEye from '../components/SurrealEye.astro';
+import ProjectGlyph from '../components/ProjectGlyph.astro';
 import { profile } from '../data/profile';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
@@ -14,8 +15,8 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
 ---
 
 <Layout>
-  <section class="hero min-h-[70vh] flex flex-col justify-center py-12">
-    <p data-reveal class="hero-label font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
+  <section data-rail="Hello" class="hero min-h-[70vh] flex flex-col justify-center py-12">
+    <p data-reveal data-meta="Embedded · Automation · Web" class="hero-label font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
       {profile.name}<span class="signal-cursor signal-only">_</span>
     </p>
     <h1 class="hero-title relative mt-4 font-extrabold tracking-tight leading-[0.95] text-[clamp(2.75rem,9vw,6.5rem)]">
@@ -42,6 +43,15 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
       </a>
     </div>
 
+    <nav data-reveal aria-label="Featured projects" class="project-dock only-blueprint">
+      {featured.map((project: CollectionEntry<'projects'>) => (
+        <a href={`#project-${project.id}`} class="dock-item">
+          <span class="dock-icon"><ProjectGlyph name={project.id} /></span>
+          <span class="dock-label">{project.data.code}</span>
+        </a>
+      ))}
+    </nav>
+
     <svg
       class="signal-only mt-12 w-full max-w-md h-16 text-slate-300"
       viewBox="0 0 400 80"
@@ -67,9 +77,13 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
     </div>
   </section>
 
-  <section id="about" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
-    <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
-      01 / About
+  <section id="about" data-rail="About" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
+    <h2
+      data-reveal
+      data-meta={`${profile.education.length} degrees · ${allSkills.length} skills`}
+      class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1"
+    >
+      <span class="section-num">01 /</span> About
     </h2>
     <div>
       <div class="education space-y-4 max-w-2xl">
@@ -93,9 +107,13 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
     </div>
   </section>
 
-  <section id="experience" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
-    <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
-      02 / Experience
+  <section id="experience" data-rail="Experience" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
+    <h2
+      data-reveal
+      data-meta={`${profile.experience.length} roles`}
+      class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1"
+    >
+      <span class="section-num">02 /</span> Experience
     </h2>
     <div class="experience space-y-10 max-w-2xl">
       {profile.experience.map((job) => (
@@ -116,9 +134,13 @@ const allSkills = [...profile.skills.languages, ...profile.skills.frameworks, ..
     </div>
   </section>
 
-  <section id="projects" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
-    <h2 data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1">
-      03 / Projects
+  <section id="projects" data-rail="Projects" class="home-section py-16 border-t border-slate-800 grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-16">
+    <h2
+      data-reveal
+      data-meta={`${featured.length} featured · ${allProjects.length} total`}
+      class="section-label font-mono text-xs uppercase tracking-[0.2em] text-accent-2 sm:pt-1"
+    >
+      <span class="section-num">03 /</span> Projects
     </h2>
     <div class="project-grid grid sm:grid-cols-2 gap-4">
       {featured.map((project: CollectionEntry<'projects'>) => (

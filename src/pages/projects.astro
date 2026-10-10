@@ -9,8 +9,8 @@ const allProjects = (await getCollection('projects')).sort(
 ---
 
 <Layout title="Projects">
-  <section class="page-head py-8">
-    <p data-reveal class="section-label font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
+  <section data-rail="Projects" class="page-head py-8">
+    <p data-reveal data-meta={`${allProjects.length} projects`} class="section-label font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
       All work
     </p>
     <h1 data-reveal class="mt-3 font-extrabold tracking-tight leading-[0.95] text-[clamp(2.25rem,6vw,4rem)]">

@@ -1,0 +1,975 @@
+/*
+ * ---- Blueprint look ----
+ * A drafting-table design (inspired by getartcraft.com/apps): warm paper, one framed column
+ * ruled off with hairlines, a tick mark at each corner where a rule meets the frame, sticky
+ * numbered section bars, square monospace HUD labels and buttons, and projects as a flush grid
+ * of cells, each with a colored number chip, a sunken "screenshot" panel holding its glyph, and
+ * a color bar that draws across the top on hover. Projects take one of seven chip colors in turn.
+ * A ruler down the right edge tracks the page (components/PageRail.astro). The colors are those
+ * of the Virgin of Guadalupe.
+ *
+ * Scoped to :root[data-look="blueprint"] and unlayered like the other looks, so it outranks
+ * Tailwind utilities. Palettes don't apply: the block below supplies its own colors (solid,
+ * not translucent, so hairlines that overlap stay one weight).
+ */
+
+:root[data-look="blueprint"] {
+  /* Colors of the Virgin of Guadalupe: the ayate cloth of the tilma by day, her blue-green
+     mantle by night, with the mantle's teal and the stars' gold as the accents. */
+  --light-950: #f3ead7; /* tilma */
+  --light-900: #e9dcc2; /* sunken */
+  --light-800: #d8c8a8; /* hairline */
+  --light-700: #ad9a78; /* strong hairline, ticks */
+  --light-600: #9c8b6e;
+  --light-500: #857560; /* faint text */
+  --light-400: #5e5244; /* muted text */
+  --light-300: #3b332b;
+  --light-200: #27211c;
+  --light-100: #1e1a16; /* ink */
+  --light-50: #120f0c;
+  --light-accent: #1b6a64; /* mantle */
+  --light-accent-2: #a33c56; /* tunic */
+  --light-sky-top: #f3ead7;
+  --light-sky-bottom: #f3ead7;
+  --light-sun: #1e1a16;
+  --light-cloud: #f3ead7;
+
+  --dark-950: #0f2a2a; /* mantle at night */
+  --dark-900: #0a1d1d;
+  --dark-800: #24413f;
+  --dark-700: #4d6d68;
+  --dark-600: #5f7a75;
+  --dark-500: #7f978f;
+  --dark-400: #aebdb3;
+  --dark-300: #d9d6c4;
+  --dark-200: #ebe3cf;
+  --dark-100: #f4ead5;
+  --dark-50: #fffaf0;
+  --dark-accent: #e3b448; /* stars */
+  --dark-accent-2: #f29bb0; /* tunic */
+  --dark-sky-top: #0f2a2a;
+  --dark-sky-bottom: #0f2a2a;
+  --dark-sun: #f4ead5;
+  --dark-cloud: #0f2a2a;
+
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --bp-header: 3rem;
+  --bp-header-offset: calc(var(--bp-header) + 1px);
+  --bp-section-bar: 3rem;
+  --bp-gutter: 1.5rem;
+}
+
+@media (min-width: 48rem) {
+  :root[data-look="blueprint"] {
+    --bp-gutter: 2.5rem;
+  }
+}
+
+/* The seven chip colors, from the image: --app fills chips and icons, --app-fg is text on it,
+   and --app-ink is the shade readable as text on the page (lighter in dark mode). */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item) {
+  --app-ink: var(--app-ink-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="blueprint"]:not([data-theme="light"]) :is(.dream-card, .dock-item) {
+    --app-ink: var(--app-ink-dark);
+  }
+}
+
+:root[data-look="blueprint"][data-theme="dark"] :is(.dream-card, .dock-item) {
+  --app-ink: var(--app-ink-dark);
+}
+
+/* mantle */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item) {
+  --app: #2a7f78;
+  --app-fg: #ffffff;
+  --app-ink-light: #1b5e58;
+  --app-ink-dark: #6cc4ba;
+}
+
+/* tunic */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item):nth-child(7n + 2) {
+  --app: #d0607a;
+  --app-fg: #1e1a16;
+  --app-ink-light: #a33c56;
+  --app-ink-dark: #f29bb0;
+}
+
+/* stars */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item):nth-child(7n + 3) {
+  --app: #d9a532;
+  --app-fg: #1e1a16;
+  --app-ink-light: #85600f;
+  --app-ink-dark: #f0c75e;
+}
+
+/* rays */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item):nth-child(7n + 4) {
+  --app: #e07a2c;
+  --app-fg: #1e1a16;
+  --app-ink-light: #a4501a;
+  --app-ink-dark: #f5a463;
+}
+
+/* angel's green wing */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item):nth-child(7n + 5) {
+  --app: #3e8a4a;
+  --app-fg: #ffffff;
+  --app-ink-light: #2c6a36;
+  --app-ink-dark: #86c98f;
+}
+
+/* angel's red wing */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item):nth-child(7n + 6) {
+  --app: #b3283f;
+  --app-fg: #ffffff;
+  --app-ink-light: #96203a;
+  --app-ink-dark: #f07c8e;
+}
+
+/* sash and moon */
+:root[data-look="blueprint"] :is(.dream-card, .dock-item):nth-child(7n + 7) {
+  --app: #2f3157;
+  --app-fg: #ffffff;
+  --app-ink-light: #2f3157;
+  --app-ink-dark: #a6a9e0;
+}
+
+/* ---- Strip the dream ---- */
+:root[data-look="blueprint"] :is(.dreamscape, .surreal-eye, .dream-piazza, .hide-in-blueprint, .hero-scroll) {
+  display: none;
+}
+
+:root[data-look="blueprint"] .melt {
+  filter: none;
+  padding: 0;
+}
+
+/* Things slide up into place, sharp rather than out of a haze. */
+:root[data-look="blueprint"] [data-reveal] {
+  transform: translateY(0.6rem);
+  filter: none;
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+:root[data-look="blueprint"] [data-reveal].is-visible {
+  transform: none;
+}
+
+/* ---- Type: wide Archivo headings, Geist Mono labels ---- */
+:root[data-look="blueprint"] :is(h1, h2, h3, .font-display):not(.font-mono, .font-sans) {
+  font-weight: 620;
+  font-stretch: 118%;
+  font-variation-settings: normal;
+  letter-spacing: -0.03em;
+}
+
+:root[data-look="blueprint"] :is(h1, h2, h3, .font-display) :is(em, i, .italic) {
+  font-style: normal;
+}
+
+/* The HUD label: tiny tracked-out mono caps. */
+/* :where keeps #theme-toggle's id from lifting this above the more specific rules below. */
+:root[data-look="blueprint"]
+  :where(.section-label, .hero-label, .project-code, .project-links a, .dock-label, header nav a, #theme-toggle, .footer-row, .look-choice) {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ---- Header: a row of cells split by hairlines; hovering a link inverts it ---- */
+:root[data-look="blueprint"] header {
+  border-color: var(--color-slate-800);
+  background: color-mix(in oklab, var(--color-slate-950) 95%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+:root[data-look="blueprint"] header nav {
+  max-width: none;
+  height: var(--bp-header);
+  padding: 0;
+  align-items: stretch;
+}
+
+:root[data-look="blueprint"] header nav > a:first-child {
+  display: flex;
+  align-items: center;
+  padding-inline: 1.25rem;
+  border-right: 1px solid var(--color-slate-800);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+:root[data-look="blueprint"] header nav > div {
+  gap: 0;
+  align-items: stretch;
+}
+
+/* Experience and Contact stay hidden on phones, as in the other looks. */
+:root[data-look="blueprint"] header nav > div > a:not(.hidden) {
+  display: flex;
+}
+
+@media (min-width: 40rem) {
+  :root[data-look="blueprint"] header nav > div > a {
+    display: flex;
+  }
+}
+
+:root[data-look="blueprint"] header nav > div > a {
+  align-items: center;
+  padding-inline: 0.85rem;
+  color: var(--color-slate-400);
+}
+
+:root[data-look="blueprint"] header nav > div > a:hover {
+  background: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+:root[data-look="blueprint"] #theme-toggle {
+  border: 0;
+  border-left: 1px solid var(--color-slate-800);
+  border-radius: 0;
+  padding-inline: 1.25rem;
+  color: var(--color-slate-400);
+}
+
+:root[data-look="blueprint"] #theme-toggle:hover {
+  background: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+@media (max-width: 39.99rem) {
+  :root[data-look="blueprint"] header nav > a:first-child,
+  :root[data-look="blueprint"] #theme-toggle {
+    padding-inline: 0.75rem;
+  }
+
+  :root[data-look="blueprint"] header nav > div > a {
+    padding-inline: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ---- The frame: one wide column between two hairlines ---- */
+:root[data-look="blueprint"] main {
+  max-width: 80rem;
+  border-inline: 1px solid var(--color-slate-800);
+}
+
+/* Pages built from the home/project section classes run edge to edge inside the frame. */
+:root[data-look="blueprint"] main:has(> :is(.hero, .home-section, .page-head)) {
+  padding: 0;
+}
+
+/* Each section is ruled off across the whole viewport, with a tick where the rule meets the frame. */
+:root[data-look="blueprint"] :is(.hero, .home-section, .page-head, .page-body) {
+  position: relative;
+  display: block;
+  min-height: 0;
+  padding: 0;
+  border-top: 0;
+}
+
+:root[data-look="blueprint"] :is(.hero, .home-section, .page-head, .page-body)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  /* Outset paints past the frame to the viewport edges without making the page scroll sideways. */
+  border-image: linear-gradient(var(--color-slate-800), var(--color-slate-800)) fill 0 / 0 / 0 100vw;
+  transform-origin: left;
+}
+
+:root[data-look="blueprint"] :is(.hero, .home-section, .page-head, .page-body, footer > div:first-child)::after {
+  --tick: linear-gradient(var(--color-slate-700), var(--color-slate-700));
+  content: "";
+  position: absolute;
+  z-index: 31;
+  top: -5px;
+  left: -6px;
+  right: -6px;
+  height: 11px;
+  pointer-events: none;
+  background:
+    var(--tick) 0 5px / 11px 1px no-repeat,
+    var(--tick) 5px 5px / 1px 6px no-repeat,
+    var(--tick) 100% 5px / 11px 1px no-repeat,
+    var(--tick) calc(100% - 5px) 5px / 1px 6px no-repeat;
+}
+
+/* Until there's room beside the frame, the ticks would hang off-screen and scroll the page. */
+@media (max-width: 80.99rem) {
+  :root[data-look="blueprint"] :is(.hero, .home-section, .page-head, .page-body, footer > div:first-child)::after {
+    display: none;
+  }
+}
+
+/* Rules draw in from the left as each section scrolls into view, where the browser can. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root[data-look="blueprint"] :is(.home-section, .page-body)::before {
+      animation: bp-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@keyframes bp-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---- Sticky section bars: "01 / About" on the left, a count on the right ---- */
+:root[data-look="blueprint"] :is(.section-label, .hero-label) {
+  position: sticky;
+  top: var(--bp-header-offset);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.8rem var(--bp-gutter);
+  border-block: 1px solid var(--color-slate-800);
+  background: color-mix(in oklab, var(--color-slate-950) 60%, transparent);
+  backdrop-filter: blur(12px);
+  color: var(--color-slate-400);
+}
+
+:root[data-look="blueprint"] .section-num {
+  margin-right: 0.6em;
+  color: var(--color-slate-500);
+}
+
+:root[data-look="blueprint"] :is(.section-label, .hero-label)[data-meta]::after {
+  content: attr(data-meta);
+  display: none;
+  margin-left: auto;
+  padding-left: 1rem;
+  color: var(--color-slate-500);
+}
+
+@media (min-width: 40rem) {
+  :root[data-look="blueprint"] :is(.section-label, .hero-label)[data-meta]::after {
+    display: block;
+  }
+}
+
+/* Everything under a bar sits in the gutter, except the flush project grid. */
+:root[data-look="blueprint"] :is(.home-section, .page-head) > :not(.section-label, .project-grid) {
+  padding: 3.5rem var(--bp-gutter);
+}
+
+@media (min-width: 48rem) {
+  :root[data-look="blueprint"] :is(.home-section, .page-head) > :not(.section-label, .project-grid) {
+    padding-block: 4.5rem;
+  }
+}
+
+/* ---- Hero ---- */
+:root[data-look="blueprint"] .hero {
+  padding-bottom: 5rem;
+}
+
+:root[data-look="blueprint"] .hero > :not(.hero-label) {
+  margin-inline: var(--bp-gutter);
+}
+
+:root[data-look="blueprint"] .hero-title {
+  max-width: 48rem;
+  margin-top: 4.5rem;
+  font-size: clamp(2.25rem, 6.5vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--color-slate-50);
+}
+
+:root[data-look="blueprint"] .hero-title > span[data-reveal] {
+  display: inline;
+  margin-right: 0.25em; /* the markup has no spaces between the lines */
+}
+
+:root[data-look="blueprint"] .hero-tagline {
+  max-width: 36rem;
+  margin-top: 1.25rem;
+  font-size: 1.0625rem;
+  color: var(--color-slate-400);
+}
+
+/* Square, tracked-out mono buttons: solid ink first, then outlined ones that invert on hover. */
+:root[data-look="blueprint"] .hero-actions {
+  gap: 0.75rem;
+}
+
+:root[data-look="blueprint"] .hero-actions a {
+  display: inline-flex;
+  align-items: center;
+  height: 3rem;
+  padding: 0 1.5rem;
+  border: 1px solid var(--color-slate-700);
+  border-radius: 0;
+  background: var(--color-slate-950);
+  backdrop-filter: none;
+  box-shadow: none;
+  translate: none;
+  color: var(--color-slate-100);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.12s linear,
+    color 0.12s linear,
+    opacity 0.15s;
+}
+
+:root[data-look="blueprint"] .hero-actions a:hover {
+  border-color: transparent;
+  background: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+:root[data-look="blueprint"] .hero-actions .dream-button {
+  border-color: transparent;
+  background: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+:root[data-look="blueprint"] .hero-actions .dream-button:hover {
+  translate: none;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* A dock of featured projects, like app icons on a launcher. */
+:root[data-look="blueprint"] .project-dock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 1.25rem;
+  margin-top: 3rem;
+}
+
+:root[data-look="blueprint"] .dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 4.5rem;
+}
+
+:root[data-look="blueprint"] .dock-icon {
+  /* The glyph's knocked-out details take the tile color instead of the page's. */
+  --color-slate-950: var(--app);
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  aspect-ratio: 1;
+  padding: 0.55rem;
+  border-radius: 24%;
+  background: var(--app);
+  color: var(--app-fg);
+  filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.28));
+  transition: translate 0.3s ease-out;
+}
+
+:root[data-look="blueprint"] .dock-icon svg {
+  width: 100%;
+  height: auto;
+}
+
+:root[data-look="blueprint"] .dock-item:hover .dock-icon {
+  translate: 0 -0.25rem;
+}
+
+:root[data-look="blueprint"] .dock-label {
+  color: var(--color-slate-400);
+}
+
+:root[data-look="blueprint"] .dock-item:hover .dock-label {
+  color: var(--app-ink);
+}
+
+@media (min-width: 40rem) {
+  :root[data-look="blueprint"] .dock-item {
+    width: 5rem;
+  }
+
+  :root[data-look="blueprint"] .dock-icon {
+    width: 4.5rem;
+  }
+}
+
+/* ---- About ---- */
+:root[data-look="blueprint"] .education > div {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-slate-800);
+}
+
+:root[data-look="blueprint"] .education span:first-child {
+  color: var(--color-slate-100);
+}
+
+/* Tags: square, sunken, outlined mono caps (skills here, stacks on project cells). */
+:root[data-look="blueprint"] :is(.skills, .project-stack) span {
+  border: 1px solid var(--color-slate-800);
+  border-radius: 0;
+  background: var(--color-slate-900);
+  padding: 0.1rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-slate-400);
+}
+
+:root[data-look="blueprint"] .skills {
+  gap: 0.375rem;
+}
+
+:root[data-look="blueprint"] .skills span:hover {
+  background: var(--color-slate-100);
+  border-color: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+/* ---- Experience: roles ruled apart ---- */
+:root[data-look="blueprint"] .experience {
+  max-width: none;
+}
+
+:root[data-look="blueprint"] .experience > .job {
+  max-width: 48rem;
+}
+
+:root[data-look="blueprint"] .job + .job {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--color-slate-800);
+}
+
+:root[data-look="blueprint"] .job-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 620;
+  font-stretch: 118%;
+  letter-spacing: -0.02em;
+}
+
+:root[data-look="blueprint"] .job-org {
+  color: var(--color-accent);
+}
+
+:root[data-look="blueprint"] .job-date {
+  font-size: 0.75rem;
+}
+
+:root[data-look="blueprint"] .job-highlights {
+  color: var(--color-slate-400);
+}
+
+/* ---- Projects: a flush grid of numbered cells ---- */
+:root[data-look="blueprint"] .project-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: 0;
+  counter-reset: cell;
+}
+
+:root[data-look="blueprint"] .dream-card,
+:root[data-look="blueprint"] .dream-card:hover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 1.75rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-slate-950);
+  backdrop-filter: none;
+  box-shadow: none;
+  translate: none;
+  counter-increment: cell;
+  scroll-margin-top: 6rem;
+}
+
+/* Hairlines on the right and bottom of every cell, painted above the neighboring cells and
+   landing on the frame at the edges. */
+:root[data-look="blueprint"] .dream-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 -1px -1px 0;
+  z-index: 2;
+  border-right: 1px solid var(--color-slate-800);
+  border-bottom: 1px solid var(--color-slate-800);
+  pointer-events: none;
+}
+
+/* The project's color bar draws across the top on hover. */
+:root[data-look="blueprint"] .dream-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 2px;
+  background: var(--app);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+:root[data-look="blueprint"] .dream-card:hover::before,
+:root[data-look="blueprint"] .dream-card:target::before {
+  transform: scaleX(1);
+}
+
+/* The product code becomes the cell's header: a colored number chip, then the code. */
+:root[data-look="blueprint"] .project-code {
+  order: -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--color-slate-800);
+  color: var(--color-slate-500);
+}
+
+:root[data-look="blueprint"] .project-code::before {
+  content: counter(cell, decimal-leading-zero);
+  padding: 0.25rem 0.5rem;
+  background: var(--app);
+  color: var(--app-fg);
+  font-weight: 700;
+}
+
+/* The glyph sits in a sunken panel where a screenshot would go. */
+:root[data-look="blueprint"] .project-glyph {
+  --color-slate-950: var(--color-slate-900);
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  padding: 12% 22%;
+  border-bottom: 1px solid var(--color-slate-800);
+  background: var(--color-slate-900);
+  color: var(--color-slate-100);
+}
+
+:root[data-look="blueprint"] .project-glyph svg {
+  width: 100%;
+  max-height: 100%;
+  transition:
+    scale 0.5s ease-out,
+    color 0.3s ease;
+}
+
+:root[data-look="blueprint"] .dream-card:hover .project-glyph svg {
+  scale: 1.04;
+  color: var(--app-ink);
+}
+
+:root[data-look="blueprint"] .project-head {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.5rem 1.5rem 0;
+}
+
+:root[data-look="blueprint"] .project-head h3 {
+  font-size: 1.375rem;
+  line-height: 1.15;
+  color: var(--color-slate-50);
+}
+
+:root[data-look="blueprint"] .project-links {
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+:root[data-look="blueprint"] .project-links a {
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-slate-700);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-slate-100);
+  font-weight: 700;
+}
+
+:root[data-look="blueprint"] .project-links a + a {
+  border-left: 0;
+}
+
+:root[data-look="blueprint"] .project-links a:hover {
+  background: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+:root[data-look="blueprint"] .project-summary {
+  margin-top: 0.75rem;
+  padding-inline: 1.5rem;
+  font-size: 0.9375rem;
+  color: var(--color-slate-400);
+}
+
+:root[data-look="blueprint"] .project-stack {
+  gap: 0.375rem;
+  margin-top: 1.25rem;
+  padding-inline: 1.5rem;
+}
+
+:root[data-look="blueprint"] .dream-card:hover .project-stack span {
+  background: var(--color-slate-900);
+}
+
+/* ---- Projects page heading ---- */
+:root[data-look="blueprint"] .page-head h1 {
+  font-size: clamp(2.25rem, 6.5vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+/* ---- Footer: a framed closing line, then a HUD row ---- */
+:root[data-look="blueprint"] footer {
+  margin-top: 0;
+  border-color: var(--color-slate-800);
+  background: var(--color-slate-950);
+  backdrop-filter: none;
+}
+
+:root[data-look="blueprint"] footer > div:first-child {
+  position: relative;
+  max-width: 80rem;
+  padding: 0;
+  border-inline: 1px solid var(--color-slate-800);
+}
+
+:root[data-look="blueprint"] .footer-statement {
+  padding: 5rem var(--bp-gutter);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5.5vw, 3.75rem);
+  font-weight: 620;
+  font-stretch: 118%;
+  font-variation-settings: normal;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+:root[data-look="blueprint"] .footer-statement em {
+  font-style: normal;
+}
+
+:root[data-look="blueprint"] .footer-row {
+  margin-top: 0;
+  padding: 1.25rem var(--bp-gutter);
+  border-top: 1px solid var(--color-slate-800);
+  color: var(--color-slate-500);
+}
+
+:root[data-look="blueprint"] .footer-row a:hover {
+  color: var(--color-slate-100);
+}
+
+:root[data-look="blueprint"] .look-choice {
+  padding: 0.2rem 0.35rem;
+}
+
+:root[data-look="blueprint"] .look-choice[aria-pressed="true"] {
+  background: var(--color-slate-100);
+  color: var(--color-slate-950);
+}
+
+:root[data-look="blueprint"] #signal-toggle {
+  border-radius: 0;
+  border-color: var(--color-slate-800);
+}
+
+/* ---- Page ruler (components/PageRail.astro) ---- */
+:root[data-look="blueprint"] {
+  --bp-rail: 60px;
+}
+
+/* The ruler needs a wide screen. Until the frame clears it, the page steps aside to make room. */
+@media (min-width: 64rem) {
+  :root[data-look="blueprint"] .page-rail {
+    display: block;
+  }
+
+  /* The ruler is the scrollbar (it seeks on click and drag), so the native one steps aside. */
+  :root[data-look="blueprint"] {
+    scrollbar-width: none;
+  }
+
+  :root[data-look="blueprint"]::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (min-width: 64rem) and (max-width: 87.49rem) {
+  :root[data-look="blueprint"] body {
+    padding-right: var(--bp-rail);
+  }
+}
+
+.rail-track {
+  position: fixed;
+  top: var(--bp-header-offset);
+  bottom: 0;
+  right: 0;
+  z-index: 40;
+  width: var(--bp-rail);
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.rail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, var(--color-slate-950) 55%, transparent);
+  backdrop-filter: blur(9px);
+  mask-image: linear-gradient(to left, black 40%, transparent);
+}
+
+.rail-tape {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.rail-tick {
+  position: absolute;
+  right: 0;
+  width: 10px;
+  height: 1px;
+  background: var(--color-slate-100);
+  opacity: 0.4;
+}
+
+.rail-tick.is-major {
+  width: 20px;
+  opacity: 0.8;
+}
+
+.rail-tick span {
+  position: absolute;
+  right: 24px;
+  top: 0;
+  translate: 0 -50%;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+.rail-marker,
+.rail-hover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--bp-rail);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.rail-marker {
+  height: 2px;
+  margin-top: -1px;
+  background: var(--color-accent);
+}
+
+.rail-marker span {
+  position: absolute;
+  right: 4px;
+  bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+
+.rail-hover {
+  height: 1px;
+  background: var(--color-slate-100);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+/* Soft frosted corners keep the titles readable over the page. */
+.rail-corner {
+  position: fixed;
+  right: 0;
+  z-index: 39;
+  width: min(30rem, 34vw);
+  pointer-events: none;
+  background: color-mix(in oklab, var(--color-slate-950) 80%, transparent);
+  backdrop-filter: blur(9px);
+}
+
+.rail-corner-top {
+  top: calc(var(--bp-header-offset) + var(--bp-section-bar));
+  height: 13rem;
+  mask-image: radial-gradient(100% 100% at 100% 0%, black 38%, transparent 95%);
+}
+
+.rail-corner-bottom {
+  bottom: 0;
+  height: 9rem;
+  mask-image: radial-gradient(100% 100% at 100% 100%, black 38%, transparent 95%);
+}
+
+.rail-titles {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  /* Animated letters must never cross the navigation or sticky section bar. */
+  clip-path: inset(calc(var(--bp-header-offset) + var(--bp-section-bar)) 0 0);
+}
+
+.rail-letter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: pre;
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 620;
+  font-stretch: 118%;
+  line-height: 1;
+  color: color-mix(in oklab, var(--color-slate-50) var(--ink, 35%), var(--color-slate-950));
+  text-shadow:
+    0 0 4px var(--color-slate-950),
+    0 0 10px var(--color-slate-950);
+  will-change: transform, opacity;
+}
+
+/* Measures word widths for the script; never seen. */
+.rail-probe {
+  visibility: hidden;
+  position: fixed;
+}
+
+.rail-probe > span {
+  display: inline-block;
+}
