@@ -4,6 +4,11 @@ export const profile = {
     'Computer Science graduate and M.S. Electrical Engineering (RF/Wireless) student building embedded systems, Python automation pipelines, and secure internal web applications.',
   email: 'chris.servin001@gmail.com',
   linkedin: 'https://www.linkedin.com/in/chris-servin001/',
+  company: {
+    name: 'Josey & Co',
+    url: 'https://joseyandco.com',
+    blurb: 'My operations consulting and implementation practice in South Florida.',
+  },
   education: [
     {
       school: 'Florida International University',

@@ -1,36 +1,34 @@
 ---
 import { profile } from '../data/profile';
-import SignalToggle from './SignalToggle.astro';
-import PalettePicker from './PalettePicker.astro';
-import LookToggle from './LookToggle.astro';
 ---
 
-<footer id="contact" data-rail="Contact" class="border-t border-slate-800 mt-24 bg-slate-950/70 backdrop-blur-sm">
-  <div class="w-full max-w-5xl mx-auto px-6 py-16">
-    <p
-      data-reveal
-      class="footer-statement font-display text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold tracking-tight leading-[1.05] max-w-3xl"
-    >
-      Let&rsquo;s build something that <em class="text-accent">actually works.</em>
-    </p>
-    <div class="footer-row mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-slate-400">
-      <div class="flex flex-wrap gap-4 sm:gap-6">
-        <a href={`mailto:${profile.email}`} class="hover:text-slate-100 transition-colors">
-          {profile.email}
-        </a>
-        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-slate-100 transition-colors">
-          LinkedIn
-        </a>
+<footer id="contact" class="mt-12">
+  <div class="page-frame">
+    <section class="split-section">
+      <h2 data-reveal class="split-heading">
+        Let&rsquo;s build something that <em class="text-accent">actually works.</em>
+      </h2>
+      <div data-reveal class="split-body">
+        <p class="lead">
+          Embedded firmware, automation pipelines or an internal tool your team will actually use &mdash; I&rsquo;m happy
+          to talk it through.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <a href={`mailto:${profile.email}`} class="ink-button">Email me &rarr;</a>
+          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="arrow-link">LinkedIn &rarr;</a>
+          <a href={profile.company.url} target="_blank" rel="noopener noreferrer" class="arrow-link">
+            {profile.company.name} &rarr;
+          </a>
+        </div>
       </div>
-      <div class="flex flex-wrap items-center gap-4">
-        <p>&copy; {new Date().getFullYear()} {profile.name}</p>
-        <LookToggle />
-        <PalettePicker />
-        <SignalToggle />
-      </div>
+    </section>
+
+    <div class="meta-row mt-20 mb-10">
+      <span>&copy; {new Date().getFullYear()} {profile.name}</span>
+      <a href="#" class="hover:text-slate-100 transition-colors">Back to top &uarr;</a>
     </div>
   </div>
-  <div class="dream-piazza hide-in-signal" aria-hidden="true">
+  <div class="dream-piazza" aria-hidden="true">
     <div class="dream-floor"></div>
     <div class="dream-horizon"></div>
     <div class="dream-ball-shadow"></div>
