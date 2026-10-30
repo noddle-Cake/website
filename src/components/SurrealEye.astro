@@ -1,12 +1,11 @@
 ---
 // A floating eye after Dalí's dream sequence for "Spellbound": a sculpted lump of flesh with a
 // heavy lid, a dark iris catching a crescent of light, and drips hanging off its underside.
-// The iris follows the pointer, the lid occasionally blinks, and in the lucid look it casts a
-// shadow on the ground below. Sized in em, so it scales with the heading it sits in. Colors come
-// from the palette. Purely decorative.
+// The iris follows the pointer and the lid occasionally blinks. It fills the width of whatever holds
+// it. Colors come from the palette. Purely decorative.
 ---
 
-<svg class="surreal-eye hide-in-signal" viewBox="0 0 200 190" aria-hidden="true" focusable="false" data-surreal-eye>
+<svg class="surreal-eye" viewBox="0 0 200 190" aria-hidden="true" focusable="false" data-surreal-eye>
   <defs>
     <!-- Lit from the upper left, like the painting: a pale rim fading into a cold shadow. -->
     <radialGradient id="surreal-eye-flesh" cx="32%" cy="22%" r="85%">
@@ -33,7 +32,7 @@
     </clipPath>
   </defs>
 
-  <!-- Its shadow on the ground, far below and off to one side (shown only in the lucid look). -->
+  <!-- Its shadow on the ground, far below and off to one side. -->
   <ellipse class="eye-shadow" cx="146" cy="182" rx="44" ry="6" style="fill: url(#surreal-eye-shadow)"></ellipse>
 
   <g class="eye-body">

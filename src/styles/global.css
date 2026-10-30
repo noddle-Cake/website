@@ -1,8 +1,5 @@
 @import "tailwindcss";
 @import "./palettes.css";
-@import "./look-minimal.css";
-@import "./look-lucid.css";
-@import "./look-blueprint.css";
 @source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
 
 html {
@@ -147,20 +144,9 @@ body {
     "WONK" 0;
 }
 
-/* Keep in-page jumps (#about, #experience, #contact) clear of the sticky header. */
 section[id],
 footer[id] {
-  scroll-margin-top: 5rem;
-}
-
-/* Pieces that only exist in the minimal look (styles/look-minimal.css shows them). */
-.only-minimal {
-  display: none;
-}
-
-/* Pieces that only exist in the blueprint look (styles/look-blueprint.css shows them). */
-.only-blueprint {
-  display: none;
+  scroll-margin-top: 1rem;
 }
 
 /* ---- Scroll-reveal ---- */
@@ -224,12 +210,12 @@ footer[id] {
   animation: dream-bob 14s ease-in-out infinite;
 }
 
-/* On wide screens the sun hangs in the empty gutter beside the content column. */
+/* On wide screens the sun hangs in the gutter beside the content, above the section markers. */
 @media (min-width: 88rem) {
   .dream-sun {
-    top: 16vh;
-    right: max(1rem, calc((50vw - 32rem - 8rem) / 2));
-    width: 8rem;
+    top: 6rem;
+    right: max(0.75rem, calc((100vw - 78rem) / 4 - 2.5rem));
+    width: 5rem;
   }
 }
 
@@ -287,19 +273,11 @@ footer[id] {
 
 /* ---- The floating eye (components/SurrealEye.astro) ---- */
 .surreal-eye {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 2.4em;
+  display: block;
+  width: 100%;
   overflow: visible;
   pointer-events: none;
   animation: dream-bob 9s ease-in-out infinite;
-}
-
-@media (min-width: 40rem) {
-  .surreal-eye {
-    width: 2.9em;
-  }
 }
 
 .surreal-eye .eye-lid {
@@ -325,11 +303,6 @@ footer[id] {
   animation-delay: -4s;
 }
 
-/* Only the lucid look gives the eye a ground to cast a shadow on. */
-.surreal-eye .eye-shadow {
-  display: none;
-}
-
 @keyframes eye-drip {
   from {
     transform: scaleY(0.8);
@@ -351,39 +324,6 @@ footer[id] {
   }
   95.5% {
     transform: scaleY(0.06);
-  }
-}
-
-@layer components {
-  /* ---- Organic cards that float and cast a long colored shadow ---- */
-  .dream-card {
-    border-radius: 1.4rem 0.45rem 1.6rem 0.6rem;
-    background: color-mix(in oklab, var(--color-slate-950) 72%, transparent);
-    backdrop-filter: blur(8px);
-    transition:
-      border-radius 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
-      box-shadow 0.4s ease,
-      border-color 0.3s ease,
-      translate 0.3s ease;
-  }
-
-  .dream-card:hover {
-    border-radius: 0.5rem 1.7rem 0.6rem 1.9rem;
-    box-shadow: 12px 14px 0 -2px color-mix(in oklab, var(--color-accent) 25%, transparent);
-  }
-
-  /* ---- Primary button with a hard, offset shadow ---- */
-  .dream-button {
-    box-shadow: 4px 5px 0 var(--color-accent);
-    transition:
-      translate 0.2s ease,
-      box-shadow 0.2s ease,
-      background-color 0.2s ease;
-  }
-
-  .dream-button:hover {
-    translate: -2px -2px;
-    box-shadow: 7px 8px 0 var(--color-accent);
   }
 }
 
@@ -441,52 +381,6 @@ footer[id] {
   animation: dream-bob 6s ease-in-out infinite;
 }
 
-/* ---- Palette picker swatches (components/PalettePicker.astro) ---- */
-/* Each swatch carries its own data-palette, so its --light-/--dark- vars are that palette's. */
-.palette-swatch {
-  --sw-sky: var(--light-sky-top);
-  --sw-accent: var(--light-accent);
-  --sw-sun: var(--light-sun);
-  --sw-ground: var(--light-950);
-  width: 1.1rem;
-  height: 1.1rem;
-  border-radius: 50%;
-  border: 1px solid var(--color-slate-700);
-  background: conic-gradient(
-    from -45deg,
-    var(--sw-sky) 0 25%,
-    var(--sw-sun) 0 50%,
-    var(--sw-accent) 0 75%,
-    var(--sw-ground) 0
-  );
-  transition: transform 0.2s ease;
-}
-
-.palette-swatch:hover {
-  transform: scale(1.15);
-}
-
-.palette-swatch[aria-pressed="true"] {
-  outline: 2px solid var(--color-slate-100);
-  outline-offset: 2px;
-}
-
-:root[data-theme="dark"] .palette-swatch {
-  --sw-sky: var(--dark-sky-top);
-  --sw-accent: var(--dark-accent);
-  --sw-sun: var(--dark-sun);
-  --sw-ground: var(--dark-950);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .palette-swatch {
-    --sw-sky: var(--dark-sky-top);
-    --sw-accent: var(--dark-accent);
-    --sw-sun: var(--dark-sun);
-    --sw-ground: var(--dark-950);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .dream-sun,
   .dream-cloud,
@@ -502,112 +396,353 @@ footer[id] {
   }
 }
 
-/* ---- Signal mode (easter egg) ---- */
-/* Oscilloscope/CRT terminal skin, toggled independently of the light/dark theme and palette.
-   `:root` keeps its specificity level with the dark-mode mapping above, so source order wins. */
-:root[data-signal="on"] {
-  --color-slate-950: #030a03;
-  --color-slate-900: #05130a;
-  --color-slate-800: #0a2013;
-  --color-slate-700: #12351f;
-  --color-slate-600: #1c4d2c;
-  --color-slate-500: #2c6b3e;
-  --color-slate-400: #4fae62;
-  --color-slate-300: #6fd583;
-  --color-slate-200: #8fe89f;
-  --color-slate-100: #baffc4;
-  --color-slate-50: #e4ffe8;
-  --color-accent: #8fe89f;
-  --color-accent-2: #6fd583;
-  font-family:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+/* ---- Editorial layout ---- */
+/* One wide frame; sections are a heavy rule with a big serif heading on the left and the content on
+   the right (stacked on small screens). Navigation is a floating pill at the bottom of the screen. */
+.page-frame {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
 
-:root[data-signal="on"] :is(h1, h2, h3, .font-display) {
-  font-family: inherit;
-  font-variation-settings: normal;
+@media (min-width: 40rem) {
+  .page-frame {
+    padding-inline: 2rem;
+  }
 }
 
-:root[data-signal="on"] .melt {
-  filter: none;
+@media (min-width: 64rem) {
+  .page-frame {
+    padding-inline: 3rem;
+  }
 }
 
-[data-signal="on"] body {
-  animation: crt-flicker 6s infinite;
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-slate-50);
+  color: var(--color-slate-950);
 }
 
-.scanlines {
-  display: none;
-  pointer-events: none;
+.skip-link:focus {
+  top: 1rem;
+}
+
+.wordmark {
+  font-weight: 450;
+}
+
+.lead {
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-slate-400);
+}
+
+/* Dark, softly rounded button; on hover it lifts off a hard shadow in the accent color. */
+.ink-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.8rem 1.35rem;
+  border-radius: 0.6rem;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--color-slate-50);
+  color: var(--color-slate-950);
+  box-shadow: 0 8px 20px -10px rgb(0 0 0 / 0.45);
+  transition:
+    translate 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ink-button:hover {
+  translate: -2px -2px;
+  box-shadow: 5px 6px 0 var(--color-accent);
+}
+
+.arrow-link {
+  font-weight: 500;
+  color: var(--color-slate-50);
+  transition: color 0.2s ease;
+}
+
+.arrow-link:hover {
+  color: var(--color-accent);
+}
+
+.meta-row,
+.meta-row-label {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-slate-500);
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-slate-800);
+}
+
+/* ---- Hero ---- */
+.hero {
+  padding-block: 2.5rem 3.5rem;
+}
+
+@media (min-width: 64rem) {
+  .hero {
+    min-height: calc(100svh - 6rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 3rem 5rem;
+  }
+}
+
+.hero-grid {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 64rem) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+}
+
+.hero-title {
+  font-size: clamp(3.25rem, 9vw, 7rem);
+  font-weight: 450;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  color: var(--color-slate-50);
+}
+
+.hero-eye {
+  width: min(45%, 11rem);
+  margin-inline: auto 0;
+}
+
+@media (min-width: 64rem) {
+  .hero-eye {
+    width: min(100%, 24rem);
+    margin-inline: auto;
+  }
+}
+
+/* ---- Split sections ---- */
+.split-section {
+  display: grid;
+  gap: 2rem;
+  padding-block: 3rem 4rem;
+  border-top: 1px solid var(--color-slate-50);
+}
+
+@media (min-width: 64rem) {
+  .split-section {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 4rem;
+    padding-block: 3rem 6rem;
+  }
+
+  /* The heading rides along beside long content. */
+  .split-section > :first-child {
+    position: sticky;
+    top: 2rem;
+    align-self: start;
+  }
+}
+
+.split-heading {
+  font-size: clamp(2.25rem, 4.6vw, 3.6rem);
+  font-weight: 450;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--color-slate-50);
+  max-width: 12ch;
+}
+
+.split-body {
+  max-width: 44rem;
+}
+
+/* Rows in a section body, separated by hairlines. */
+.entry + .entry {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-slate-800);
+}
+
+.entry-title {
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-weight: 450;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-slate-50);
+}
+
+.entry-sub {
+  margin-top: 0.4rem;
+  font-size: 1.0625rem;
+  color: var(--color-slate-300);
+}
+
+.entry-text {
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-slate-300);
+}
+
+.entry-meta {
+  margin-top: 0.9rem;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--color-slate-500);
+}
+
+.entry-list {
+  margin-top: 1rem;
+  padding-left: 1.1rem;
+  list-style: disc;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-slate-300);
+}
+
+.entry-list li + li {
+  margin-top: 0.6rem;
+}
+
+.entry-list li::marker {
+  color: var(--color-slate-600);
+}
+
+/* Label/value rows, like a spec sheet. */
+.spec-list > div {
+  display: grid;
+  gap: 0.35rem 2rem;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--color-slate-800);
+}
+
+.spec-list > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (min-width: 40rem) {
+  .spec-list > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+}
+
+.spec-list dt {
+  padding-top: 0.3rem;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-slate-500);
+}
+
+.spec-list dd {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-slate-300);
+}
+
+/* ---- Floating pill navigation (components/PillNav.astro) ---- */
+.pill-nav {
   position: fixed;
-  inset: 0;
-  z-index: 999;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.15) 0px,
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  mix-blend-mode: multiply;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 50;
+  display: flex;
+  gap: 0.15rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  translate: -50% 0;
+  background: color-mix(in oklab, var(--color-slate-50) 84%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 30px -12px rgb(0 0 0 / 0.4);
 }
 
-[data-signal="on"] .scanlines {
-  display: block;
+.pill-nav a {
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: color-mix(in oklab, var(--color-slate-950) 72%, var(--color-slate-50));
+  transition:
+    color 0.2s ease,
+    background-color 0.25s ease;
 }
 
-.signal-only {
+.pill-nav a:hover {
+  color: var(--color-slate-950);
+}
+
+.pill-nav a[aria-current] {
+  background: var(--color-slate-950);
+  color: var(--color-slate-50);
+}
+
+@media (min-width: 40rem) {
+  .pill-nav a {
+    padding-inline: 1.15rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* ---- Section markers down the right edge (scripts/sections.ts) ---- */
+.section-markers {
   display: none;
 }
 
-[data-signal="on"] .signal-only {
-  display: revert;
-}
-
-[data-signal="on"] .hide-in-signal {
-  display: none;
-}
-
-@keyframes crt-flicker {
-  0%,
-  96%,
-  100% {
-    opacity: 1;
-  }
-  97% {
-    opacity: 0.94;
-  }
-  98% {
-    opacity: 1;
-  }
-  99% {
-    opacity: 0.97;
+@media (min-width: 64rem) {
+  .section-markers {
+    position: fixed;
+    right: 1rem;
+    top: 50%;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    translate: 0 -50%;
   }
 }
 
-@keyframes signal-blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
-  }
+.section-marker {
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1.5px solid var(--color-slate-500);
+  cursor: pointer;
+  transition:
+    height 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
-.signal-cursor {
-  animation: signal-blink 1s steps(1) infinite;
+.section-marker:hover {
+  border-color: var(--color-slate-50);
 }
 
-@keyframes trace-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-signal="on"] body {
-    animation: none;
-  }
+.section-marker[aria-current] {
+  height: 1.3rem;
+  border-color: var(--color-accent);
+  background: var(--color-accent);
 }

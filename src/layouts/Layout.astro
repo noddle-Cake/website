@@ -1,11 +1,11 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
+import PillNav from '../components/PillNav.astro';
 import Footer from '../components/Footer.astro';
 import Dreamscape from '../components/Dreamscape.astro';
-import PageRail from '../components/PageRail.astro';
 import { profile } from '../data/profile';
-import { looks, palettes, DEFAULT_LOOK, DEFAULT_PALETTE } from '../data/appearance';
+import { palettes, DEFAULT_PALETTE } from '../data/appearance';
 
 interface Props {
   title?: string;
@@ -14,12 +14,11 @@ interface Props {
 }
 
 const { title = profile.name, quietBackdrop = false } = Astro.props;
-const lookIds = looks.map((l) => l.id);
 const paletteIds = palettes.map((p) => p.id);
 ---
 
 <!doctype html>
-<html lang="en" data-look={DEFAULT_LOOK} data-palette={DEFAULT_PALETTE}>
+<html lang="en" data-palette={DEFAULT_PALETTE}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,51 +31,42 @@ const paletteIds = palettes.map((p) => p.id);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@400..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
-    <script is:inline define:vars={{ lookIds, paletteIds }}>
-      // Apply the look and palette before first paint (theme-init.js does the same for light/dark).
-      // The look is a saved preference: blueprint (the server-rendered default) until a visitor picks
-      // another in the footer. The palette is picked at random once per visit (browser tab session),
-      // so pages within a visit stay consistent but each new visit gets new colors.
+    <script is:inline define:vars={{ paletteIds }}>
+      // Pick the palette before first paint (theme-init.js does the same for light/dark): once per
+      // visit (browser tab session), so pages within a visit stay consistent.
+      let id = null;
       try {
-        const look = localStorage.getItem('look');
-        if (look && lookIds.includes(look)) document.documentElement.dataset.look = look;
+        id = sessionStorage.getItem('palette');
       } catch (e) {
-        // localStorage unavailable — the server-rendered default stays
+        // sessionStorage unavailable — still pick at random for this page
       }
-      function pickForVisit(key, ids) {
-        let id = null;
+      if (!id || !paletteIds.includes(id)) {
+        id = paletteIds[Math.floor(Math.random() * paletteIds.length)];
         try {
-          id = sessionStorage.getItem(key);
+          sessionStorage.setItem('palette', id);
         } catch (e) {
-          // sessionStorage unavailable — still pick at random for this page
+          // ignore — the next page just rolls again
         }
-        if (!id || !ids.includes(id)) {
-          id = ids[Math.floor(Math.random() * ids.length)];
-          try {
-            sessionStorage.setItem(key, id);
-          } catch (e) {
-            // ignore — the next page just rolls again
-          }
-        }
-        return id;
       }
-      document.documentElement.dataset.palette = pickForVisit('palette', paletteIds);
+      document.documentElement.dataset.palette = id;
     </script>
     <script is:inline src="/theme-init.js"></script>
   </head>
   <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-accent selection:text-slate-950">
+    <a href="#main" class="skip-link">Skip to content</a>
     <Dreamscape quiet={quietBackdrop} />
-    <div class="scanlines"></div>
     <Nav />
-    <main id="main" class="flex-1 w-full max-w-5xl mx-auto px-6 py-12">
+    <main id="main" class="page-frame flex-1">
       <slot />
     </main>
     <Footer />
-    <PageRail />
+    <PillNav />
+    <nav class="section-markers" aria-label="Sections" data-section-markers></nav>
     <script>
       import '../scripts/reveal';
+      import '../scripts/sections';
     </script>
   </body>
 </html>

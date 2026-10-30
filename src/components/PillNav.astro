@@ -1,0 +1,20 @@
+---
+// The floating pill of links at the bottom of every page. scripts/sections.ts lights up the link
+// whose `data-spy` matches the section in view, or, on pages without one, whose `data-paths` match.
+const links = [
+  { href: '/', label: 'Home', spy: 'top', paths: '/' },
+  { href: '/#about', label: 'About', spy: 'about' },
+  { href: '/#experience', label: 'Experience', spy: 'experience' },
+  { href: '/#projects', label: 'Work', spy: 'projects', paths: '/projects /vas-demo' },
+];
+---
+
+<nav class="pill-nav" aria-label="Primary">
+  {
+    links.map((link) => (
+      <a href={link.href} data-spy={link.spy} data-paths={link.paths}>
+        {link.label}
+      </a>
+    ))
+  }
+</nav>
