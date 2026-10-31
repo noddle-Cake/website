@@ -1,0 +1,31 @@
+---
+// A word that builds itself on load: each letter drifts in from a scattered, tilted spot as a fine
+// outline, settles, then fills with ink, while a guideline draws under the word and fades. Letters
+// are staggered so the word completes about `start` + 0.55s after load. Screen readers get the plain word.
+interface Props {
+  text: string;
+  /** When the first letter starts, in ms. */
+  start?: number;
+  /** Gap between letters, in ms. */
+  step?: number;
+}
+
+const { text, start = 0, step = 45 } = Astro.props;
+
+// Deterministic scatter per letter, so the build looks hand-placed but is the same on every load.
+const letters = [...text].map((ch, i) => {
+  const r = (n: number) => Math.sin((i + 1) * 12.9898 + n * 78.233 + text.length) * 43758.5453 % 1;
+  return {
+    ch,
+    style: [
+      `--delay: ${start + i * step}ms`,
+      `--dx: ${(r(1) * 0.35).toFixed(3)}em`,
+      `--dy: ${(0.25 + Math.abs(r(2)) * 0.35).toFixed(3)}em`,
+      `--rot: ${(r(3) * 14).toFixed(1)}deg`,
+    ].join('; '),
+  };
+});
+const guide = `--delay: ${start}ms; --span: ${(text.length - 1) * step + 550}ms`;
+---
+
+<span class="build-word" style={guide}><span class="sr-only">{text}</span><span aria-hidden="true">{letters.map((l) => <span class="build-letter" style={l.style}>{l.ch}</span>)}</span></span>

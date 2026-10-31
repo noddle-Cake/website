@@ -1,0 +1,145 @@
+---
+// A clean, still showcase of project screenshots in the hero: a print with rounded
+// corners and a soft shadow, a short caption, and thin progress bars that fill while each exhibit
+// is up. It cross-fades between exhibits and keeps the hero's featured-project label
+// ([data-spotlight] in index.astro) in step, so the label reads as the exhibit's caption. Clicking
+// the print opens the exhibit's demo.
+import type { ImageMetadata } from 'astro';
+
+export interface Exhibit {
+  title: string;
+  tagline: string;
+  medium: string;
+  href: string;
+  details: string;
+  image: ImageMetadata;
+  alt: string;
+}
+
+interface Props {
+  exhibits: Exhibit[];
+}
+
+const { exhibits } = Astro.props;
+// The script swaps these into the label and the caption as exhibits change.
+const data = exhibits.map(({ title, tagline, medium, href, details }) => ({ title, tagline, medium, href, details }));
+const first = exhibits[0];
+const external = (href: string) => href.startsWith('http');
+---
+
+<figure class="gallery" data-gallery={JSON.stringify(data)}>
+  <a
+    class="gallery-print-link"
+    href={first.href}
+    target={external(first.href) ? '_blank' : undefined}
+    rel={external(first.href) ? 'noopener noreferrer' : undefined}
+    aria-label={`${first.title}: open the demo`}
+    data-gallery-link
+  >
+    {
+      exhibits.map((e, i) => (
+        <img
+          src={e.image.src}
+          width={e.image.width}
+          height={e.image.height}
+          alt={e.alt}
+          loading={i === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          class:list={['gallery-print', { 'is-active': i === 0 }]}
+        />
+      ))
+    }
+  </a>
+  <figcaption class="gallery-caption">
+    <span class="gallery-title" data-gallery-title>{first.title}</span>
+    <span class="gallery-medium" data-gallery-medium>{first.medium}</span>
+  </figcaption>
+  {
+    exhibits.length > 1 && (
+      <div class="gallery-progress" role="group" aria-label="Exhibits">
+        {exhibits.map((e, i) => (
+          <button
+            type="button"
+            class:list={['gallery-step', { 'is-active': i === 0 }]}
+            aria-label={`Show ${e.title}`}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            data-gallery-step={i}
+          >
+            <span class="gallery-step-fill" />
+          </button>
+        ))}
+      </div>
+    )
+  }
+</figure>
+
+<script>
+  type Exhibit = { title: string; tagline: string; medium: string; href: string; details: string };
+
+  // The active progress bar's fill animation times each exhibit (and pauses on hover, in CSS);
+  // when it finishes the next exhibit comes up. With reduced motion there's no fill, so no rotation.
+  function initGallery() {
+    const gallery = document.querySelector<HTMLElement>('[data-gallery]');
+    if (!gallery) return;
+    const exhibits: Exhibit[] = JSON.parse(gallery.dataset.gallery ?? '[]');
+    if (exhibits.length < 2) return;
+    const prints = [...gallery.querySelectorAll<HTMLImageElement>('.gallery-print')];
+    const steps = [...gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-step]')];
+    const link = gallery.querySelector<HTMLAnchorElement>('[data-gallery-link]')!;
+    const title = gallery.querySelector<HTMLElement>('[data-gallery-title]')!;
+    const medium = gallery.querySelector<HTMLElement>('[data-gallery-medium]')!;
+    const label = document.querySelector<HTMLElement>('[data-spotlight]');
+    let current = 0;
+
+    const setLink = (a: HTMLAnchorElement | null, href: string) => {
+      if (!a) return;
+      a.href = href;
+      if (href.startsWith('http')) {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      } else {
+        a.removeAttribute('target');
+        a.removeAttribute('rel');
+      }
+    };
+
+    const show = (next: number) => {
+      current = next;
+      const e = exhibits[next];
+      prints.forEach((p, i) => p.classList.toggle('is-active', i === next));
+      steps.forEach((s, i) => {
+        s.classList.remove('is-active', 'is-done');
+        if (i < next) s.classList.add('is-done');
+        s.setAttribute('aria-pressed', String(i === next));
+      });
+      // Restart the fill even when the same bar is picked again.
+      void steps[next].offsetWidth;
+      steps[next].classList.add('is-active');
+      setLink(link, e.href);
+      link.setAttribute('aria-label', `${e.title}: open the demo`);
+      gallery.classList.add('is-swapping');
+      label?.classList.add('is-swapping');
+      window.setTimeout(() => {
+        title.textContent = e.title;
+        medium.textContent = e.medium;
+        gallery.classList.remove('is-swapping');
+        if (label) {
+          label.querySelector('[data-spotlight-title]')!.textContent = e.title;
+          label.querySelector('[data-spotlight-text]')!.textContent = e.tagline;
+          setLink(label.querySelector('[data-spotlight-demo]'), e.href);
+          setLink(label.querySelector('[data-spotlight-details]'), e.details);
+          label.classList.remove('is-swapping');
+        }
+      }, 300);
+    };
+
+    steps.forEach((s, i) => {
+      s.addEventListener('click', () => show(i));
+      s.addEventListener('animationend', () => {
+        if (i === current) show((current + 1) % exhibits.length);
+      });
+    });
+  }
+
+  initGallery();
+</script>

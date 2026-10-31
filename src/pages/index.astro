@@ -1,14 +1,36 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import BuildWord from '../components/BuildWord.astro';
 import ProjectItem from '../components/ProjectItem.astro';
-import SurrealEye from '../components/SurrealEye.astro';
+import HeroGallery, { type Exhibit } from '../components/HeroGallery.astro';
+import gridmergePrint from '../assets/gallery/gridmerge.webp';
+import vasPrint from '../assets/gallery/vas.webp';
 import { profile } from '../data/profile';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 
 const allProjects = await getCollection('projects');
 const featured = allProjects
   .filter((p: CollectionEntry<'projects'>) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
+// Projects exhibited in the hero's frame, in order; the first is also the label shown on phones.
+const prints: Record<string, { image: ImageMetadata; alt: string }> = {
+  gridmerge: { image: gridmergePrint, alt: 'GridMerge map of planned U.S. grid projects, colored by utility' },
+  'vas-inventory-platform': { image: vasPrint, alt: 'VAS dashboard of purchase orders received but not yet reconciled' },
+};
+const exhibits: Exhibit[] = Object.entries(prints).flatMap(([id, print]) => {
+  const p = allProjects.find((project: CollectionEntry<'projects'>) => project.id === id);
+  if (!p) return [];
+  return [{
+    title: p.data.title.split(' — ')[0],
+    tagline: p.data.tagline,
+    medium: p.data.stack.slice(0, 3).join(', '),
+    href: p.data.demo || `#project-${p.id}`,
+    details: `#project-${p.id}`,
+    ...print,
+  }];
+});
+const spotlight = exhibits[0];
 
 const toolkit = [
   { label: 'Languages', items: profile.skills.languages },
@@ -22,8 +44,8 @@ const toolkit = [
     <div class="hero-grid">
       <div>
         <h1 class="hero-title">
-          <span data-reveal class="block">Engineer.</span>
-          <span data-reveal class="block">Builder.</span>
+          <span class="block"><BuildWord text="Engineer." /></span>
+          <span class="block"><BuildWord text="Builder." start={130} /></span>
           <span data-reveal class="block italic text-accent"><span class="melt">Signal&nbsp;chaser.</span></span>
         </h1>
         <p data-reveal class="lead mt-8 max-w-xl">{profile.tagline}</p>
@@ -31,9 +53,32 @@ const toolkit = [
           <a href={`mailto:${profile.email}`} class="ink-button">Get in touch &rarr;</a>
           <a href="#projects" class="arrow-link">See my work &rarr;</a>
         </div>
+        {
+          spotlight && (
+            <div data-reveal class="hero-spotlight" data-spotlight>
+              <p class="meta-row-label">Featured project</p>
+              <p class="hero-spotlight-title" data-spotlight-title>{spotlight.title}</p>
+              <p class="hero-spotlight-text" data-spotlight-text>{spotlight.tagline}</p>
+              <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+                <a
+                  href={spotlight.href}
+                  target={spotlight.href.startsWith('http') ? '_blank' : undefined}
+                  rel={spotlight.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  class="arrow-link text-accent"
+                  data-spotlight-demo
+                >
+                  Live demo &rarr;
+                </a>
+                <a href={spotlight.details} class="arrow-link" data-spotlight-details>
+                  Details &rarr;
+                </a>
+              </div>
+            </div>
+          )
+        }
       </div>
-      <div data-reveal class="hero-eye">
-        <SurrealEye />
+      <div data-reveal class="hero-art">
+        <HeroGallery exhibits={exhibits} />
       </div>
     </div>
     <div data-reveal class="meta-row mt-16">
