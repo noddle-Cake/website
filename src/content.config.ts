@@ -9,6 +9,8 @@ const projects = defineCollection({
     code: z.string().optional().default(''),
     stack: z.array(z.string()),
     summary: z.string(),
+    /** One-line pitch, for when the project is spotlighted in the hero. */
+    tagline: z.string().optional().default(''),
     github: z.string().optional().default(''),
     demo: z.string().optional().default(''),
     featured: z.boolean().default(false),
