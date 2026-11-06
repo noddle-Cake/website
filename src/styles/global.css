@@ -1,132 +1,58 @@
 @import "tailwindcss";
-@import "./palettes.css";
 @source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
+
+/*
+ * ---- Tokens ----
+ * One look: black monospace on white, one weight, square corners. The sun and clouds are the only
+ * colour. The slate-* ramp is plain grey (950 = page, 50 = strongest text), and `static` keeps every
+ * variable emitted because the canvas widgets read some of them from JS (scripts/courses/canvas.ts).
+ */
+@theme static {
+  --color-slate-950: #ffffff; /* page background */
+  --color-slate-900: #f6f6f6;
+  --color-slate-800: #e4e4e4; /* borders */
+  --color-slate-700: #d0d0d0; /* hover borders */
+  --color-slate-600: #a8a8a8;
+  --color-slate-500: #6e6e6e; /* quiet labels */
+  --color-slate-400: #565656; /* muted text */
+  --color-slate-300: #343434;
+  --color-slate-200: #222222;
+  --color-slate-100: #111111; /* body text */
+  --color-slate-50: #000000; /* strongest text */
+  --color-accent: #000000;
+
+  --font-sans: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Flatten the utilities the course pages use, so they follow the look without markup changes. */
+  --font-weight-semibold: 500;
+  --font-weight-bold: 500;
+  --font-weight-extrabold: 500;
+  --tracking-tight: 0;
+  --tracking-wide: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --shadow-lg: none;
+}
 
 html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
-}
-
-/*
- * ---- Palette → Tailwind tokens ----
- * The active palette (data-palette on <html>, see palettes.css) supplies --light-* and --dark-*
- * values; these blocks pick the set for the current mode. Components only ever use the tokens
- * below, so swapping palettes never touches markup. `static` keeps every variable emitted
- * because the canvas widgets read some of them from JS (scripts/courses/canvas.ts).
- */
-@theme static {
-  --color-slate-950: var(--light-950); /* page background */
-  --color-slate-900: var(--light-900);
-  --color-slate-800: var(--light-800); /* cards, borders */
-  --color-slate-700: var(--light-700); /* hover borders */
-  --color-slate-600: var(--light-600);
-  --color-slate-500: var(--light-500);
-  --color-slate-400: var(--light-400); /* muted text */
-  --color-slate-300: var(--light-300);
-  --color-slate-200: var(--light-200);
-  --color-slate-100: var(--light-100); /* primary text */
-  --color-slate-50: var(--light-50);
-  --color-accent: var(--light-accent);
-  --color-accent-2: var(--light-accent-2);
-  --color-sky-top: var(--light-sky-top);
-  --color-sky-bottom: var(--light-sky-bottom);
-  --color-sun: var(--light-sun);
-  --color-cloud: var(--light-cloud);
-
-  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
-}
-
-:root {
-  /* Derived dreamscape colors — tuned per mode rather than per palette. */
-  --dream-sun-opacity: 0.9;
-  --dream-cloud-opacity: 0.95;
-  --dream-grain-opacity: 0.2;
-}
-
-/* Dark — applied when the system prefers dark AND no manual override is set */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-slate-950: var(--dark-950);
-    --color-slate-900: var(--dark-900);
-    --color-slate-800: var(--dark-800);
-    --color-slate-700: var(--dark-700);
-    --color-slate-600: var(--dark-600);
-    --color-slate-500: var(--dark-500);
-    --color-slate-400: var(--dark-400);
-    --color-slate-300: var(--dark-300);
-    --color-slate-200: var(--dark-200);
-    --color-slate-100: var(--dark-100);
-    --color-slate-50: var(--dark-50);
-    --color-accent: var(--dark-accent);
-    --color-accent-2: var(--dark-accent-2);
-    --color-sky-top: var(--dark-sky-top);
-    --color-sky-bottom: var(--dark-sky-bottom);
-    --color-sun: var(--dark-sun);
-    --color-cloud: var(--dark-cloud);
-    --dream-sun-opacity: 0.45;
-    --dream-cloud-opacity: 0.4;
-    --dream-grain-opacity: 0.1;
-  }
-}
-
-/* Manual override via the theme toggle (wins regardless of system preference) */
-:root[data-theme="dark"] {
-  --color-slate-950: var(--dark-950);
-  --color-slate-900: var(--dark-900);
-  --color-slate-800: var(--dark-800);
-  --color-slate-700: var(--dark-700);
-  --color-slate-600: var(--dark-600);
-  --color-slate-500: var(--dark-500);
-  --color-slate-400: var(--dark-400);
-  --color-slate-300: var(--dark-300);
-  --color-slate-200: var(--dark-200);
-  --color-slate-100: var(--dark-100);
-  --color-slate-50: var(--dark-50);
-  --color-accent: var(--dark-accent);
-  --color-accent-2: var(--dark-accent-2);
-  --color-sky-top: var(--dark-sky-top);
-  --color-sky-bottom: var(--dark-sky-bottom);
-  --color-sun: var(--dark-sun);
-  --color-cloud: var(--dark-cloud);
-  --dream-sun-opacity: 0.45;
-  --dream-cloud-opacity: 0.4;
-  --dream-grain-opacity: 0.1;
-}
-
-/* ---- Typography ---- */
-/* Headings get the soft, slightly "wonky" Fraunces cut; utilities (e.g. font-mono labels) still win. */
 @layer base {
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
-    font-variation-settings:
-      "SOFT" 100,
-      "WONK" 1;
+    font-weight: 400;
   }
 }
 
-.font-display {
-  font-variation-settings:
-    "SOFT" 100,
-    "WONK" 1;
-}
-
-/* Wonky italics swap in a hooked "l" that reads as "(" — keep italics soft but upright-shaped. */
-:is(h1, h2, h3, .font-display) :is(em, i, .italic) {
-  font-variation-settings:
-    "SOFT" 100,
-    "WONK" 0;
+/* Bare `rounded` and `rounded-full` aren't theme tokens, so square them off here. */
+.rounded,
+.rounded-full {
+  border-radius: 0;
 }
 
 section[id],
@@ -134,35 +60,7 @@ footer[id] {
   scroll-margin-top: 1rem;
 }
 
-/* ---- Scroll-reveal ---- */
-/* Things drift up out of a haze, like details surfacing in a dream. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(1rem);
-  filter: blur(6px);
-  transition:
-    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
-    filter 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  filter: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    transition: none;
-  }
-}
-
-/* ---- Dreamscape backdrop (components/Dreamscape.astro) ---- */
+/* ---- Backdrop (components/Dreamscape.astro) ---- */
 .dreamscape {
   position: fixed;
   inset: 0;
@@ -171,34 +69,18 @@ footer[id] {
   pointer-events: none;
 }
 
-/* The painted landscape; its horizon sits low so the sky stays calm behind the text. */
-.dream-sky {
-  position: absolute;
-  inset: 0;
-  background: var(--sky-day) center bottom / cover no-repeat, var(--color-sky-bottom);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .dream-sky {
-    background-image: var(--sky-night);
-  }
-}
-
-:root[data-theme="dark"] .dream-sky {
-  background-image: var(--sky-night);
-}
-
+/* The sun scrolls away with the top of the page, so text never has to cross it. */
 .dream-sun {
   position: absolute;
+  z-index: -1;
   top: 3.5rem;
   right: 0.25rem;
   width: clamp(7.5rem, 17vw, 13rem);
   height: auto;
-  opacity: var(--dream-sun-opacity);
   animation: dream-bob 14s ease-in-out infinite;
 }
 
-/* On wide screens the sun hangs in the gutter beside the content, above the section markers. */
+/* On wide screens the sun hangs in the gutter beside the content. */
 @media (min-width: 88rem) {
   .dream-sun {
     top: 4rem;
@@ -213,23 +95,8 @@ footer[id] {
   top: var(--top);
   width: var(--width);
   height: auto;
-  opacity: var(--dream-cloud-opacity);
   animation: dream-drift var(--duration) linear infinite;
   animation-delay: var(--delay);
-}
-
-.dream-grain {
-  position: absolute;
-  inset: 0;
-  opacity: var(--dream-grain-opacity);
-  mix-blend-mode: soft-light;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Quiet mode (lesson pages): keep the sky and grain, drop the moving parts. */
-.dreamscape.is-quiet .dream-sun,
-.dreamscape.is-quiet .dream-cloud {
-  display: none;
 }
 
 @keyframes dream-drift {
@@ -251,240 +118,14 @@ footer[id] {
   }
 }
 
-/* ---- Melting text ---- */
-/* The #melt SVG filter lives in Dreamscape.astro; it drips glyphs downward with slow noise. */
-.melt {
-  display: inline-block;
-  filter: url(#melt);
-  padding-bottom: 0.12em;
-}
-
-/* ---- The hero gallery (components/HeroGallery.astro) ---- */
-/* A still print set on the page: rounded corners, a hairline edge, a close soft shadow. */
-.gallery {
-  --gallery-hold: 7s;
-  margin: 0;
-}
-
-.gallery-print-link {
-  position: relative;
-  display: block;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: 0.875rem;
-  background: var(--color-slate-900);
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-slate-50) 14%, transparent),
-    0 1px 2px rgb(15 12 8 / 0.12),
-    0 4px 12px -4px rgb(15 12 8 / 0.2);
-}
-
-/* A faint sheen across the glass, and a hairline highlight on the top edge. */
-.gallery-print-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(125deg, rgb(255 255 255 / 0.16) 0%, transparent 32%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
-  pointer-events: none;
-}
-
-.gallery-print-link:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
-}
-
-.gallery-print {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.9s ease;
-}
-
-.gallery-print.is-active {
-  opacity: 1;
-}
-
-.gallery-caption {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 1.1rem;
-  transition: opacity 0.3s ease;
-}
-
-.gallery.is-swapping .gallery-caption {
-  opacity: 0;
-}
-
-.gallery-title {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  color: var(--color-slate-50);
-}
-
-.gallery-medium {
-  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: right;
-  color: var(--color-slate-300);
-}
-
-/* Thin bars, one per exhibit; the active one fills while it is shown. */
-.gallery-progress {
-  display: flex;
-  gap: 0.4rem;
-  margin-top: 0.8rem;
-}
-
-.gallery-step {
-  position: relative;
-  flex: 1;
-  height: 0.75rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.gallery-step::before,
-.gallery-step-fill {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 2px;
-  border-radius: 1px;
-  translate: 0 -50%;
-}
-
-.gallery-step::before {
-  background: color-mix(in oklab, var(--color-slate-50) 18%, transparent);
-}
-
-.gallery-step-fill {
-  display: block;
-  background: var(--color-slate-50);
-  transform: scaleX(0);
-  transform-origin: left;
-}
-
-.gallery-step.is-done .gallery-step-fill {
-  transform: scaleX(1);
-}
-
-.gallery-step.is-active .gallery-step-fill {
-  animation: gallery-fill var(--gallery-hold) linear forwards;
-}
-
-.gallery:hover .gallery-step-fill,
-.gallery:focus-within .gallery-step-fill {
-  animation-play-state: paused;
-}
-
-@keyframes gallery-fill {
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* The hero's featured-project label fades while it changes with the exhibit. */
-[data-spotlight] p,
-[data-spotlight] a {
-  transition: opacity 0.3s ease;
-}
-
-[data-spotlight].is-swapping p:not(.meta-row-label),
-[data-spotlight].is-swapping a {
-  opacity: 0;
-}
-
-/* Dynamic contrast (scripts/contrast.ts): a soft halo in the opposite tone, as strong as the shortfall. */
-[data-ink] {
-  text-shadow:
-    0 0 0.3em rgb(var(--halo-rgb, 0 0 0) / calc(var(--halo, 0) * 0.85)),
-    0 0 0.9em rgb(var(--halo-rgb, 0 0 0) / calc(var(--halo, 0) * 0.55));
-  transition: text-shadow 0.4s ease;
-}
-
-/* ---- Footer piazza: a receding checkerboard with a ball floating above its own shadow ---- */
-.dream-piazza {
-  position: relative;
-  height: 11rem;
-  overflow: hidden;
-}
-
-.dream-floor {
-  position: absolute;
-  inset: auto -60% 0;
-  height: 24rem;
-  background: repeating-conic-gradient(var(--color-slate-700) 0 25%, transparent 0 50%) 50% 100% / 80px 80px;
-  transform: perspective(24rem) rotateX(64deg);
-  transform-origin: 50% 100%;
-  mask-image: linear-gradient(to top, #000 15%, transparent 95%);
-}
-
-.dream-horizon {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--color-slate-700), transparent);
-}
-
-.dream-ball-shadow {
-  position: absolute;
-  bottom: 1.6rem;
-  right: calc(22% + 0.5rem);
-  width: 11rem;
-  height: 0.9rem;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--color-slate-50) 28%, transparent);
-  filter: blur(3px);
-  transform: skewX(-50deg);
-  transform-origin: right center;
-}
-
-.dream-ball {
-  position: absolute;
-  bottom: 3.4rem;
-  right: 22%;
-  width: 2.75rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 32% 30%,
-    color-mix(in oklab, var(--color-sun) 55%, white),
-    var(--color-accent) 58%,
-    color-mix(in oklab, var(--color-accent) 50%, black)
-  );
-  animation: dream-bob 6s ease-in-out infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .dream-sun,
-  .dream-cloud,
-  .dream-ball,
-  .gallery-step-fill {
+  .dream-cloud {
     animation: none;
-  }
-
-  .melt {
-    filter: none;
   }
 }
 
-/* ---- Editorial layout ---- */
-/* One wide frame; sections are a heavy rule with a big serif heading on the left and the content on
-   the right (stacked on small screens). Navigation is a floating pill at the bottom of the screen. */
+/* ---- Frame ---- */
 .page-frame {
   width: 100%;
   max-width: 78rem;
@@ -510,7 +151,6 @@ footer[id] {
   top: -4rem;
   z-index: 100;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
   background: var(--color-slate-50);
   color: var(--color-slate-950);
 }
@@ -519,64 +159,60 @@ footer[id] {
   top: 1rem;
 }
 
-.wordmark {
-  font-weight: 450;
-}
-
-.lead {
-  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
-  line-height: 1.6;
-  color: var(--color-slate-400);
-}
-
-/* Dark, softly rounded button; on hover it lifts off a hard shadow in the accent color. */
-.ink-button {
-  display: inline-flex;
+/* ---- Header and footer ---- */
+.site-header {
+  display: flex;
   align-items: center;
-  gap: 0.4em;
-  padding: 0.8rem 1.35rem;
-  border-radius: 0.6rem;
-  font-weight: 500;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.25rem;
+}
+
+.wordmark,
+.ink-button,
+.site-footer,
+.pill-nav,
+.hero-title,
+.split-heading,
+.row-head,
+.print-code,
+.row-links {
+  text-transform: uppercase;
+}
+
+.ink-button {
+  padding: 0.6rem 1rem;
   white-space: nowrap;
   background: var(--color-slate-50);
   color: var(--color-slate-950);
-  box-shadow: 0 8px 20px -10px rgb(0 0 0 / 0.45);
-  transition:
-    translate 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
 .ink-button:hover {
-  translate: -2px -2px;
-  box-shadow: 5px 6px 0 var(--color-accent);
+  background: var(--color-slate-300);
 }
 
-.arrow-link {
-  font-weight: 500;
-  color: var(--color-slate-50);
-  transition: color 0.2s ease;
-}
-
-.arrow-link:hover {
-  color: var(--color-accent);
-}
-
-.meta-row,
-.meta-row-label {
-  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 2rem;
+  /* Clears the fixed navigation at the bottom of the screen. */
+  padding-block: 4rem 6rem;
+  font-size: 0.875rem;
   color: var(--color-slate-500);
 }
 
-.meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.5rem 2rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-slate-800);
+.site-footer a:hover {
+  color: var(--color-slate-50);
+}
+
+.text-link {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.text-link:hover {
+  color: var(--color-slate-500);
 }
 
 /* ---- Hero ---- */
@@ -607,149 +243,61 @@ footer[id] {
 }
 
 .hero-title {
-  font-size: clamp(3.25rem, 9vw, 7rem);
-  font-weight: 450;
-  line-height: 0.98;
-  letter-spacing: -0.03em;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.1;
   color: var(--color-slate-50);
 }
 
-/* Words that build themselves (components/BuildWord.astro): letters drift in as outlines, then ink in. */
-.build-word {
-  position: relative;
-  display: inline-block;
-}
-
-/* The guideline drawn under the word while it is being built. */
-.build-word::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.1em;
-  height: 1px;
-  background: var(--color-slate-50);
-  transform-origin: left;
-  animation: build-guide var(--span) cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay) both;
-}
-
-.build-letter {
-  display: inline-block;
-  /* Room above and below so a filtered letter never clips its own descender or accent. */
-  padding-block: 0.2em;
-  margin-block: -0.2em;
-  animation: build-letter 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay) both;
-}
-
-@keyframes build-letter {
-  0% {
-    opacity: 0;
-    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.86);
-    filter: blur(5px);
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--color-slate-50);
-  }
-  45% {
-    opacity: 1;
-    transform: none;
-    filter: blur(0);
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--color-slate-50);
-  }
-  100% {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    color: var(--color-slate-50);
-    -webkit-text-stroke: 0 transparent;
-  }
-}
-
-@keyframes build-guide {
-  0% {
-    transform: scaleX(0);
-    opacity: 0.5;
-  }
-  60% {
-    transform: scaleX(1);
-    opacity: 0.35;
-  }
-  100% {
-    transform: scaleX(1);
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .build-letter,
-  .build-word::after {
-    animation: none;
-  }
-
-  .build-word::after {
-    opacity: 0;
-  }
-}
-
-/* One project pulled up into the hero, set off by a thin accent rule. */
-.hero-spotlight {
+.lead {
   max-width: 36rem;
   margin-top: 2rem;
-  padding-left: 1.1rem;
-  border-left: 2px solid var(--color-accent);
+  line-height: 1.6;
+  color: var(--color-slate-300);
 }
 
-.hero-spotlight .meta-row-label {
-  color: var(--color-slate-400);
+/* Two prints side by side, each labelled with a centred code. */
+.hero-art {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
 }
 
-.hero-spotlight-title {
-  margin-top: 0.35rem;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 450;
-  line-height: 1.2;
+.print {
+  display: block;
+  text-align: center;
+}
+
+.print img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--color-slate-950);
+  outline: 1px solid var(--color-slate-800);
+}
+
+.print-code {
+  display: block;
+  margin-top: 1rem;
   color: var(--color-slate-50);
 }
 
-.hero-spotlight-text {
-  margin-top: 0.3rem;
-  line-height: 1.55;
-  color: var(--color-slate-400);
-}
-
-/* On phones the featured project stands in for the gallery. */
-.hero-art {
-  display: none;
-  width: min(80%, 24rem);
-  margin-inline: auto;
-}
-
-@media (min-width: 40rem) {
-  .hero-art {
-    display: block;
-  }
-}
-
-@media (min-width: 64rem) {
-  .hero-art {
-    width: min(100%, 27rem);
-  }
+.print:hover .print-code {
+  color: var(--color-slate-500);
 }
 
 /* ---- Split sections ---- */
 .split-section {
   display: grid;
-  gap: 2rem;
-  padding-block: 3rem 4rem;
-  border-top: 1px solid var(--color-slate-50);
+  gap: 1.5rem;
+  padding-block: 3rem;
 }
 
 @media (min-width: 64rem) {
   .split-section {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: 4rem;
-    padding-block: 3rem 6rem;
+    padding-block: 4rem;
   }
 
   /* The heading rides along beside long content. */
@@ -761,185 +309,112 @@ footer[id] {
 }
 
 .split-heading {
-  font-size: clamp(2.25rem, 4.6vw, 3.6rem);
-  font-weight: 450;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  color: var(--color-slate-50);
-  max-width: 12ch;
-}
-
-.split-body {
-  max-width: 44rem;
-}
-
-/* Rows in a section body, separated by hairlines. */
-.entry + .entry {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--color-slate-800);
-}
-
-.entry-title {
-  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
-  font-weight: 450;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-size: 1rem;
+  padding-block: 0.75rem;
   color: var(--color-slate-50);
 }
 
-.entry-sub {
-  margin-top: 0.4rem;
-  font-size: 1.0625rem;
-  color: var(--color-slate-300);
+/* ---- Rows (components/Row.astro) ---- */
+.row-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem 1.5rem;
+  padding-block: 0.75rem;
+  color: var(--color-slate-50);
 }
 
-.entry-text {
-  margin-top: 0.75rem;
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  color: var(--color-slate-300);
+summary.row-head {
+  cursor: pointer;
+  list-style: none;
 }
 
-.entry-meta {
-  margin-top: 0.9rem;
-  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
+summary.row-head::-webkit-details-marker {
+  display: none;
+}
+
+/* The plus sign, which turns into a minus while the row is open. */
+summary.row-head::after {
+  content: "+";
+  order: 3;
+}
+
+details[open] > summary.row-head::after {
+  content: "\2212";
+}
+
+summary.row-head:hover {
   color: var(--color-slate-500);
 }
 
-.entry-list {
-  margin-top: 1rem;
-  padding-left: 1.1rem;
-  list-style: disc;
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  color: var(--color-slate-300);
+.row-code {
+  flex: none;
+  width: 4.5rem;
 }
 
-.entry-list li + li {
-  margin-top: 0.6rem;
+.row-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
 }
 
-.entry-list li::marker {
-  color: var(--color-slate-600);
-}
-
-/* Label/value rows, like a spec sheet. */
-.spec-list > div {
-  display: grid;
-  gap: 0.35rem 2rem;
-  padding-block: 1.25rem;
-  border-top: 1px solid var(--color-slate-800);
-}
-
-.spec-list > div:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-
-@media (min-width: 40rem) {
-  .spec-list > div {
-    grid-template-columns: 11rem minmax(0, 1fr);
-  }
-}
-
-.spec-list dt {
-  padding-top: 0.3rem;
-  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.row-meta {
+  flex: none;
   color: var(--color-slate-500);
 }
 
-.spec-list dd {
-  font-size: 1.0625rem;
+.row-body {
+  max-width: 40rem;
+  padding-block: 0.25rem 1.5rem;
   line-height: 1.6;
   color: var(--color-slate-300);
 }
 
-/* ---- Floating pill navigation (components/PillNav.astro) ---- */
+.row-note {
+  margin-top: 0.75rem;
+  color: var(--color-slate-500);
+}
+
+.row-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.row-list {
+  margin-top: 0.75rem;
+}
+
+.row-list li + li {
+  margin-top: 0.75rem;
+}
+
+/* ---- Navigation at the bottom of the screen (components/PillNav.astro) ---- */
 .pill-nav {
   position: fixed;
-  bottom: max(1rem, env(safe-area-inset-bottom));
-  left: 50%;
+  inset: auto 0 0;
   z-index: 50;
   display: flex;
-  gap: 0.15rem;
-  padding: 0.3rem;
-  border-radius: 999px;
-  translate: -50% 0;
-  background: color-mix(in oklab, var(--color-slate-50) 84%, transparent);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 14px 30px -12px rgb(0 0 0 / 0.4);
+  justify-content: center;
+  padding-block: 0.5rem max(0.75rem, env(safe-area-inset-bottom));
+  background: var(--color-slate-950);
 }
 
 .pill-nav a {
-  padding: 0.55rem 0.85rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.8125rem;
   white-space: nowrap;
-  color: color-mix(in oklab, var(--color-slate-950) 72%, var(--color-slate-50));
-  transition:
-    color 0.2s ease,
-    background-color 0.25s ease;
+  color: var(--color-slate-500);
+  transition: color 0.2s ease;
 }
 
-.pill-nav a:hover {
-  color: var(--color-slate-950);
-}
-
+.pill-nav a:hover,
 .pill-nav a[aria-current] {
-  background: var(--color-slate-950);
   color: var(--color-slate-50);
 }
 
 @media (min-width: 40rem) {
   .pill-nav a {
-    padding-inline: 1.15rem;
-    font-size: 0.9375rem;
+    padding-inline: 0.75rem;
+    font-size: 1rem;
   }
-}
-
-/* ---- Section markers down the right edge (scripts/sections.ts) ---- */
-.section-markers {
-  display: none;
-}
-
-@media (min-width: 64rem) {
-  .section-markers {
-    position: fixed;
-    right: 1rem;
-    top: 50%;
-    z-index: 40;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.85rem;
-    translate: 0 -50%;
-  }
-}
-
-.section-marker {
-  width: 0.5rem;
-  height: 0.5rem;
-  border: 1.5px solid var(--color-slate-500);
-  cursor: pointer;
-  transition:
-    height 0.3s ease,
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.section-marker:hover {
-  border-color: var(--color-slate-50);
-}
-
-.section-marker[aria-current] {
-  height: 1.3rem;
-  border-color: var(--color-accent);
-  background: var(--color-accent);
 }

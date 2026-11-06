@@ -10,15 +10,13 @@ const allProjects = (await getCollection('projects')).sort(
 
 <Layout title="Projects">
   <section id="projects" data-section="Projects" class="split-section">
-    <div class="split-heading-wrap">
-      <h1 data-reveal class="split-heading">Everything I&rsquo;ve built</h1>
-      <p data-reveal class="meta-row-label mt-6">{allProjects.length} projects</p>
-    </div>
+    <h1 class="split-heading">Projects</h1>
     <div class="split-body">
       {
         allProjects.map((project) => (
           <ProjectItem
             id={project.id}
+            code={project.data.code}
             title={project.data.title}
             stack={project.data.stack}
             summary={project.data.summary}

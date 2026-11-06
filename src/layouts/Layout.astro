@@ -5,20 +5,18 @@ import PillNav from '../components/PillNav.astro';
 import Footer from '../components/Footer.astro';
 import Dreamscape from '../components/Dreamscape.astro';
 import { profile } from '../data/profile';
-import { palettes, DEFAULT_PALETTE } from '../data/appearance';
 
 interface Props {
   title?: string;
-  /** Calmer backdrop (no sun or drifting clouds) for long-form reading pages. */
+  /** No sun or drifting clouds, for long-form reading pages. */
   quietBackdrop?: boolean;
 }
 
 const { title = profile.name, quietBackdrop = false } = Astro.props;
-const paletteIds = palettes.map((p) => p.id);
 ---
 
 <!doctype html>
-<html lang="en" data-palette={DEFAULT_PALETTE}>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,28 +29,8 @@ const paletteIds = palettes.map((p) => p.id);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
-    <script is:inline define:vars={{ paletteIds }}>
-      // Pick the palette before first paint (theme-init.js does the same for light/dark): once per
-      // visit (browser tab session), so pages within a visit stay consistent.
-      let id = null;
-      try {
-        id = sessionStorage.getItem('palette');
-      } catch (e) {
-        // sessionStorage unavailable — still pick at random for this page
-      }
-      if (!id || !paletteIds.includes(id)) {
-        id = paletteIds[Math.floor(Math.random() * paletteIds.length)];
-        try {
-          sessionStorage.setItem('palette', id);
-        } catch (e) {
-          // ignore — the next page just rolls again
-        }
-      }
-      document.documentElement.dataset.palette = id;
-    </script>
-    <script is:inline src="/theme-init.js"></script>
   </head>
   <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-accent selection:text-slate-950">
     <a href="#main" class="skip-link">Skip to content</a>
@@ -63,11 +41,8 @@ const paletteIds = palettes.map((p) => p.id);
     </main>
     <Footer />
     <PillNav />
-    <nav class="section-markers" aria-label="Sections" data-section-markers></nav>
     <script>
-      import '../scripts/reveal';
       import '../scripts/sections';
-      import '../scripts/contrast';
     </script>
   </body>
 </html>
