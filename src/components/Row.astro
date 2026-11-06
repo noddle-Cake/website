@@ -1,0 +1,36 @@
+---
+// One line of a list: an optional code, a title and a right-aligned note. Anything passed as
+// children folds away behind a plus sign, so the page stays bare until someone asks for more.
+interface Props {
+  title: string;
+  code?: string;
+  meta?: string;
+  id?: string;
+}
+
+const { title, code, meta, id } = Astro.props;
+const hasBody = Astro.slots.has('default');
+---
+
+{
+  hasBody ? (
+    <details id={id} class="row">
+      <summary class="row-head">
+        {code && <span class="row-code">{code}</span>}
+        <h3 class="row-title">{title}</h3>
+        {meta && <span class="row-meta">{meta}</span>}
+      </summary>
+      <div class="row-body">
+        <slot />
+      </div>
+    </details>
+  ) : (
+    <div id={id} class="row">
+      <div class="row-head">
+        {code && <span class="row-code">{code}</span>}
+        <h3 class="row-title">{title}</h3>
+        {meta && <span class="row-meta">{meta}</span>}
+      </div>
+    </div>
+  )
+}

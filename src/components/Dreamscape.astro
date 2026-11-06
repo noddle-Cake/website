@@ -1,17 +1,13 @@
 ---
-// Fixed, decorative backdrop behind every page, painted rather than drawn: a Monet sky in broken
-// colour over a Dalí plain with a low horizon (a night version in dark mode), a dripping
-// Basquiat-style sun, drifting oil-sketch clouds after Monet and Van Gogh, and a paper grain. The
-// paintings were made in PhotoCraft. Also hosts the shared #melt SVG filter other components use.
+// Decorative backdrop behind every page: a dripping painted sun at the top of the page and painted
+// clouds drifting across the screen. They are the only imagery in the site's look.
 import sun from '../assets/dream/sun.webp';
 import cloud1 from '../assets/dream/cloud-1.webp';
 import cloud2 from '../assets/dream/cloud-2.webp';
 import cloud3 from '../assets/dream/cloud-3.webp';
-import landscapeDay from '../assets/dream/landscape-day.webp';
-import landscapeNight from '../assets/dream/landscape-night.webp';
 
 interface Props {
-  /** Drop the sun and moving clouds — for pages meant for focused reading. */
+  /** Drop the backdrop entirely, for pages meant for focused reading. */
   quiet?: boolean;
 }
 
@@ -25,44 +21,23 @@ const clouds = [
 ];
 ---
 
-<div class:list={['dreamscape', { 'is-quiet': quiet }]} aria-hidden="true">
-  <div class="dream-sky" style={`--sky-day: url(${landscapeDay.src}); --sky-night: url(${landscapeNight.src})`}></div>
-  <img class="dream-sun" src={sun.src} width={sun.width} height={sun.height} alt="" decoding="async" />
-  {
-    clouds.map((c) => (
-      <img
-        class="dream-cloud"
-        src={c.image.src}
-        width={c.image.width}
-        height={c.image.height}
-        alt=""
-        decoding="async"
-        style={`--top: ${c.top}; --width: ${c.width}; --duration: ${c.duration}; --delay: ${c.delay}`}
-      />
-    ))
-  }
-  <div class="dream-grain"></div>
-</div>
-
-<svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="melt" x="-5%" y="-25%" width="110%" height="160%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.03 0.006" numOctaves="1" seed="7" result="noise">
-        <animate
-          attributeName="baseFrequency"
-          dur="18s"
-          values="0.03 0.006; 0.042 0.009; 0.03 0.006"
-          repeatCount="indefinite"></animate>
-      </feTurbulence>
-      <!-- A softened field bends the glyphs smoothly instead of roughening their edges. -->
-      <feGaussianBlur in="noise" stdDeviation="2" result="field"></feGaussianBlur>
-      <feDisplacementMap in="SourceGraphic" in2="field" scale="6" xChannelSelector="R" yChannelSelector="G"
-      ></feDisplacementMap>
-      <!-- Displacement doesn't anti-alias: blur a hair, then firm the alpha back up for smooth, crisp edges. -->
-      <feGaussianBlur stdDeviation="0.5"></feGaussianBlur>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="1.35" intercept="-0.12"></feFuncA>
-      </feComponentTransfer>
-    </filter>
-  </defs>
-</svg>
+{
+  !quiet && (
+    <>
+      <img class="dream-sun" src={sun.src} width={sun.width} height={sun.height} alt="" decoding="async" />
+      <div class="dreamscape" aria-hidden="true">
+        {clouds.map((c) => (
+          <img
+            class="dream-cloud"
+            src={c.image.src}
+            width={c.image.width}
+            height={c.image.height}
+            alt=""
+            decoding="async"
+            style={`--top: ${c.top}; --width: ${c.width}; --duration: ${c.duration}; --delay: ${c.delay}`}
+          />
+        ))}
+      </div>
+    </>
+  )
+}

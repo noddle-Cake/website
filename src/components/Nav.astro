@@ -1,14 +1,8 @@
 ---
 import { profile } from '../data/profile';
-import ThemeToggle from './ThemeToggle.astro';
 ---
 
-<header class="page-frame flex items-center justify-between gap-4 py-5">
-  <a href="/" class="wordmark font-display text-2xl sm:text-[1.7rem] tracking-tight text-slate-50">
-    Chris Servin<span class="text-accent">.</span>
-  </a>
-  <div class="flex items-center gap-2 sm:gap-3">
-    <ThemeToggle />
-    <a href={`mailto:${profile.email}`} class="ink-button text-sm">Get in touch</a>
-  </div>
+<header class="page-frame site-header">
+  <a href="/" class="wordmark">{profile.name}</a>
+  <a href={`mailto:${profile.email}`} class="ink-button">Get in touch</a>
 </header>

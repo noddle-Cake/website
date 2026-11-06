@@ -14,10 +14,9 @@ const quizId = `quiz-${Math.random().toString(36).slice(2, 9)}`;
 <div
   data-quiz
   data-quiz-id={quizId}
-  data-reveal
   class="not-prose border border-slate-800 rounded-lg p-5 my-8 bg-slate-900/30"
 >
-  <p class="font-mono text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Check your understanding</p>
+  <p class="font-mono text-xs uppercase text-slate-500 mb-3">Check your understanding</p>
   <p class="font-semibold text-slate-100 mb-4">{question}</p>
   <div class="grid gap-2">
     {

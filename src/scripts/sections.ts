@@ -1,21 +1,8 @@
-// Tracks which `main [data-section]` is in view. It marks the matching pill-nav link as current and
-// builds the column of square markers down the right edge (one per section, the current one a tall
-// accent bar; click one to jump there).
+// Tracks which `main [data-section]` is in view and marks the matching pill-nav link as current.
 
 function initSections() {
   const sections = [...document.querySelectorAll<HTMLElement>('[data-section]')];
-  const pillLinks = [...document.querySelectorAll<HTMLAnchorElement>('.pill-nav [data-spy]')];
-  const markerHost = document.querySelector<HTMLElement>('[data-section-markers]');
-
-  const markers = sections.map((section) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'section-marker';
-    button.setAttribute('aria-label', section.dataset.section ?? section.id);
-    button.addEventListener('click', () => section.scrollIntoView({ behavior: 'smooth' }));
-    return button;
-  });
-  if (markerHost && sections.length > 1) markerHost.replaceChildren(...markers);
+  const pillLinks = [...document.querySelectorAll<HTMLAnchorElement>('.pill-nav a')];
 
   const pathLink = pillLinks.find((link) =>
     (link.dataset.paths ?? '').split(' ').some((p) => p && (p === '/' ? location.pathname === '/' : location.pathname.startsWith(p)))
@@ -32,9 +19,8 @@ function initSections() {
     if (index === current) return;
     current = index;
 
-    markers.forEach((m, i) => m.toggleAttribute('aria-current', i === index));
     const spy = sections[index]?.id;
-    const active = pillLinks.find((link) => link.dataset.spy === spy) ?? (spy ? undefined : pathLink);
+    const active = spy ? pillLinks.find((link) => link.dataset.spy === spy) : pathLink;
     pillLinks.forEach((link) => (link === active ? link.setAttribute('aria-current', 'page') : link.removeAttribute('aria-current')));
   };
 

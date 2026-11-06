@@ -1,8 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import BuildWord from '../components/BuildWord.astro';
 import ProjectItem from '../components/ProjectItem.astro';
-import HeroGallery, { type Exhibit } from '../components/HeroGallery.astro';
+import Row from '../components/Row.astro';
 import gridmergePrint from '../assets/gallery/gridmerge.webp';
 import vasPrint from '../assets/gallery/vas.webp';
 import { profile } from '../data/profile';
@@ -13,30 +12,17 @@ const allProjects = await getCollection('projects');
 const featured = allProjects
   .filter((p: CollectionEntry<'projects'>) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
-// Projects exhibited in the hero's frame, in order; the first is also the label shown on phones.
+// Projects shown in the hero, in order, each labelled with its code and linking to its demo.
 const prints: Record<string, { image: ImageMetadata; alt: string }> = {
   gridmerge: { image: gridmergePrint, alt: 'GridMerge map of planned U.S. grid projects, colored by utility' },
   'vas-inventory-platform': { image: vasPrint, alt: 'VAS dashboard of purchase orders received but not yet reconciled' },
 };
-const exhibits: Exhibit[] = Object.entries(prints).flatMap(([id, print]) => {
+const exhibits = Object.entries(prints).flatMap(([id, print]) => {
   const p = allProjects.find((project: CollectionEntry<'projects'>) => project.id === id);
-  if (!p) return [];
-  return [{
-    title: p.data.title.split(' — ')[0],
-    tagline: p.data.tagline,
-    medium: p.data.stack.slice(0, 3).join(', '),
-    href: p.data.demo || `#project-${p.id}`,
-    details: `#project-${p.id}`,
-    ...print,
-  }];
+  return p ? [{ code: p.data.code, href: p.data.demo || `#project-${p.id}`, ...print }] : [];
 });
-const spotlight = exhibits[0];
 
-const toolkit = [
-  { label: 'Languages', items: profile.skills.languages },
-  { label: 'Frameworks & tools', items: profile.skills.frameworks },
-  { label: 'Systems', items: profile.skills.systems },
-];
+const skills = [...profile.skills.languages, ...profile.skills.frameworks, ...profile.skills.systems];
 ---
 
 <Layout>
@@ -44,116 +30,79 @@ const toolkit = [
     <div class="hero-grid">
       <div>
         <h1 class="hero-title">
-          <span class="block"><BuildWord text="Engineer." /></span>
-          <span class="block"><BuildWord text="Builder." start={130} /></span>
-          <span data-reveal class="block italic text-accent"><span class="melt">Signal&nbsp;chaser.</span></span>
+          <span class="block">Engineer.</span>
+          <span class="block">Builder.</span>
+          <span class="block">Signal&nbsp;chaser.</span>
         </h1>
-        <p data-reveal class="lead mt-8 max-w-xl">{profile.tagline}</p>
-        <div data-reveal class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-          <a href={`mailto:${profile.email}`} class="ink-button">Get in touch &rarr;</a>
-          <a href="#projects" class="arrow-link">See my work &rarr;</a>
-        </div>
+        <p class="lead">{profile.tagline}</p>
+      </div>
+      <div class="hero-art">
         {
-          spotlight && (
-            <div data-reveal class="hero-spotlight" data-spotlight>
-              <p class="meta-row-label">Featured project</p>
-              <p class="hero-spotlight-title" data-spotlight-title>{spotlight.title}</p>
-              <p class="hero-spotlight-text" data-spotlight-text>{spotlight.tagline}</p>
-              <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2">
-                <a
-                  href={spotlight.href}
-                  target={spotlight.href.startsWith('http') ? '_blank' : undefined}
-                  rel={spotlight.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  class="arrow-link text-accent"
-                  data-spotlight-demo
-                >
-                  Live demo &rarr;
-                </a>
-                <a href={spotlight.details} class="arrow-link" data-spotlight-details>
-                  Details &rarr;
-                </a>
-              </div>
-            </div>
-          )
+          exhibits.map((e) => (
+            <a
+              href={e.href}
+              target={e.href.startsWith('http') ? '_blank' : undefined}
+              rel={e.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              class="print"
+            >
+              <img src={e.image.src} width={e.image.width} height={e.image.height} alt={e.alt} decoding="async" />
+              <span class="print-code">{e.code}</span>
+            </a>
+          ))
         }
       </div>
-      <div data-reveal class="hero-art">
-        <HeroGallery exhibits={exhibits} />
-      </div>
-    </div>
-    <div data-reveal class="meta-row mt-16">
-      <span>Embedded &middot; Automation &middot; Web</span>
-      <span>Florida International University</span>
     </div>
   </section>
 
   <section id="about" data-section="About" class="split-section">
-    <h2 data-reveal class="split-heading">Who I&nbsp;am</h2>
+    <h2 class="split-heading">About</h2>
     <div class="split-body">
-      <dl class="spec-list">
-        <div data-reveal>
-          <dt>Company</dt>
-          <dd>
-            <a href={profile.company.url} target="_blank" rel="noopener noreferrer" class="arrow-link">
-              {profile.company.name} &nearr;
-            </a>
-            <span class="block text-slate-400">{profile.company.blurb}</span>
-          </dd>
-        </div>
-        {
-          profile.education.map((ed) => (
-            <div data-reveal>
-              <dt>{ed.date}</dt>
-              <dd>
-                <span class="text-slate-50">{ed.degree}</span>
-                <span class="block text-slate-400">{ed.school}</span>
-              </dd>
-            </div>
-          ))
-        }
-        {
-          toolkit.map((group) => (
-            <div data-reveal>
-              <dt>{group.label}</dt>
-              <dd>{group.items.join(', ')}</dd>
-            </div>
-          ))
-        }
-      </dl>
+      <Row title={profile.company.name}>
+        <p>{profile.company.blurb}</p>
+        <p class="row-links">
+          <a href={profile.company.url} target="_blank" rel="noopener noreferrer" class="text-link">Visit</a>
+        </p>
+      </Row>
+      {
+        profile.education.map((ed) => (
+          <Row title={ed.degree.split(',')[0]} meta={ed.date}>
+            <p>{ed.degree}</p>
+            <p class="row-note">{ed.school}</p>
+          </Row>
+        ))
+      }
+      <Row title="Skills">
+        <p>{skills.join(', ')}</p>
+      </Row>
     </div>
   </section>
 
   <section id="experience" data-section="Experience" class="split-section">
-    <h2 data-reveal class="split-heading">Where I&rsquo;ve worked</h2>
+    <h2 class="split-heading">Experience</h2>
     <div class="split-body">
       {
         profile.experience.map((job) => (
-          <article data-reveal class="entry">
-            <h3 class="entry-title">{job.org}</h3>
-            <p class="entry-sub">
-              {job.role} <span class="text-slate-500">&middot; {job.date}</span>
-            </p>
-            <ul class="entry-list">
+          <Row title={job.org} meta={job.date}>
+            <p>{job.role}</p>
+            <ul class="row-list">
               {job.highlights.map((highlight) => (
                 <li>{highlight}</li>
               ))}
             </ul>
-          </article>
+          </Row>
         ))
       }
     </div>
   </section>
 
   <section id="projects" data-section="Work" class="split-section">
-    <div class="split-heading-wrap">
-      <h2 data-reveal class="split-heading">What I&rsquo;ve built</h2>
-      <a data-reveal href="/projects" class="arrow-link mt-6 hidden lg:inline-block">All {allProjects.length} projects &rarr;</a>
-    </div>
+    <h2 class="split-heading">Work</h2>
     <div class="split-body">
       {
         featured.map((project: CollectionEntry<'projects'>) => (
           <ProjectItem
             id={project.id}
+            code={project.data.code}
             title={project.data.title}
             stack={project.data.stack}
             summary={project.data.summary}
@@ -162,7 +111,7 @@ const toolkit = [
           />
         ))
       }
-      <a href="/projects" class="arrow-link mt-10 inline-block lg:hidden">All {allProjects.length} projects &rarr;</a>
+      <p class="row-links"><a href="/projects" class="text-link">All {allProjects.length} projects</a></p>
     </div>
   </section>
 </Layout>

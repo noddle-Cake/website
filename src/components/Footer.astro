@@ -2,36 +2,9 @@
 import { profile } from '../data/profile';
 ---
 
-<footer id="contact" class="mt-12">
-  <div class="page-frame">
-    <section class="split-section">
-      <h2 data-reveal class="split-heading">
-        Let&rsquo;s build something that <em class="text-accent">actually works.</em>
-      </h2>
-      <div data-reveal class="split-body">
-        <p class="lead">
-          Embedded firmware, automation pipelines or an internal tool your team will actually use &mdash; I&rsquo;m happy
-          to talk it through.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-          <a href={`mailto:${profile.email}`} class="ink-button">Email me &rarr;</a>
-          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="arrow-link">LinkedIn &rarr;</a>
-          <a href={profile.company.url} target="_blank" rel="noopener noreferrer" class="arrow-link">
-            {profile.company.name} &rarr;
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <div class="meta-row mt-20 mb-10">
-      <span>&copy; {new Date().getFullYear()} {profile.name}</span>
-      <a href="#" class="hover:text-slate-100 transition-colors">Back to top &uarr;</a>
-    </div>
-  </div>
-  <div class="dream-piazza" aria-hidden="true">
-    <div class="dream-floor"></div>
-    <div class="dream-horizon"></div>
-    <div class="dream-ball-shadow"></div>
-    <div class="dream-ball"></div>
-  </div>
+<footer id="contact" class="page-frame site-footer">
+  <a href={`mailto:${profile.email}`}>Email</a>
+  <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  <a href={profile.company.url} target="_blank" rel="noopener noreferrer">{profile.company.name}</a>
+  <span>&copy; {new Date().getFullYear()} {profile.name}</span>
 </footer>

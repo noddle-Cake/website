@@ -1,6 +1,9 @@
 ---
+import Row from './Row.astro';
+
 interface Props {
   id: string;
+  code: string;
   title: string;
   stack: string[];
   summary: string;
@@ -8,34 +11,33 @@ interface Props {
   demo?: string;
 }
 
-const { id, title, stack, summary, github, demo } = Astro.props;
+const { id, code, title, stack, summary, github, demo } = Astro.props;
 // Demos on other sites open in a new tab; on-site demos (e.g. /vas-demo) stay in this one.
 const demoIsExternal = demo?.startsWith('http');
 ---
 
-<article id={`project-${id}`} data-reveal class="entry">
-  <h3 class="entry-title">{title}</h3>
-  <p class="entry-text">{summary}</p>
-  <p class="entry-meta">{stack.join(' · ')}</p>
+<Row id={`project-${id}`} code={code} title={title.split(' — ')[0]}>
+  <p>{summary}</p>
+  <p class="row-note">{stack.join(', ')}</p>
   {
     (demo || github) && (
-      <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+      <p class="row-links">
         {demo && (
           <a
             href={demo}
             target={demoIsExternal ? '_blank' : undefined}
             rel={demoIsExternal ? 'noopener noreferrer' : undefined}
-            class="arrow-link text-accent"
+            class="text-link"
           >
-            Live demo &rarr;
+            Demo
           </a>
         )}
         {github && (
-          <a href={github} target="_blank" rel="noopener noreferrer" class="arrow-link">
-            GitHub &rarr;
+          <a href={github} target="_blank" rel="noopener noreferrer" class="text-link">
+            GitHub
           </a>
         )}
-      </div>
+      </p>
     )
   }
-</article>
+</Row>
