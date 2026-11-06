@@ -9,10 +9,11 @@ interface Props {
   summary: string;
   github?: string;
   demo?: string;
+  caseStudy?: string;
 }
 
-const { id, code, title, stack, summary, github, demo } = Astro.props;
-// Demos on other sites open in a new tab; on-site demos (e.g. /vas-demo) stay in this one.
+const { id, code, title, stack, summary, github, demo, caseStudy } = Astro.props;
+// Demos on other sites open in a new tab; on-site demos stay in this one.
 const demoIsExternal = demo?.startsWith('http');
 ---
 
@@ -20,7 +21,7 @@ const demoIsExternal = demo?.startsWith('http');
   <p>{summary}</p>
   <p class="row-note">{stack.join(', ')}</p>
   {
-    (demo || github) && (
+    (demo || caseStudy || github) && (
       <p class="row-links">
         {demo && (
           <a
@@ -30,6 +31,11 @@ const demoIsExternal = demo?.startsWith('http');
             class="text-link"
           >
             Demo
+          </a>
+        )}
+        {caseStudy && (
+          <a href={caseStudy} class="text-link">
+            Before &amp; After
           </a>
         )}
         {github && (

@@ -238,7 +238,7 @@ footer[id] {
 
 @media (min-width: 64rem) {
   .hero-grid {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -255,11 +255,11 @@ footer[id] {
   color: var(--color-slate-300);
 }
 
-/* Two prints side by side, each labelled with a centred code. */
+/* The demos side by side, each labelled with a centred code. */
 .hero-art {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .print {
