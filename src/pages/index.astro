@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import ProjectItem from '../components/ProjectItem.astro';
 import Row from '../components/Row.astro';
 import gridmergePrint from '../assets/gallery/gridmerge.webp';
+import oncoraPrint from '../assets/gallery/oncora.webp';
 import vasPrint from '../assets/gallery/vas.webp';
 import { profile } from '../data/profile';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -12,15 +13,20 @@ const allProjects = await getCollection('projects');
 const featured = allProjects
   .filter((p: CollectionEntry<'projects'>) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
-// Projects shown in the hero, in order, each labelled with its code and linking to its demo.
+// Every project with a demo appears in the hero, labelled with its code and linking to the demo.
 const prints: Record<string, { image: ImageMetadata; alt: string }> = {
   gridmerge: { image: gridmergePrint, alt: 'GridMerge map of planned U.S. grid projects, colored by utility' },
+  oncora: { image: oncoraPrint, alt: 'Oncora compound input, with the steps from structure to targets, cell lines and evidence' },
   'vas-inventory-platform': { image: vasPrint, alt: 'VAS dashboard of purchase orders received but not yet reconciled' },
 };
-const exhibits = Object.entries(prints).flatMap(([id, print]) => {
-  const p = allProjects.find((project: CollectionEntry<'projects'>) => project.id === id);
-  return p ? [{ code: p.data.code, href: p.data.demo || `#project-${p.id}`, ...print }] : [];
-});
+const exhibits = allProjects
+  .filter((p: CollectionEntry<'projects'>) => p.data.demo)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p: CollectionEntry<'projects'>) => {
+    const print = prints[p.id];
+    if (!print) throw new Error(`Project "${p.id}" has a demo but no hero image in index.astro`);
+    return { code: p.data.code, href: p.data.demo, ...print };
+  });
 
 const skills = [...profile.skills.languages, ...profile.skills.frameworks, ...profile.skills.systems];
 ---
@@ -108,6 +114,7 @@ const skills = [...profile.skills.languages, ...profile.skills.frameworks, ...pr
             summary={project.data.summary}
             github={project.data.github}
             demo={project.data.demo}
+            caseStudy={project.data.caseStudy}
           />
         ))
       }

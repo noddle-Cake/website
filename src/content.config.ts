@@ -13,6 +13,8 @@ const projects = defineCollection({
     tagline: z.string().optional().default(''),
     github: z.string().optional().default(''),
     demo: z.string().optional().default(''),
+    /** On-site page going deeper on the project, e.g. a before-and-after comparison. */
+    caseStudy: z.string().optional().default(''),
     featured: z.boolean().default(false),
     order: z.number().default(100),
   }),
