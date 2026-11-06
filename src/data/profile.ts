@@ -13,7 +13,7 @@ export const profile = {
     {
       school: 'Florida International University',
       degree: 'M.S. Electrical Engineering, RF/Wireless Concentration',
-      date: 'Summer 2026',
+      date: 'Expected Spring 2028',
     },
     {
       school: 'Florida International University',
