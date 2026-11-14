@@ -377,19 +377,221 @@ article[id] {
   font-size: 1.0625rem;
 }
 
-/* A demo clip that links to the live demo (components/ProjectShot.astro). */
-.shot-link {
+/*
+ * A demo recording (components/ProjectShot.astro): the blurred preview as the box's background, the
+ * still fading in over it once loaded, and the video fading in over that once it's playing.
+ */
+.shot-media {
+  position: relative;
   display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: #fff;
+  background-position: top;
+  background-size: cover;
 }
 
-.shot-link video {
+.shot-media > :is(img, video) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.shot-media > img {
+  transition: opacity 0.4s ease;
+}
+
+.js .shot-media > img:not(.is-loaded) {
+  opacity: 0;
+}
+
+.shot-media > video {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.shot-media > video.is-playing {
+  opacity: 1;
+}
+
+.shot-link {
   transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.shot-link:hover video {
+.shot-link:hover {
   transform: translateY(-0.25rem);
+}
+
+/*
+ * ---- Demo player (components/ProjectShot.astro, scripts/demoPlayer.ts) ----
+ * Chapter pills above a desktop window and, for demos with a phone layout, an iPhone overlapping its
+ * lower right corner. The phone is drawn in container units, so its bezel, status bar and Dynamic
+ * Island scale with it.
+ */
+.demo {
+  width: 100%;
+}
+
+.demo-chapters {
+  display: none;
+}
+
+.js .demo-chapters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+}
+
+.demo-chapter {
+  position: relative;
+  overflow: hidden;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--color-slate-400);
+  background: rgb(0 0 0 / 0.05);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.demo-chapter:hover {
+  color: var(--color-slate-100);
+  background: rgb(0 0 0 / 0.09);
+}
+
+.demo-chapter[aria-pressed="true"] {
+  color: #fff;
+  background: var(--color-slate-100);
+}
+
+/* How far through the chapter: a hairline filling along the bottom of the active pill. */
+.demo-chapter::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: rgb(255 255 255 / 0.6);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+  opacity: 0;
+}
+
+.demo-chapter[aria-pressed="true"]::after {
+  opacity: 1;
+}
+
+.tile--dark .demo-chapter {
+  color: #a1a1a6;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.tile--dark .demo-chapter:hover {
+  color: #f5f5f7;
+  background: rgb(255 255 255 / 0.16);
+}
+
+.tile--dark .demo-chapter[aria-pressed="true"] {
+  color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+.tile--dark .demo-chapter::after {
+  background: rgb(0 0 0 / 0.4);
+}
+
+.demo-stage {
+  position: relative;
+}
+
+.demo-stage--phone .demo-window {
+  margin-right: 10%;
+}
+
+.demo-phone {
+  position: absolute;
+  right: 0;
+  bottom: 5%;
+  z-index: 1;
+  display: block;
+  width: 23%;
+  container-type: inline-size;
+}
+
+.phone-body {
+  display: block;
+  padding: 3.4cqw;
+  border-radius: 15.5cqw;
+  background: #1d1d1f;
+  box-shadow:
+    inset 0 0 0 0.9cqw #48484a,
+    0 1.5rem 3rem rgb(0 0 0 / 0.28);
+}
+
+.phone-screen {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 12.5cqw;
+  background: #fff;
+}
+
+.phone-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 12.5cqw;
+  padding: 0 7cqw 0 10cqw;
+  font: 600 4.3cqw/1 var(--font-sans);
+  color: #000;
+  background: #fff;
+}
+
+.phone-island {
+  position: absolute;
+  top: 2.5cqw;
+  left: 50%;
+  width: 28cqw;
+  height: 8cqw;
+  border-radius: 999px;
+  background: #000;
+  transform: translateX(-50%);
+}
+
+.phone-icons {
+  width: 16.5cqw;
+  height: auto;
+}
+
+.shot-media.phone-media {
+  aspect-ratio: 393 / 798;
+}
+
+/* Over a recording that has its own status bar, the island sits on the screen itself. */
+.phone-island--over {
+  z-index: 1;
+  top: 3cqw;
+}
+
+/* An app with no web version: just the phone, centred and larger. */
+.demo-stage--phone-only {
+  display: flex;
+  justify-content: center;
+  padding-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.demo-stage--phone-only .demo-phone {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: min(17rem, 62%);
 }
 
 /* The screenshot sits in a window frame that runs off the bottom edge of the tile. */
@@ -401,7 +603,8 @@ article[id] {
   padding-top: clamp(2rem, 4vw, 3rem);
 }
 
-.tile-shot :is(img, video) {
+.tile-shot > img,
+.tile-shot .demo-window > .shot-media {
   display: block;
   width: 100%;
   height: auto;
@@ -409,7 +612,7 @@ article[id] {
   box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.14);
 }
 
-.tile--half .tile-shot :is(img, video) {
+.tile--half .tile-shot > img {
   aspect-ratio: 16 / 10;
   object-fit: cover;
   object-position: top;
@@ -704,6 +907,11 @@ article[id] {
   outline-offset: 2px;
 }
 
+.card-visual:has(.demo) {
+  display: block;
+  aspect-ratio: auto;
+}
+
 .card-visual {
   display: flex;
   align-items: center;
@@ -712,7 +920,8 @@ article[id] {
   padding: 1.25rem 1.25rem 0;
 }
 
-.card-visual :is(img, video) {
+.card-visual > img,
+.card-visual .demo-window > .shot-media {
   width: 100%;
   height: 100%;
   border-radius: 0.75rem;

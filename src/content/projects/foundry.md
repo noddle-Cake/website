@@ -8,5 +8,5 @@ highlight:
   value: "63 s"
   label: "for a full five-agent run"
 featured: true
-order: 4
+order: 5
 ---

@@ -1,54 +1,137 @@
 ---
-// A project's picture: its demo recording when it has one (projectClips), otherwise its screenshot.
-// The video starts with only its poster loaded; scripts/sections.ts plays it while it's on screen and
-// leaves it still for visitors who ask for reduced motion. With `href` (the live demo) the clip is a
-// link to it; the visible "Try the demo" link already covers keyboard and screen-reader users, so
-// this one stays out of the tab order.
-import { projectClips, type ProjectShot } from '../data/projectMedia';
+// A project's picture: its screenshot, or, for a live demo with recordings (projectClips), a demo
+// player — a desktop window and, where the demo has a phone layout, an iPhone beside it, stepping
+// through short chapters with a pill for each. scripts/demoPlayer.ts drives it.
+//
+// Loading is progressive: a tiny blurred preview is inlined in the page, the full still lazy-loads as
+// it nears the screen (and is all that shows without JS or with reduced motion), and each chapter's
+// video loads only when it's next to play. High-DPI screens get the 1920px desktop recording, others
+// the 1280px one. Recordings come from `npm run record-demos` (scripts/demo-clips/record.mjs).
+//
+// With `href` (the live demo) the screens link to it; the visible "Try the demo" link already covers
+// keyboard and screen-reader users, so these stay out of the tab order.
+import { projectClips, splitTitle, type ProjectShot } from '../data/projectMedia';
+import demoClips from '../data/demoClips.json';
+
+interface Chapter {
+  id: string;
+  label: string;
+  duration: number;
+  mobileDuration: number | null;
+}
+interface Clip {
+  chapters: Chapter[];
+  start: { chapter: number; time: number } | null;
+  lqip: string | null;
+  lqipMobile: string | null;
+  statusBg?: string | null;
+  /** False when the recorded phone screens include the app's own status bar. */
+  statusBar?: boolean;
+  /** The phone recording's shape, e.g. "590 / 1198". */
+  phoneAspect?: string;
+  version: string;
+}
 
 interface Props {
   id: string;
   shot: ProjectShot;
   href?: string;
+  /** Draws the window's title bar with traffic lights (the homepage tiles). */
+  windowBar?: boolean;
+  /** The project's title, for naming the chapter controls. */
+  title?: string;
 }
 
-const { id, shot, href } = Astro.props;
-const clip = projectClips[id];
+const { id, shot, href, windowBar = false, title = '' } = Astro.props;
+const name = projectClips[id];
+const clip = name ? (demoClips as Record<string, Clip>)[name] : undefined;
+const base = `/demos/${name}`;
+const v = clip ? `?v=${clip.version}` : '';
+const hiDpi = '(min-resolution: 1.5dppx)';
+const hasPhone = !!clip?.chapters.some((c) => c.mobileDuration);
+// A phone-only demo (an app with no web version) shows just the phone, which then sets the pace.
+const hasDesktop = !!clip?.chapters.some((c) => c.duration);
+const drawStatusBar = clip?.statusBar !== false;
+const Link = href ? 'a' : 'div';
+const linkProps = href ? { href, target: '_blank', rel: 'noopener noreferrer', tabindex: '-1', 'aria-hidden': 'true' } : {};
+const [projectName] = splitTitle(title);
 ---
 
 {
-  clip && href ? (
-    <a href={href} class="shot-link" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-      <video
-        data-demo-clip
-        muted
-        loop
-        playsinline
-        preload="none"
-        poster={`${clip}.webp`}
-        width={1280}
-        height={800}
-      >
-        <source src={`${clip}.webm`} type="video/webm" />
-        <source src={`${clip}.mp4`} type="video/mp4" />
-      </video>
-    </a>
-  ) : clip ? (
-    <video
-      data-demo-clip
-      muted
-      loop
-      playsinline
-      preload="none"
-      poster={`${clip}.webp`}
-      width={1280}
-      height={800}
-      aria-label={`${shot.alt}, a short looping recording of the live demo`}
-    >
-      <source src={`${clip}.webm`} type="video/webm" />
-      <source src={`${clip}.mp4`} type="video/mp4" />
-    </video>
+  clip ? (
+    <div class="demo" data-demo data-start-chapter={clip.start?.chapter ?? 0} data-start-time={clip.start?.time ?? 0}>
+      {clip.chapters.length > 1 && (
+        <div class="demo-chapters" role="group" aria-label={`${projectName || 'Demo'} demo chapters`}>
+          {clip.chapters.map((c, i) => (
+            <button type="button" class="demo-chapter" data-index={i} aria-pressed="false">
+              {c.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <div class:list={['demo-stage', { 'demo-stage--phone': hasPhone && hasDesktop, 'demo-stage--phone-only': !hasDesktop }]}>
+        {hasDesktop && <div class="demo-window">
+          {windowBar && (
+            <div class="window-bar" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+          )}
+          <Link class:list={['shot-media', { 'shot-link': href }]} style={clip.lqip ? `background-image: url(${clip.lqip})` : ''} {...linkProps}>
+            <img src={`${base}/still.webp${v}`} width={1920} height={1200} alt={href ? '' : shot.alt} loading="lazy" decoding="async" onload="this.classList.add('is-loaded')" />
+            {clip.chapters.map((c, i) => (
+              <video class="demo-video" data-desktop data-chapter={i} data-poster={`${base}/${c.id}.webp${v}`} muted playsinline preload="none" width={1920} height={1200} aria-hidden="true">
+                <source src={`${base}/${c.id}-1920.webm${v}`} type="video/webm" media={hiDpi} />
+                <source src={`${base}/${c.id}-1920.mp4${v}`} type="video/mp4" media={hiDpi} />
+                <source src={`${base}/${c.id}-1280.webm${v}`} type="video/webm" />
+                <source src={`${base}/${c.id}-1280.mp4${v}`} type="video/mp4" />
+              </video>
+            ))}
+          </Link>
+        </div>}
+        {hasPhone && (
+          <Link class:list={['demo-phone', { 'shot-link': href }]} {...linkProps} aria-hidden="true">
+            <span class="phone-body">
+              <span class="phone-screen">
+                {drawStatusBar ? <span class="phone-status" style={clip.statusBg ? `background: ${clip.statusBg}` : ''}>
+                  <span class="phone-time">9:41</span>
+                  <span class="phone-island" />
+                  <svg class="phone-icons" viewBox="0 0 66 12" aria-hidden="true">
+                    <path d="M1 8.5h2.6v3H1zM5.2 6.6h2.6v4.9H5.2zM9.4 4.4H12v7.1H9.4zM13.6 2h2.6v9.5h-2.6z" fill="currentColor" />
+                    <path d="M28.4 3.2a8.6 8.6 0 0 1 11.4 0l-1.3 1.4a6.7 6.7 0 0 0-8.8 0zM30.6 5.6a5.3 5.3 0 0 1 7 0l-1.3 1.4a3.4 3.4 0 0 0-4.4 0zM32.8 8a2 2 0 0 1 2.6 0l-1.3 1.6z" fill="currentColor" />
+                    <rect x="44.5" y="1.5" width="18" height="9" rx="2.6" fill="none" stroke="currentColor" stroke-opacity=".4" />
+                    <rect x="46" y="3" width="13" height="6" rx="1.4" fill="currentColor" />
+                    <path d="M63.8 4.6v2.8a1.5 1.5 0 0 0 0-2.8z" fill="currentColor" fill-opacity=".45" />
+                  </svg>
+                </span> : <span class="phone-island phone-island--over" />}
+                <span class="shot-media phone-media" style={`aspect-ratio: ${clip.phoneAspect ?? '393 / 798'};${clip.lqipMobile ? ` background-image: url(${clip.lqipMobile})` : ''}`}>
+                  <img src={`${base}/still-m.webp${v}`} width={590} height={1198} alt={hasDesktop || href ? '' : shot.alt} loading="lazy" decoding="async" onload="this.classList.add('is-loaded')" />
+                  {clip.chapters.map((c, i) =>
+                    c.mobileDuration ? (
+                      <video class="demo-video" data-phone data-chapter={i} data-poster={`${base}/${c.id}-m.webp${v}`} muted playsinline loop={hasDesktop} preload="none" width={590} height={1198} aria-hidden="true">
+                        <source src={`${base}/${c.id}-m.webm${v}`} type="video/webm" />
+                        <source src={`${base}/${c.id}-m.mp4${v}`} type="video/mp4" />
+                      </video>
+                    ) : null
+                  )}
+                </span>
+              </span>
+            </span>
+          </Link>
+        )}
+      </div>
+    </div>
   ) : (
-    <img src={shot.src} width={shot.width} height={shot.height} alt={shot.alt} loading="lazy" decoding="async" />
+    <>
+      {windowBar && (
+        <div class="window-bar" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      )}
+      <img src={shot.src} width={shot.width} height={shot.height} alt={shot.alt} loading="lazy" decoding="async" />
+    </>
   )
 }

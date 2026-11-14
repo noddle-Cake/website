@@ -24,7 +24,7 @@ const eyebrow = descriptor || data.stack.slice(0, 3).join(' · ');
   <div class="card-visual">
     {
       shot ? (
-        <ProjectShot id={project.id} shot={shot} href={data.demo} />
+        <ProjectShot id={project.id} shot={shot} href={data.demo} title={data.title} />
       ) : (
         data.highlight && (
           <p class="card-stat">
