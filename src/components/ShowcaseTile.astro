@@ -1,0 +1,54 @@
+---
+// One project presented as a product: name, one-line pitch, links, and either its screenshot in a
+// window frame or, when it has none, its highlight figure set large.
+import type { CollectionEntry } from 'astro:content';
+import Emphasis from './Emphasis.astro';
+import ProjectLinks from './ProjectLinks.astro';
+import ProjectShot from './ProjectShot.astro';
+import { projectMedia, splitTitle } from '../data/projectMedia';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  /** `wide` spans the row, `half` shares it with one other, `third` with two. */
+  size?: 'wide' | 'half' | 'third';
+  dark?: boolean;
+}
+
+const { project, size = 'half', dark = false } = Astro.props;
+const { data } = project;
+const [name, descriptor] = splitTitle(data.title);
+const shot = projectMedia[project.id];
+// Titles without a descriptor after the dash are introduced by their main technologies instead.
+const eyebrow = descriptor || data.stack.slice(0, 3).join(' · ');
+---
+
+<article class:list={['tile', `tile--${size}`, { 'tile--dark': dark }, 'reveal']}>
+  <p class="tile-eyebrow">{eyebrow}</p>
+  <h3 class="tile-title">{name}</h3>
+  <p class="tile-tagline"><Emphasis text={data.tagline} /></p>
+  <ProjectLinks
+    demo={data.demo}
+    caseStudy={data.caseStudy}
+    github={data.github}
+    details={`/projects#project-${project.id}`}
+  />
+  {
+    shot ? (
+      <div class="tile-shot">
+        <div class="window-bar" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <ProjectShot id={project.id} shot={shot} href={data.demo} />
+      </div>
+    ) : (
+      data.highlight && (
+        <p class="tile-stat">
+          <span class="stat-value">{data.highlight.value}</span>
+          <span class="stat-label">{data.highlight.label}</span>
+        </p>
+      )
+    )
+  }
+</article>

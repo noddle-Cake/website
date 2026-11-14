@@ -1,31 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ProjectItem from '../components/ProjectItem.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
-const allProjects = (await getCollection('projects')).sort(
-  (a, b) => a.data.order - b.data.order
-);
+const allProjects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout title="Projects">
-  <section id="projects" data-section="Projects" class="split-section">
-    <h1 class="split-heading">Projects</h1>
-    <div class="split-body">
-      {
-        allProjects.map((project) => (
-          <ProjectItem
-            id={project.id}
-            code={project.data.code}
-            title={project.data.title}
-            stack={project.data.stack}
-            summary={project.data.summary}
-            github={project.data.github}
-            demo={project.data.demo}
-            caseStudy={project.data.caseStudy}
-          />
-        ))
-      }
+  <section id="projects" data-section="Projects" class="section section--first">
+    <h1 class="section-title">Projects. <span>All {allProjects.length} of them.</span></h1>
+    <div class="card-grid">
+      {allProjects.map((project) => <ProjectCard project={project} />)}
     </div>
   </section>
 </Layout>

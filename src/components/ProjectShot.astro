@@ -1,0 +1,54 @@
+---
+// A project's picture: its demo recording when it has one (projectClips), otherwise its screenshot.
+// The video starts with only its poster loaded; scripts/sections.ts plays it while it's on screen and
+// leaves it still for visitors who ask for reduced motion. With `href` (the live demo) the clip is a
+// link to it; the visible "Try the demo" link already covers keyboard and screen-reader users, so
+// this one stays out of the tab order.
+import { projectClips, type ProjectShot } from '../data/projectMedia';
+
+interface Props {
+  id: string;
+  shot: ProjectShot;
+  href?: string;
+}
+
+const { id, shot, href } = Astro.props;
+const clip = projectClips[id];
+---
+
+{
+  clip && href ? (
+    <a href={href} class="shot-link" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+      <video
+        data-demo-clip
+        muted
+        loop
+        playsinline
+        preload="none"
+        poster={`${clip}.webp`}
+        width={1280}
+        height={800}
+      >
+        <source src={`${clip}.webm`} type="video/webm" />
+        <source src={`${clip}.mp4`} type="video/mp4" />
+      </video>
+    </a>
+  ) : clip ? (
+    <video
+      data-demo-clip
+      muted
+      loop
+      playsinline
+      preload="none"
+      poster={`${clip}.webp`}
+      width={1280}
+      height={800}
+      aria-label={`${shot.alt}, a short looping recording of the live demo`}
+    >
+      <source src={`${clip}.webm`} type="video/webm" />
+      <source src={`${clip}.mp4`} type="video/mp4" />
+    </video>
+  ) : (
+    <img src={shot.src} width={shot.width} height={shot.height} alt={shot.alt} loading="lazy" decoding="async" />
+  )
+}

@@ -1,8 +1,28 @@
 ---
+// The frosted bar pinned to the top of every page. scripts/sections.ts marks the link whose
+// `data-spy` matches the section in view, or, on pages without one, whose `data-paths` match.
 import { profile } from '../data/profile';
+
+const links = [
+  { href: '/#projects', label: 'Work', spy: 'projects', paths: '/projects /vas-demo' },
+  { href: '/#about', label: 'About', spy: 'about' },
+  { href: '/#experience', label: 'Experience', spy: 'experience' },
+  { href: '/courses', label: 'Courses', paths: '/courses' },
+];
 ---
 
-<header class="page-frame site-header">
-  <a href="/" class="wordmark">{profile.name}</a>
-  <a href={`mailto:${profile.email}`} class="ink-button">Get in touch</a>
+<header class="site-header">
+  <div class="page-frame site-header-inner">
+    <a href="/" class="wordmark">{profile.name}</a>
+    <nav class="site-nav" aria-label="Primary">
+      {
+        links.map((link) => (
+          <a href={link.href} data-spy={link.spy} data-paths={link.paths}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="btn btn--small site-header-cta">Get in touch</a>
+  </div>
 </header>

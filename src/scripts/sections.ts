@@ -1,11 +1,13 @@
-// Tracks which `main [data-section]` is in view and marks the matching pill-nav link as current.
+// Page-wide behaviour: marks the nav link for the `main [data-section]` in view, fades `.reveal`
+// elements in as they are scrolled to, plays demo clips while they're on screen, and opens a project
+// card reached through its #hash.
 
 function initSections() {
   const sections = [...document.querySelectorAll<HTMLElement>('[data-section]')];
-  const pillLinks = [...document.querySelectorAll<HTMLAnchorElement>('.pill-nav a')];
+  const navLinks = [...document.querySelectorAll<HTMLAnchorElement>('.site-nav a')];
 
-  const pathLink = pillLinks.find((link) =>
-    (link.dataset.paths ?? '').split(' ').some((p) => p && (p === '/' ? location.pathname === '/' : location.pathname.startsWith(p)))
+  const pathLink = navLinks.find((link) =>
+    (link.dataset.paths ?? '').split(' ').some((p) => p && location.pathname.startsWith(p))
   );
 
   let current = -1;
@@ -19,9 +21,8 @@ function initSections() {
     if (index === current) return;
     current = index;
 
-    const spy = sections[index]?.id;
-    const active = spy ? pillLinks.find((link) => link.dataset.spy === spy) : pathLink;
-    pillLinks.forEach((link) => (link === active ? link.setAttribute('aria-current', 'page') : link.removeAttribute('aria-current')));
+    const active = sections.length ? navLinks.find((link) => link.dataset.spy === sections[index].id) : pathLink;
+    navLinks.forEach((link) => (link === active ? link.setAttribute('aria-current', 'page') : link.removeAttribute('aria-current')));
   };
 
   let frame = 0;
@@ -33,4 +34,52 @@ function initSections() {
   update();
 }
 
+function initReveal() {
+  const items = document.querySelectorAll<HTMLElement>('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    items.forEach((item) => item.classList.add('is-visible'));
+    return;
+  }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    },
+    { rootMargin: '0px 0px -8% 0px' }
+  );
+  items.forEach((item) => observer.observe(item));
+}
+
+// Demo clips (components/ProjectShot.astro) load nothing but their poster until they're scrolled to,
+// then play while at least a third of them is visible. With reduced motion they stay on the poster.
+function initDemoClips() {
+  const clips = document.querySelectorAll<HTMLVideoElement>('video[data-demo-clip]');
+  if (!clips.length || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const { target, isIntersecting } of entries) {
+        const video = target as HTMLVideoElement;
+        if (isIntersecting) video.play().catch(() => {});
+        else video.pause();
+      }
+    },
+    { threshold: 0.35 }
+  );
+  clips.forEach((clip) => observer.observe(clip));
+}
+
+function openHashTarget() {
+  if (!location.hash) return;
+  const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  target?.querySelector('details')?.setAttribute('open', '');
+}
+
 initSections();
+initReveal();
+initDemoClips();
+openHashTarget();
+window.addEventListener('hashchange', openHashTarget);
