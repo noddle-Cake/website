@@ -1,6 +1,8 @@
 // Page-wide behaviour: marks the nav link for the `main [data-section]` in view, fades `.reveal`
-// elements in as they are scrolled to, plays demo clips while they're on screen, and opens a project
-// card reached through its #hash.
+// elements in as they are scrolled to, starts the demo players (scripts/demoPlayer.ts), and opens a
+// project card reached through its #hash.
+
+import { initDemoPlayers } from './demoPlayer';
 
 function initSections() {
   const sections = [...document.querySelectorAll<HTMLElement>('[data-section]')];
@@ -53,25 +55,6 @@ function initReveal() {
   items.forEach((item) => observer.observe(item));
 }
 
-// Demo clips (components/ProjectShot.astro) load nothing but their poster until they're scrolled to,
-// then play while at least a third of them is visible. With reduced motion they stay on the poster.
-function initDemoClips() {
-  const clips = document.querySelectorAll<HTMLVideoElement>('video[data-demo-clip]');
-  if (!clips.length || !('IntersectionObserver' in window)) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const { target, isIntersecting } of entries) {
-        const video = target as HTMLVideoElement;
-        if (isIntersecting) video.play().catch(() => {});
-        else video.pause();
-      }
-    },
-    { threshold: 0.35 }
-  );
-  clips.forEach((clip) => observer.observe(clip));
-}
-
 function openHashTarget() {
   if (!location.hash) return;
   const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
@@ -80,6 +63,6 @@ function openHashTarget() {
 
 initSections();
 initReveal();
-initDemoClips();
+initDemoPlayers();
 openHashTarget();
 window.addEventListener('hashchange', openHashTarget);

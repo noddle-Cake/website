@@ -11,9 +11,15 @@ export interface ProjectShot {
 }
 
 export const projectMedia: Record<string, ProjectShot> = {
-  // Its still is the demo clip's poster frame.
+  // Stills from the demo recordings (public/demos/<name>/).
+  'fudi-eats': {
+    src: '/demos/fudi/still-m.webp',
+    width: 590,
+    height: 1282,
+    alt: 'Fudi Eats app on an iPhone: dishes from home cooks nearby',
+  },
   grantit: {
-    src: '/demos/grantit.webp',
+    src: '/demos/grantit/still.webp',
     width: 1280,
     height: 800,
     alt: 'Grantit applications board and spending-by-category chart for a demo nonprofit',
@@ -39,15 +45,16 @@ export const projectMedia: Record<string, ProjectShot> = {
 };
 
 /**
- * Short looping recordings of the live demos, keyed by content id: each value is the file stem under
- * public/demos/ (`.mp4`, `.webm` and a `.webp` poster). They play in place of the screenshot.
+ * Short looping recordings of the live demos, keyed by content id: each value is the clip's name
+ * under public/demos/ and in src/data/demoClips.json. They play in place of the screenshot.
  * Re-record with `npm run record-demos` (scripts/demo-clips/record.mjs).
  */
 export const projectClips: Record<string, string> = {
-  oncora: '/demos/oncora',
-  gridmerge: '/demos/gridmerge',
-  'vas-inventory-platform': '/demos/vas',
-  grantit: '/demos/grantit',
+  oncora: 'oncora',
+  gridmerge: 'gridmerge',
+  'vas-inventory-platform': 'vas',
+  grantit: 'grantit',
+  'fudi-eats': 'fudi',
 };
 
 /** "GridMerge — Grid Project Coordination Map" → ["GridMerge", "Grid Project Coordination Map"]. */

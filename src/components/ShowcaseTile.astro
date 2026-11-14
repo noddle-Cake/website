@@ -35,12 +35,7 @@ const eyebrow = descriptor || data.stack.slice(0, 3).join(' · ');
   {
     shot ? (
       <div class="tile-shot">
-        <div class="window-bar" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-        <ProjectShot id={project.id} shot={shot} href={data.demo} />
+        <ProjectShot id={project.id} shot={shot} href={data.demo} title={data.title} windowBar />
       </div>
     ) : (
       data.highlight && (

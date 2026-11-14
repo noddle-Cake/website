@@ -1,0 +1,204 @@
+{
+  "vas": {
+    "chapters": [
+      {
+        "id": "reconcile",
+        "label": "Reconciling",
+        "duration": 14.07,
+        "mobileDuration": 11.13
+      },
+      {
+        "id": "pricing",
+        "label": "Price review",
+        "duration": 13.73,
+        "mobileDuration": 10.67
+      },
+      {
+        "id": "map",
+        "label": "Warehouse map",
+        "duration": 15.33,
+        "mobileDuration": 15.07
+      },
+      {
+        "id": "deliveries",
+        "label": "Deliveries",
+        "duration": 12.2,
+        "mobileDuration": 7.93
+      },
+      {
+        "id": "buying",
+        "label": "Buy list",
+        "duration": 15.73,
+        "mobileDuration": 7.97
+      },
+      {
+        "id": "kpis",
+        "label": "KPIs",
+        "duration": 11.77,
+        "mobileDuration": 9.6
+      },
+      {
+        "id": "search",
+        "label": "Search",
+        "duration": 7.07,
+        "mobileDuration": 5.63
+      }
+    ],
+    "start": {
+      "chapter": 0,
+      "time": 6.33
+    },
+    "lqip": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAAAQAwCdASoYABAAPrVInkmnJCKhMAgA4BaJaQC7AC0HagAA/vPEOHxgy2WAeQzgAAA=",
+    "lqipMobile": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAACwBQCdASoYADAAPrVSnkunJSKhqrgMAOAWiWkACB3hSO7f7boSiZLEl6mvOrpBbJ7xG73Nc/AA/vcFUOU2RkVFxcAkRhJzJd/Rlbk9PLHbC3DZaiwBc7yOI7SdFXbL6WYiaKs1l1QLsjOxxzQWKwySXsAhjFZPuH4ONBMW/n4Bbl1Y7coW5l/E4U55EcsYeayZpb1blMASTsePU/dQLMnbQb6HetoYSAcwnABs/Y9ax9/bot0RxGvc7UPtTsEHttpGs+lFYpaJY5pd4L7DPpiv1aC8jgAAAAA=",
+    "statusBg": "rgb(246 246 244)",
+    "statusBar": true,
+    "phoneAspect": "786 / 1596",
+    "version": "mwfv5i0c"
+  },
+  "oncora": {
+    "chapters": [
+      {
+        "id": "predict",
+        "label": "Predict",
+        "duration": 11.77,
+        "mobileDuration": null
+      },
+      {
+        "id": "targets",
+        "label": "Protein targets",
+        "duration": 11.17,
+        "mobileDuration": null
+      },
+      {
+        "id": "cells",
+        "label": "Cell lines",
+        "duration": 9.93,
+        "mobileDuration": null
+      },
+      {
+        "id": "evidence",
+        "label": "Evidence",
+        "duration": 8.8,
+        "mobileDuration": null
+      }
+    ],
+    "start": {
+      "chapter": 0,
+      "time": 8.24
+    },
+    "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoYABAAPrVInkmnJCKhMAgA4BaJZwAAW+o+WqSDsb4uQAAA/vi5gfqiJHEhWMdOZhHqokqDPUaT1wo3ODrC7gwTY6lIAWKGyHnM90Z7XdGDvABig/gygf1K6Ji0KrlHGKtKw9P7Jwm83qJwiZN/M4AA",
+    "lqipMobile": null,
+    "statusBg": null,
+    "statusBar": true,
+    "phoneAspect": "393 / 798",
+    "version": "mwfv8qbs"
+  },
+  "gridmerge": {
+    "chapters": [
+      {
+        "id": "pairs",
+        "label": "Coordination pairs",
+        "duration": 17.07,
+        "mobileDuration": 12.4
+      },
+      {
+        "id": "layers",
+        "label": "Map layers",
+        "duration": 14.73,
+        "mobileDuration": null
+      },
+      {
+        "id": "review",
+        "label": "Review queue",
+        "duration": 13.87,
+        "mobileDuration": null
+      }
+    ],
+    "start": {
+      "chapter": 0,
+      "time": 7.68
+    },
+    "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAACQAwCdASoYABAALoVarVaipycnBwCESzgF2AId75JB6e3e2Vc8AP7zr/6e9z1/AupCmRk0f4ikGsHwQc3P6gfosa/QZWgB4mWiY0TMc11F1CwhD82/YGt9k9GF1fRoUcf6gTYF8PT7BYVw1gNcjgcAEHfyAAAA",
+    "lqipMobile": "data:image/webp;base64,UklGRiwBAABXRUJQVlA4ICABAACwBgCdASoYADAAPrVKnUmnJCKhKq344BaJYwC+e4EX0KYAPP9n0SJRZ1e/4IodCTi075x19D5gGc4jG7ibAAD+71zWTTWpvgB9yn8ewwyifQj/sRmHTNkXgj/9MCalfQFX4ryIwDT9Q3+6mpntpXT40FJ/sYql3hk9PFKXJlvYX7Ct/QuhZh1g3ciT0ONE/Zes3xQw5KG9qaVnY+wIupSQtMXD7RFwyc+4MTfJzYbPu/QwVOSQHfjSgpk+WeuIVPQuBg2F2PE5nme97dnn8RHTZIebag/htMUQnH23ZBqDyOsWk0R184g0k+KX1nRmqUyqLOETRXa/QLXnBv1GL/JTpBVkQZUKr6jlMAkgJ2dIKdrkb5kFk8xamK/wlJDPwAA=",
+    "statusBg": "rgb(18 50 73)",
+    "statusBar": true,
+    "phoneAspect": "786 / 1596",
+    "version": "mwfvwdjc"
+  },
+  "grantit": {
+    "chapters": [
+      {
+        "id": "home",
+        "label": "Home",
+        "duration": 11.2,
+        "mobileDuration": null
+      },
+      {
+        "id": "opportunities",
+        "label": "Opportunities",
+        "duration": 8.83,
+        "mobileDuration": null
+      },
+      {
+        "id": "applications",
+        "label": "Applications",
+        "duration": 10.33,
+        "mobileDuration": null
+      },
+      {
+        "id": "funds",
+        "label": "Funded grants",
+        "duration": 10.47,
+        "mobileDuration": null
+      },
+      {
+        "id": "financials",
+        "label": "Financials",
+        "duration": 10.2,
+        "mobileDuration": null
+      },
+      {
+        "id": "spending",
+        "label": "Spending",
+        "duration": 10.07,
+        "mobileDuration": null
+      }
+    ],
+    "start": {
+      "chapter": 4,
+      "time": 5.61
+    },
+    "lqip": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAADQAwCdASoYABAAPrVInkmnJCKhMAgA4BaJZQCdAB6RLwtP+MiPfkAA/u6h+4YEKlu1iGnQPPd08BoFJCikhayCGi30UoF7j4bbknZu7OoJmyCmdLlCqN8mvyxnwAAA",
+    "lqipMobile": null,
+    "statusBg": null,
+    "statusBar": true,
+    "phoneAspect": "393 / 798",
+    "version": "mwfvskb1"
+  },
+  "fudi": {
+    "chapters": [
+      {
+        "id": "buying",
+        "label": "Buying",
+        "duration": 0,
+        "mobileDuration": 25.37
+      },
+      {
+        "id": "selling",
+        "label": "Selling",
+        "duration": 0,
+        "mobileDuration": 25.37
+      }
+    ],
+    "start": {
+      "chapter": 0,
+      "time": 0
+    },
+    "lqip": null,
+    "lqipMobile": "data:image/webp;base64,UklGRl4BAABXRUJQVlA4IFIBAABwBwCdASoYADQAPrVSo0ynJKMiKBgKqOAWiWMAyF2NUq6J7mjnu4vTJGK2pl1Fdu4/AOv47NZu+jQ+fka8HXcc/MoMAAD+86/6az7Qdq/g/mgUNhaVMClAxmdSvFD14afmA3R2LZgjm2eeVOiSmD3vblhi2aOTnXGS3deitt//5Aqyvh41OAl00TZhUQyZC2URuQTJQFs3FauGXkf0ULEQC3N2QkbDWCa2Wp5a/FqSVXlOuXvIbRLkrPlVn8bIMylwwJD2/D/e3YPRxuAtBdTklJ8nQ7pVqfR5FPzC3TzbPJx6M/uVH28wlH9SLX6Ug3/xHl6fSKwEkaDgR7QTQQtDsItMEgDF1/JzWn45Hj6Auf1FyNd8UR5U76FlLLhfZkIttq4GwwdSIUAGkcWI4FyDzk0lBqZUGugzklMeQECMp3aKvCx/gthqmQjVxFBZLAAAAA==",
+    "statusBg": "rgb(255 255 255)",
+    "statusBar": false,
+    "phoneAspect": "588 / 1278",
+    "version": "mwfx7jam"
+  }
+}
