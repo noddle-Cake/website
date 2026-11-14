@@ -1,99 +1,97 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ProjectItem from '../components/ProjectItem.astro';
+import ShowcaseTile from '../components/ShowcaseTile.astro';
 import Row from '../components/Row.astro';
-import gridmergePrint from '../assets/gallery/gridmerge.webp';
-import oncoraPrint from '../assets/gallery/oncora.webp';
-import vasPrint from '../assets/gallery/vas.webp';
 import { profile } from '../data/profile';
-import { getCollection, type CollectionEntry } from 'astro:content';
-import type { ImageMetadata } from 'astro';
+import { projectMedia } from '../data/projectMedia';
+import { getCollection } from 'astro:content';
 
 const allProjects = await getCollection('projects');
-const featured = allProjects
-  .filter((p: CollectionEntry<'projects'>) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order);
-// Every project with a demo appears in the hero, labelled with its code and linking to the demo.
-const prints: Record<string, { image: ImageMetadata; alt: string }> = {
-  gridmerge: { image: gridmergePrint, alt: 'GridMerge map of planned U.S. grid projects, colored by utility' },
-  oncora: { image: oncoraPrint, alt: 'Oncora compound input, with the steps from structure to targets, cell lines and evidence' },
-  'vas-inventory-platform': { image: vasPrint, alt: 'VAS dashboard of purchase orders received but not yet reconciled' },
-};
-const exhibits = allProjects
-  .filter((p: CollectionEntry<'projects'>) => p.data.demo)
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((p: CollectionEntry<'projects'>) => {
-    const print = prints[p.id];
-    if (!print) throw new Error(`Project "${p.id}" has a demo but no hero image in index.astro`);
-    return { code: p.data.code, href: p.data.demo, ...print };
-  });
+const featured = allProjects.filter((p) => p.data.featured).sort((a, b) => a.data.order - b.data.order);
+// The lead project gets the full-width dark tile; after it, a project with a screenshot takes half
+// a row and one without takes a third. With an odd number of half tiles the last one spans the row
+// instead, so no half tile is left alone.
+const withShot = featured.slice(1).filter((p) => projectMedia[p.id]);
+const lastAlone = withShot.length % 2 === 1 ? withShot.at(-1)?.id : undefined;
+const tileSize = (id: string, index: number) =>
+  index === 0 || id === lastAlone ? 'wide' : projectMedia[id] ? 'half' : 'third';
 
-const skills = [...profile.skills.languages, ...profile.skills.frameworks, ...profile.skills.systems];
+const skillGroups = [
+  { label: 'Languages', items: profile.skills.languages },
+  { label: 'Frameworks and tools', items: profile.skills.frameworks },
+  { label: 'Systems', items: profile.skills.systems },
+];
 ---
 
 <Layout>
   <section id="top" data-section="Home" class="hero">
-    <div class="hero-grid">
-      <div>
-        <h1 class="hero-title">
-          <span class="block">Engineer.</span>
-          <span class="block">Builder.</span>
-          <span class="block">Signal&nbsp;chaser.</span>
-        </h1>
-        <p class="lead">{profile.tagline}</p>
-      </div>
-      <div class="hero-art">
-        {
-          exhibits.map((e) => (
-            <a
-              href={e.href}
-              target={e.href.startsWith('http') ? '_blank' : undefined}
-              rel={e.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              class="print"
-            >
-              <img src={e.image.src} width={e.image.width} height={e.image.height} alt={e.alt} decoding="async" />
-              <span class="print-code">{e.code}</span>
-            </a>
-          ))
-        }
-      </div>
-    </div>
+    <h1 class="hero-title">Engineer. Builder. <span>Signal&nbsp;chaser.</span></h1>
+    <p class="hero-lead">{profile.tagline}</p>
+    <p class="hero-actions">
+      <a href="#projects" class="btn">See the work</a>
+      <a href={`mailto:${profile.email}`} class="chev-link">Get in touch</a>
+    </p>
   </section>
 
-  <section id="about" data-section="About" class="split-section">
-    <h2 class="split-heading">About</h2>
-    <div class="split-body">
-      <Row title={profile.company.name}>
-        <p>{profile.company.blurb}</p>
-        <p class="row-links">
-          <a href={profile.company.url} target="_blank" rel="noopener noreferrer" class="text-link">Visit</a>
+  <section id="projects" data-section="Work" class="section">
+    <h2 class="section-title">Work. <span>Built, shipped and in use.</span></h2>
+    <div class="tile-grid">
+      {featured.map((project, i) => <ShowcaseTile project={project} size={tileSize(project.id, i)} dark={i === 0} />)}
+    </div>
+    <p class="section-more">
+      <a href="/projects" class="chev-link">See all {allProjects.length} projects</a>
+    </p>
+  </section>
+
+  <section id="about" data-section="About" class="section">
+    <h2 class="section-title">About. <span>Software, hardware and the operations in between.</span></h2>
+    <div class="bento">
+      <article class="panel reveal">
+        <p class="panel-eyebrow">Practice</p>
+        <h3 class="panel-title">{profile.company.name}</h3>
+        <p class="panel-text">{profile.company.blurb}</p>
+        <p class="chev-links">
+          <a href={profile.company.url} target="_blank" rel="noopener noreferrer" class="chev-link">Visit</a>
         </p>
-      </Row>
+      </article>
       {
         profile.education.map((ed) => (
-          <Row title={ed.degree.split(',')[0]} meta={ed.date}>
-            <p>{ed.degree}</p>
-            <p class="row-note">{ed.school}</p>
-          </Row>
+          <article class="panel reveal">
+            <p class="panel-eyebrow">{ed.date}</p>
+            <h3 class="panel-title">{ed.degree.split(',')[0]}</h3>
+            <p class="panel-text">
+              {ed.degree.split(', ')[1] && <>{ed.degree.split(', ')[1]}<br /></>}
+              {ed.school}
+            </p>
+          </article>
         ))
       }
-      <Row title="Skills">
-        <p>{skills.join(', ')}</p>
-      </Row>
+      <article class="panel panel--full reveal">
+        <p class="panel-eyebrow">Skills</p>
+        <div class="skill-groups">
+          {
+            skillGroups.map((group) => (
+              <div>
+                <h3 class="skill-label">{group.label}</h3>
+                <ul class="chips">
+                  {group.items.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </article>
     </div>
   </section>
 
-  <section id="experience" data-section="Experience" class="split-section">
-    <h2 class="split-heading">Experience</h2>
-    <div class="split-body">
+  <section id="experience" data-section="Experience" class="section">
+    <h2 class="section-title">Experience. <span>Where the work happened.</span></h2>
+    <div class="rows">
       {
-        profile.experience.map((job) => (
-          <Row title={job.org} meta={job.date}>
-            <p>{job.role}</p>
+        profile.experience.map((job, i) => (
+          <Row title={job.org} subtitle={job.role} meta={job.date} open={i === 0}>
             <ul class="row-list">
-              {job.highlights.map((highlight) => (
-                <li>{highlight}</li>
-              ))}
+              {job.highlights.map((highlight) => <li>{highlight}</li>)}
             </ul>
           </Row>
         ))
@@ -101,24 +99,11 @@ const skills = [...profile.skills.languages, ...profile.skills.frameworks, ...pr
     </div>
   </section>
 
-  <section id="projects" data-section="Work" class="split-section">
-    <h2 class="split-heading">Work</h2>
-    <div class="split-body">
-      {
-        featured.map((project: CollectionEntry<'projects'>) => (
-          <ProjectItem
-            id={project.id}
-            code={project.data.code}
-            title={project.data.title}
-            stack={project.data.stack}
-            summary={project.data.summary}
-            github={project.data.github}
-            demo={project.data.demo}
-            caseStudy={project.data.caseStudy}
-          />
-        ))
-      }
-      <p class="row-links"><a href="/projects" class="text-link">All {allProjects.length} projects</a></p>
-    </div>
+  <section id="contact" data-section="Contact" class="section contact">
+    <h2 class="contact-title">Get in touch.</h2>
+    <p class="hero-actions">
+      <a href={`mailto:${profile.email}`} class="btn">Email me</a>
+      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="chev-link">LinkedIn</a>
+    </p>
   </section>
 </Layout>

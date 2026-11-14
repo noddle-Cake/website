@@ -2,9 +2,13 @@
 import { profile } from '../data/profile';
 ---
 
-<footer id="contact" class="page-frame site-footer">
-  <a href={`mailto:${profile.email}`}>Email</a>
-  <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-  <a href={profile.company.url} target="_blank" rel="noopener noreferrer">{profile.company.name}</a>
-  <span>&copy; {new Date().getFullYear()} {profile.name}</span>
+<footer class="site-footer">
+  <div class="page-frame site-footer-inner">
+    <span>&copy; {new Date().getFullYear()} {profile.name}</span>
+    <nav aria-label="Elsewhere">
+      <a href={`mailto:${profile.email}`}>Email</a>
+      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href={profile.company.url} target="_blank" rel="noopener noreferrer">{profile.company.name}</a>
+    </nav>
+  </div>
 </footer>

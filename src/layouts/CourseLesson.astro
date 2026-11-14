@@ -15,10 +15,10 @@ const nav = lessonNav(course, lessonSlug);
 const courseSlug = course.slug;
 ---
 
-<Layout title={`${nav.current.title} — ${course.title}`} quietBackdrop>
+<Layout title={`${nav.current.title} — ${course.title}`}>
   <div id="course-nav-data" data-course={courseSlug} data-lesson={lessonSlug} hidden></div>
 
-  <nav class="text-xs font-mono text-slate-500 flex flex-wrap items-center gap-2 mb-6">
+  <nav class="text-xs font-mono text-slate-500 flex flex-wrap items-center gap-2 pt-8 mb-6">
     <a href={`/courses/${courseSlug}`} class="hover:text-slate-100 transition-colors">{course.title}</a>
     <span>/</span>
     <span>{nav.current.unit.title}</span>

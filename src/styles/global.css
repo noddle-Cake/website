@@ -3,145 +3,59 @@
 
 /*
  * ---- Tokens ----
- * One look: black monospace on white, one weight, square corners. The sun and clouds are the only
- * colour. The slate-* ramp is plain grey (950 = page, 50 = strongest text), and `static` keeps every
- * variable emitted because the canvas widgets read some of them from JS (scripts/courses/canvas.ts).
+ * One look: near-black type on white, soft grey tiles, generous radii and a single blue for
+ * actions. The slate-* ramp runs from the page (950) to the strongest text (50), and `static` keeps
+ * every variable emitted because the canvas widgets read some of them from JS
+ * (scripts/courses/canvas.ts).
  */
 @theme static {
   --color-slate-950: #ffffff; /* page background */
-  --color-slate-900: #f6f6f6;
-  --color-slate-800: #e4e4e4; /* borders */
-  --color-slate-700: #d0d0d0; /* hover borders */
-  --color-slate-600: #a8a8a8;
-  --color-slate-500: #6e6e6e; /* quiet labels */
-  --color-slate-400: #565656; /* muted text */
-  --color-slate-300: #343434;
-  --color-slate-200: #222222;
-  --color-slate-100: #111111; /* body text */
+  --color-slate-900: #f5f5f7; /* tiles */
+  --color-slate-800: #e8e8ed; /* borders */
+  --color-slate-700: #d2d2d7; /* hover borders */
+  --color-slate-600: #a1a1a6;
+  --color-slate-500: #6e6e73; /* quiet labels */
+  --color-slate-400: #515154; /* muted text */
+  --color-slate-300: #424245;
+  --color-slate-200: #333336;
+  --color-slate-100: #1d1d1f; /* body text */
   --color-slate-50: #000000; /* strongest text */
-  --color-accent: #000000;
+  --color-accent: #0071e3; /* buttons */
+  --color-link: #0066cc;
 
-  --font-sans: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Flatten the utilities the course pages use, so they follow the look without markup changes. */
-  --font-weight-semibold: 500;
-  --font-weight-bold: 500;
-  --font-weight-extrabold: 500;
-  --tracking-tight: 0;
-  --tracking-wide: 0;
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --shadow-lg: none;
+  --radius-tile: 1.75rem;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-@layer base {
-  h1,
-  h2,
-  h3 {
-    font-weight: 400;
-  }
-}
-
-/* Bare `rounded` and `rounded-full` aren't theme tokens, so square them off here. */
-.rounded,
-.rounded-full {
-  border-radius: 0;
-}
-
 section[id],
-footer[id] {
-  scroll-margin-top: 1rem;
+article[id] {
+  /* Clears the pinned header. */
+  scroll-margin-top: 4.5rem;
 }
 
-/* ---- Backdrop (components/Dreamscape.astro) ---- */
-.dreamscape {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-/* The sun scrolls away with the top of the page, so text never has to cross it. */
-.dream-sun {
-  position: absolute;
-  z-index: -1;
-  top: 3.5rem;
-  right: 0.25rem;
-  width: clamp(7.5rem, 17vw, 13rem);
-  height: auto;
-  animation: dream-bob 14s ease-in-out infinite;
-}
-
-/* On wide screens the sun hangs in the gutter beside the content. */
-@media (min-width: 88rem) {
-  .dream-sun {
-    top: 4rem;
-    right: max(0.5rem, calc((100vw - 78rem) / 4 - 6rem));
-    width: 14rem;
-  }
-}
-
-.dream-cloud {
-  position: absolute;
-  left: 0;
-  top: var(--top);
-  width: var(--width);
-  height: auto;
-  animation: dream-drift var(--duration) linear infinite;
-  animation-delay: var(--delay);
-}
-
-@keyframes dream-drift {
-  from {
-    transform: translateX(-40vw);
-  }
-  to {
-    transform: translateX(110vw);
-  }
-}
-
-@keyframes dream-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dream-sun,
-  .dream-cloud {
-    animation: none;
-  }
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 /* ---- Frame ---- */
 .page-frame {
   width: 100%;
-  max-width: 78rem;
+  max-width: 76rem;
   margin-inline: auto;
   padding-inline: 1rem;
 }
 
 @media (min-width: 40rem) {
   .page-frame {
-    padding-inline: 2rem;
-  }
-}
-
-@media (min-width: 64rem) {
-  .page-frame {
-    padding-inline: 3rem;
+    padding-inline: 1.5rem;
   }
 }
 
@@ -151,7 +65,8 @@ footer[id] {
   top: -4rem;
   z-index: 100;
   padding: 0.5rem 1rem;
-  background: var(--color-slate-50);
+  border-radius: 999px;
+  background: var(--color-slate-100);
   color: var(--color-slate-950);
 }
 
@@ -159,262 +74,756 @@ footer[id] {
   top: 1rem;
 }
 
-/* ---- Header and footer ---- */
-.site-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-block: 1.25rem;
-}
-
-.wordmark,
-.ink-button,
-.site-footer,
-.pill-nav,
-.hero-title,
-.split-heading,
-.row-head,
-.print-code,
-.row-links {
-  text-transform: uppercase;
-}
-
-.ink-button {
-  padding: 0.6rem 1rem;
+/* ---- Buttons and links ---- */
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-size: 1.0625rem;
   white-space: nowrap;
-  background: var(--color-slate-50);
-  color: var(--color-slate-950);
+  background: var(--color-accent);
+  color: #fff;
+  transition: background-color 0.2s ease;
 }
 
-.ink-button:hover {
-  background: var(--color-slate-300);
+.btn:hover {
+  background: #0077ed;
 }
 
-.site-footer {
+.btn--small {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+}
+
+.chev-links {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 2rem;
-  /* Clears the fixed navigation at the bottom of the screen. */
-  padding-block: 4rem 6rem;
-  font-size: 0.875rem;
-  color: var(--color-slate-500);
+  gap: 0.25rem 1.5rem;
 }
 
-.site-footer a:hover {
-  color: var(--color-slate-50);
+.chev-link {
+  color: var(--color-link);
+  white-space: nowrap;
 }
 
-.text-link {
+.chev-link::after {
+  content: "\203A";
+  display: inline-block;
+  margin-left: 0.3em;
+  transition: transform 0.2s ease;
+}
+
+.chev-link:hover {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
-.text-link:hover {
+.chev-link:hover::after {
+  transform: translateX(2px);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.chips li {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  background: var(--color-slate-950);
+  color: var(--color-slate-400);
+}
+
+/* ---- Header (components/Nav.astro) ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgb(0 0 0 / 0.06);
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 3rem;
+}
+
+.wordmark {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--color-slate-100);
+}
+
+.site-nav {
+  display: flex;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.site-nav a {
+  padding: 0.35rem 0.3rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--color-slate-400);
+  transition: color 0.2s ease;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current] {
+  color: var(--color-slate-50);
+}
+
+/* On phones the footer and the contact section carry the email link instead. */
+.site-header-cta {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .site-nav {
+    gap: 1rem;
+  }
+
+  .site-nav a {
+    padding-inline: 0.6rem;
+  }
+
+  .site-header-cta {
+    display: inline-block;
+  }
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  margin-top: 4rem;
+  background: var(--color-slate-900);
+  font-size: 0.8125rem;
   color: var(--color-slate-500);
+}
+
+.site-footer-inner,
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.site-footer-inner {
+  justify-content: space-between;
+  padding-block: 1.5rem;
+}
+
+.site-footer a:hover {
+  color: var(--color-slate-100);
+  text-decoration: underline;
 }
 
 /* ---- Hero ---- */
 .hero {
-  padding-block: 2.5rem 3.5rem;
-}
-
-@media (min-width: 64rem) {
-  .hero {
-    min-height: calc(100svh - 6rem);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-block: 3rem 5rem;
-  }
-}
-
-.hero-grid {
-  display: grid;
-  gap: 3rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-}
-
-@media (min-width: 64rem) {
-  .hero-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.hero-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.1;
-  color: var(--color-slate-50);
-}
-
-.lead {
-  max-width: 36rem;
-  margin-top: 2rem;
-  line-height: 1.6;
-  color: var(--color-slate-300);
-}
-
-/* The demos side by side, each labelled with a centred code. */
-.hero-art {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.print {
-  display: block;
+  padding-block: clamp(4rem, 12vw, 8rem) clamp(3rem, 8vw, 5.5rem);
   text-align: center;
 }
 
-.print img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  background: var(--color-slate-950);
-  outline: 1px solid var(--color-slate-800);
+.hero-title {
+  max-width: 16ch;
+  font-size: clamp(2.75rem, 8.5vw, 6rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  color: var(--color-slate-100);
 }
 
-.print-code {
-  display: block;
-  margin-top: 1rem;
-  color: var(--color-slate-50);
+/* The last phrase and the big figures take the one gradient on the page. Browsers that cannot clip
+   a background to text keep plain blue instead of showing a filled box. */
+.hero-title span,
+.stat-value {
+  color: var(--color-accent);
 }
 
-.print:hover .print-code {
+@supports (background-clip: text) {
+  .hero-title span,
+  .stat-value {
+    background: linear-gradient(90deg, #0071e3, #7d5fff 55%, #e0468c);
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.hero-lead {
+  max-width: 40rem;
+  margin-top: 1.5rem;
+  font-size: clamp(1.0625rem, 2vw, 1.3125rem);
+  line-height: 1.45;
   color: var(--color-slate-500);
 }
 
-/* ---- Split sections ---- */
-.split-section {
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 1.75rem;
+  margin-top: 2rem;
+  font-size: 1.0625rem;
+}
+
+/* ---- Sections ---- */
+.section {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.section--first {
+  padding-top: clamp(3rem, 8vw, 5rem);
+}
+
+/* "Work." in ink, the rest of the line in grey. */
+.section-title {
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--color-slate-100);
+}
+
+.section-title span {
+  color: var(--color-slate-500);
+}
+
+.section-more {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 1.0625rem;
+}
+
+/* ---- Showcase tiles (components/ShowcaseTile.astro) ---- */
+.tile-grid {
   display: grid;
-  gap: 1.5rem;
-  padding-block: 3rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tile {
+  grid-column: span 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(2.5rem, 5vw, 3.75rem) clamp(1.25rem, 4vw, 3rem) 0;
+  border-radius: var(--radius-tile);
+  text-align: center;
+  background: var(--color-slate-900);
+}
+
+@media (min-width: 48rem) {
+  .tile--half {
+    grid-column: span 3;
+  }
 }
 
 @media (min-width: 64rem) {
-  .split-section {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: 4rem;
-    padding-block: 4rem;
-  }
-
-  /* The heading rides along beside long content. */
-  .split-section > :first-child {
-    position: sticky;
-    top: 2rem;
-    align-self: start;
+  .tile--third {
+    grid-column: span 2;
   }
 }
 
-.split-heading {
-  font-size: 1rem;
-  padding-block: 0.75rem;
-  color: var(--color-slate-50);
+.tile-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-slate-500);
+}
+
+.tile-title {
+  margin-top: 0.25rem;
+  font-size: clamp(1.875rem, 3.4vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--color-slate-100);
+}
+
+.tile--wide .tile-title {
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+}
+
+.tile-tagline {
+  max-width: 34rem;
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--color-slate-400);
+}
+
+.tile--wide .tile-tagline {
+  max-width: 40rem;
+  font-size: clamp(1.0625rem, 1.8vw, 1.3125rem);
+}
+
+.tile .chev-links {
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 1.0625rem;
+}
+
+/* A demo clip that links to the live demo (components/ProjectShot.astro). */
+.shot-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.shot-link video {
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.shot-link:hover video {
+  transform: translateY(-0.25rem);
+}
+
+/* The screenshot sits in a window frame that runs off the bottom edge of the tile. */
+.tile-shot {
+  width: 100%;
+  max-width: 58rem;
+  /* Pushes the frame to the bottom when a neighbouring tile is taller. */
+  margin-top: auto;
+  padding-top: clamp(2rem, 4vw, 3rem);
+}
+
+.tile-shot :is(img, video) {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.14);
+}
+
+.tile--half .tile-shot :is(img, video) {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+}
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.75rem;
+  padding-inline: 0.75rem;
+  border-radius: 0.75rem 0.75rem 0 0;
+  background: #e3e3e8;
+}
+
+/* macOS traffic lights: close, minimise, zoom. */
+.window-bar span {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.18);
+}
+
+.window-bar span:nth-child(2) {
+  background: #febc2e;
+}
+
+.window-bar span:nth-child(3) {
+  background: #28c840;
+}
+
+.tile-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-block: 2.5rem clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.stat-value {
+  align-self: center;
+  font-size: clamp(3.5rem, 7vw, 5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.stat-label {
+  max-width: 16rem;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--color-slate-500);
+}
+
+.tile--dark {
+  background: #000;
+}
+
+.tile--dark .tile-title {
+  color: #f5f5f7;
+}
+
+.tile--dark .tile-eyebrow,
+.tile--dark .tile-tagline {
+  color: #a1a1a6;
+}
+
+.tile--dark .chev-link {
+  color: #2997ff;
+}
+
+.tile--dark .window-bar {
+  background: #2c2c2e;
+}
+
+/* ---- About panels ---- */
+.bento {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 48rem) {
+  .bento {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .panel--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.panel {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--radius-tile);
+  background: var(--color-slate-900);
+}
+
+.panel-eyebrow,
+.card-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-slate-500);
+}
+
+.panel-title {
+  margin-top: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-slate-100);
+}
+
+.panel-text {
+  margin-top: 0.5rem;
+  line-height: 1.45;
+  color: var(--color-slate-400);
+}
+
+.panel .chev-links {
+  margin-top: 1rem;
+}
+
+.skill-groups {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 48rem) {
+  .skill-groups {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.skill-label {
+  margin-bottom: 0.625rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-slate-100);
 }
 
 /* ---- Rows (components/Row.astro) ---- */
-.row-head {
-  display: flex;
-  align-items: baseline;
-  gap: 0.25rem 1.5rem;
-  padding-block: 0.75rem;
-  color: var(--color-slate-50);
+.rows {
+  border-top: 1px solid var(--color-slate-700);
 }
 
-summary.row-head {
+.row {
+  border-bottom: 1px solid var(--color-slate-700);
+}
+
+.row-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 1.25rem;
   cursor: pointer;
   list-style: none;
 }
 
-summary.row-head::-webkit-details-marker {
+.row-head::-webkit-details-marker {
   display: none;
 }
 
-/* The plus sign, which turns into a minus while the row is open. */
-summary.row-head::after {
-  content: "+";
-  order: 3;
-}
-
-details[open] > summary.row-head::after {
-  content: "\2212";
-}
-
-summary.row-head:hover {
-  color: var(--color-slate-500);
-}
-
-.row-code {
-  flex: none;
-  width: 4.5rem;
+.row-heading {
+  flex: 1;
+  min-width: 0;
 }
 
 .row-title {
-  flex: 1;
-  min-width: 0;
-  font-size: 1rem;
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-slate-100);
+}
+
+.row-subtitle {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--color-slate-500);
 }
 
 .row-meta {
   flex: none;
+  font-size: 0.9375rem;
   color: var(--color-slate-500);
+}
+
+/* A plus in a circle, which turns into a cross while the row is open. */
+.row-toggle {
+  position: relative;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--color-slate-900);
+  transition: transform 0.3s ease, background-color 0.2s ease;
+}
+
+.row-toggle::before,
+.row-toggle::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 0.75rem;
+  height: 1.5px;
+  background: var(--color-slate-100);
+  transform: translate(-50%, -50%);
+}
+
+.row-toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.row-head:hover .row-toggle {
+  background: var(--color-slate-800);
+}
+
+.row[open] .row-toggle {
+  transform: rotate(45deg);
 }
 
 .row-body {
-  max-width: 40rem;
-  padding-block: 0.25rem 1.5rem;
-  line-height: 1.6;
-  color: var(--color-slate-300);
-}
-
-.row-note {
-  margin-top: 0.75rem;
-  color: var(--color-slate-500);
-}
-
-.row-links {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 0.75rem;
-}
-
-.row-list {
-  margin-top: 0.75rem;
+  max-width: 46rem;
+  padding-bottom: 1.75rem;
+  line-height: 1.5;
+  color: var(--color-slate-400);
 }
 
 .row-list li + li {
   margin-top: 0.75rem;
 }
 
-/* ---- Navigation at the bottom of the screen (components/PillNav.astro) ---- */
-.pill-nav {
-  position: fixed;
-  inset: auto 0 0;
-  z-index: 50;
+@media (max-width: 39.99rem) {
+  .row-head {
+    flex-wrap: wrap;
+  }
+
+  /* The date drops under the title, leaving the toggle beside it. */
+  .row-meta {
+    order: 3;
+    width: 100%;
+    margin-top: -0.75rem;
+  }
+}
+
+/* ---- Contact ---- */
+.contact {
   display: flex;
-  justify-content: center;
-  padding-block: 0.5rem max(0.75rem, env(safe-area-inset-bottom));
-  background: var(--color-slate-950);
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.pill-nav a {
-  padding: 0.5rem 0.5rem;
-  font-size: 0.8125rem;
-  white-space: nowrap;
-  color: var(--color-slate-500);
-  transition: color 0.2s ease;
+.contact-title {
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-slate-100);
 }
 
-.pill-nav a:hover,
-.pill-nav a[aria-current] {
-  color: var(--color-slate-50);
+/* ---- Project gallery (components/ProjectCard.astro) ---- */
+.card-grid {
+  display: grid;
+  gap: 0.75rem;
+  align-items: start;
 }
 
 @media (min-width: 40rem) {
-  .pill-nav a {
-    padding-inline: 0.75rem;
-    font-size: 1rem;
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.card {
+  overflow: hidden;
+  border-radius: var(--radius-tile);
+  background: var(--color-slate-900);
+}
+
+.card:target {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.card-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.card-visual :is(img, video) {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  object-position: top;
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.1);
+}
+
+.card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.card-stat .stat-value {
+  font-size: clamp(3rem, 6vw, 4rem);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  margin-top: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-slate-100);
+}
+
+.card-tagline {
+  margin-top: 0.5rem;
+  line-height: 1.4;
+  color: var(--color-slate-400);
+}
+
+.card .chips {
+  margin-top: 1rem;
+}
+
+.card-more {
+  margin-top: 1rem;
+  font-size: 0.9375rem;
+}
+
+.card-more summary {
+  width: fit-content;
+  cursor: pointer;
+  list-style: none;
+  color: var(--color-link);
+}
+
+.card-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.card-more summary::after {
+  content: " +";
+}
+
+.card-more[open] summary::after {
+  content: " \2212";
+}
+
+.card-more summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.card-more p {
+  margin-top: 0.5rem;
+  line-height: 1.5;
+  color: var(--color-slate-400);
+}
+
+.card .chev-links {
+  margin-top: 1rem;
+}
+
+/*
+ * ---- Key phrases ----
+ * Impact figures and key terms in project copy (marked **like this** in the content files): bold,
+ * in the body-text colour against the muted grey around them.
+ */
+.em {
+  font-weight: 600;
+  color: var(--color-slate-100);
+}
+
+.tile--dark .em {
+  color: #f5f5f7;
+}
+
+/* ---- Scroll reveal (scripts/sections.ts) ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

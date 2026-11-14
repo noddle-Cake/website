@@ -1,18 +1,14 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
-import PillNav from '../components/PillNav.astro';
 import Footer from '../components/Footer.astro';
-import Dreamscape from '../components/Dreamscape.astro';
 import { profile } from '../data/profile';
 
 interface Props {
   title?: string;
-  /** No sun or drifting clouds, for long-form reading pages. */
-  quietBackdrop?: boolean;
 }
 
-const { title = profile.name, quietBackdrop = false } = Astro.props;
+const { title = profile.name } = Astro.props;
 ---
 
 <!doctype html>
@@ -25,22 +21,25 @@ const { title = profile.name, quietBackdrop = false } = Astro.props;
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Apple devices use San Francisco; Inter stands in for it everywhere else. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     />
+    <!-- Lets the stylesheet hide scroll-reveal elements only when the script that shows them can run. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-accent selection:text-slate-950">
     <a href="#main" class="skip-link">Skip to content</a>
-    <Dreamscape quiet={quietBackdrop} />
     <Nav />
     <main id="main" class="page-frame flex-1">
       <slot />
     </main>
     <Footer />
-    <PillNav />
     <script>
       import '../scripts/sections';
     </script>

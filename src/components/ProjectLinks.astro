@@ -1,0 +1,25 @@
+---
+// The chevron links under a project: demo, before-and-after, source, and an optional details link.
+interface Props {
+  demo?: string;
+  caseStudy?: string;
+  github?: string;
+  details?: string;
+}
+
+const { demo, caseStudy, github, details } = Astro.props;
+// Demos on other sites open in a new tab; on-site pages stay in this one.
+const external = (href: string) =>
+  href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{
+  (demo || caseStudy || github || details) && (
+    <p class="chev-links">
+      {demo && <a href={demo} class="chev-link" {...external(demo)}>Try the demo</a>}
+      {caseStudy && <a href={caseStudy} class="chev-link">Before &amp; after</a>}
+      {details && <a href={details} class="chev-link">Details</a>}
+      {github && <a href={github} class="chev-link" {...external(github)}>GitHub</a>}
+    </p>
+  )
+}

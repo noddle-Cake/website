@@ -1,0 +1,51 @@
+---
+// A project in the full gallery: a picture (or its highlight figure), the pitch, and the long
+// write-up folded behind "Read more". scripts/sections.ts opens the write-up when the page is
+// reached through the card's #project-<id> link.
+import type { CollectionEntry } from 'astro:content';
+import Emphasis from './Emphasis.astro';
+import ProjectLinks from './ProjectLinks.astro';
+import ProjectShot from './ProjectShot.astro';
+import { projectMedia, splitTitle } from '../data/projectMedia';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const [name, descriptor] = splitTitle(data.title);
+const shot = projectMedia[project.id];
+// Titles without a descriptor after the dash are introduced by their main technologies instead.
+const eyebrow = descriptor || data.stack.slice(0, 3).join(' · ');
+---
+
+<article id={`project-${project.id}`} class="card reveal">
+  <div class="card-visual">
+    {
+      shot ? (
+        <ProjectShot id={project.id} shot={shot} href={data.demo} />
+      ) : (
+        data.highlight && (
+          <p class="card-stat">
+            <span class="stat-value">{data.highlight.value}</span>
+            <span class="stat-label">{data.highlight.label}</span>
+          </p>
+        )
+      )
+    }
+  </div>
+  <div class="card-body">
+    <p class="card-eyebrow">{eyebrow}</p>
+    <h2 class="card-title">{name}</h2>
+    <p class="card-tagline"><Emphasis text={data.tagline} /></p>
+    <ul class="chips">
+      {data.stack.map((tech) => <li>{tech}</li>)}
+    </ul>
+    <details class="card-more">
+      <summary>Read more</summary>
+      <p><Emphasis text={data.summary} /></p>
+    </details>
+    <ProjectLinks demo={data.demo} caseStudy={data.caseStudy} github={data.github} />
+  </div>
+</article>

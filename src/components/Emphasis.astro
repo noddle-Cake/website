@@ -1,0 +1,14 @@
+---
+// Renders project copy with its key phrases picked out. In the content files a phrase is wrapped
+// in **double asterisks**; everything else is plain text, so no HTML from frontmatter reaches the
+// page.
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+// Splitting on the markers alternates plain and marked runs: odd indexes are the marked ones.
+const parts = text.split('**');
+---
+
+{parts.map((part, i) => (i % 2 === 1 ? <strong class="em">{part}</strong> : part))}
