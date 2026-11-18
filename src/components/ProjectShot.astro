@@ -1,12 +1,13 @@
 ---
-// A project's picture: its screenshot, or, for a live demo with recordings (projectClips), a demo
+// A project's picture: its screenshot (in an iPhone when it's a phone app's screen), or, for a live demo with recordings (projectClips), a demo
 // player — a desktop window and, where the demo has a phone layout, an iPhone beside it, stepping
 // through short chapters with a pill for each. scripts/demoPlayer.ts drives it.
 //
 // Loading is progressive: a tiny blurred preview is inlined in the page, the full still lazy-loads as
 // it nears the screen (and is all that shows without JS or with reduced motion), and each chapter's
 // video loads only when it's next to play. High-DPI screens get the 1920px desktop recording, others
-// the 1280px one. Recordings come from `npm run record-demos` (scripts/demo-clips/record.mjs).
+// the 1280px one. MP4 (H.264) comes before WebM: Chrome's VP9 decoding fails as soon as two WebM
+// videos play at once, which froze every player on screen but one. Recordings come from `npm run record-demos` (scripts/demo-clips/record.mjs).
 //
 // With `href` (the live demo) the screens link to it; the visible "Try the demo" link already covers
 // keyboard and screen-reader users, so these stay out of the tab order.
@@ -82,10 +83,10 @@ const [projectName] = splitTitle(title);
             <img src={`${base}/still.webp${v}`} width={1920} height={1200} alt={href ? '' : shot.alt} loading="lazy" decoding="async" onload="this.classList.add('is-loaded')" />
             {clip.chapters.map((c, i) => (
               <video class="demo-video" data-desktop data-chapter={i} data-poster={`${base}/${c.id}.webp${v}`} muted playsinline preload="none" width={1920} height={1200} aria-hidden="true">
-                <source src={`${base}/${c.id}-1920.webm${v}`} type="video/webm" media={hiDpi} />
                 <source src={`${base}/${c.id}-1920.mp4${v}`} type="video/mp4" media={hiDpi} />
-                <source src={`${base}/${c.id}-1280.webm${v}`} type="video/webm" />
+                <source src={`${base}/${c.id}-1920.webm${v}`} type="video/webm" media={hiDpi} />
                 <source src={`${base}/${c.id}-1280.mp4${v}`} type="video/mp4" />
+                <source src={`${base}/${c.id}-1280.webm${v}`} type="video/webm" />
               </video>
             ))}
           </Link>
@@ -110,8 +111,8 @@ const [projectName] = splitTitle(title);
                   {clip.chapters.map((c, i) =>
                     c.mobileDuration ? (
                       <video class="demo-video" data-phone data-chapter={i} data-poster={`${base}/${c.id}-m.webp${v}`} muted playsinline loop={hasDesktop} preload="none" width={590} height={1198} aria-hidden="true">
-                        <source src={`${base}/${c.id}-m.webm${v}`} type="video/webm" />
                         <source src={`${base}/${c.id}-m.mp4${v}`} type="video/mp4" />
+                        <source src={`${base}/${c.id}-m.webm${v}`} type="video/webm" />
                       </video>
                     ) : null
                   )}
@@ -120,6 +121,21 @@ const [projectName] = splitTitle(title);
             </span>
           </Link>
         )}
+      </div>
+    </div>
+  ) : shot.phone ? (
+    <div class="demo">
+      <div class="demo-stage demo-stage--phone-only">
+        <Link class:list={['demo-phone', { 'shot-link': href }]} {...linkProps}>
+          <span class="phone-body">
+            <span class="phone-screen">
+              <span class="phone-island phone-island--over" />
+              <span class="shot-media phone-media" style={`aspect-ratio: ${shot.width} / ${shot.height}`}>
+                <img src={shot.src} width={shot.width} height={shot.height} alt={href ? '' : shot.alt} loading="lazy" decoding="async" onload="this.classList.add('is-loaded')" />
+              </span>
+            </span>
+          </span>
+        </Link>
       </div>
     </div>
   ) : (

@@ -9,12 +9,19 @@ import { getCollection } from 'astro:content';
 const allProjects = await getCollection('projects');
 const featured = allProjects.filter((p) => p.data.featured).sort((a, b) => a.data.order - b.data.order);
 // The lead project gets the full-width dark tile; after it, a project with a screenshot takes half
-// a row and one without takes a third. With an odd number of half tiles the last one spans the row
-// instead, so no half tile is left alone.
+// a row and one without takes a third. Half tiles pair like with like, a phone beside a phone and a
+// window beside a window, so neither is stretched to its neighbour's height (order the projects so
+// pairs sit next to each other). With an odd number of either kind, the last of that kind spans the
+// row instead.
 const withShot = featured.slice(1).filter((p) => projectMedia[p.id]);
-const lastAlone = withShot.length % 2 === 1 ? withShot.at(-1)?.id : undefined;
+const alone = new Set(
+  [true, false].flatMap((phone) => {
+    const kind = withShot.filter((p) => !!projectMedia[p.id].phone === phone);
+    return kind.length % 2 === 1 ? [kind.at(-1)!.id] : [];
+  }),
+);
 const tileSize = (id: string, index: number) =>
-  index === 0 || id === lastAlone ? 'wide' : projectMedia[id] ? 'half' : 'third';
+  index === 0 || alone.has(id) ? 'wide' : projectMedia[id] ? 'half' : 'third';
 
 const skillGroups = [
   { label: 'Languages', items: profile.skills.languages },

@@ -10,5 +10,5 @@ highlight:
   value: "EPUB"
   label: "built on the phone from six novel sites"
 featured: true
-order: 8
+order: 5
 ---
