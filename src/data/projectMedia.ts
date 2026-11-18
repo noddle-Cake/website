@@ -2,12 +2,15 @@
 // back to their `highlight` figure wherever a picture would go.
 import gridmerge from '../assets/gallery/gridmerge.webp';
 import oncora from '../assets/gallery/oncora.webp';
+import moonleaf from '../assets/gallery/moonleaf.webp';
 
 export interface ProjectShot {
   src: string;
   width: number;
   height: number;
   alt: string;
+  /** A phone app's screen, shown in an iPhone rather than a window. The homepage pairs phones with phones. */
+  phone?: boolean;
 }
 
 export const projectMedia: Record<string, ProjectShot> = {
@@ -17,6 +20,14 @@ export const projectMedia: Record<string, ProjectShot> = {
     width: 590,
     height: 1282,
     alt: 'Fudi Eats app on an iPhone: dishes from home cooks nearby',
+    phone: true,
+  },
+  moonleaf: {
+    src: moonleaf.src,
+    width: moonleaf.width,
+    height: moonleaf.height,
+    alt: 'Moonleaf reading a chapter on the Paper theme, with a passage highlighted and the Copy, Highlight, Note, Look Up and Translate menu above it',
+    phone: true,
   },
   grantit: {
     src: '/demos/grantit/still.webp',

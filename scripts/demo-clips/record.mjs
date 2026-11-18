@@ -19,7 +19,7 @@
 // and the demo's entry in src/data/demoClips.json (chapters, durations, where playback starts, and a
 // tiny blurred preview of each still).
 //
-// Needs Google Chrome and ffmpeg (with libx264, libvpx-vp9 and libwebp) on the PATH.
+// Needs Google Chrome and ffmpeg (with libx264, libvpx-vp9 and libwebp, or cwebp alongside it) on the PATH.
 
 import { chromium, devices } from 'playwright-core';
 import { execFileSync } from 'node:child_process';
@@ -62,11 +62,13 @@ const DEVICES = {
 
 /**
  * A phone app with no web version can still be recorded from a page that shows it in a phone (the
- * app's own site, say): with `phone: 'crop'` the demo's phone chapters run on a short page at 2.1x
- * (short, so frames stay small and quick to capture; wide enough that sites lay the phone out beside
- * their hero rather than under it) and each chapter's `crop(page)` gives the box of the screen to keep.
+ * app's own site, say): with `phone: 'crop'` the demo's phone chapters run on a page at 2.1x (wide
+ * enough that sites lay the phone out beside their hero rather than under it) and each chapter's
+ * `crop(page)` gives the box of the screen to keep. Headless Chrome's screencast leaves out the bottom
+ * ~87px of the viewport, so the box has to sit inside the frames actually captured, which capture()
+ * checks: ffmpeg would otherwise quietly shift the crop up to fit the frame.
  */
-const CROP_CONTEXT = { viewport: { width: 1024, height: 660 }, deviceScaleFactor: 2.1 };
+const CROP_CONTEXT = { viewport: { width: 1024, height: 820 }, deviceScaleFactor: 2.1 };
 const contextFor = (demo, device) => (device === 'mobile' && demo.phone === 'crop' ? CROP_CONTEXT : DEVICES[device].context);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -224,7 +226,7 @@ async function capture(demo, chapter, device, context) {
     const file = join(work, `f${String(frames.length).padStart(5, '0')}.jpg`);
     writeFileSync(file, Buffer.from(data, 'base64'));
     // A still page's first frame can carry the time it was last painted, long before recording began.
-    frames.push({ file, t: Math.max(metadata.timestamp, started) });
+    frames.push({ file, t: Math.max(metadata.timestamp, started), width: metadata.deviceWidth, height: metadata.deviceHeight });
   });
   await cdp.send('Page.startScreencast', {
     format: 'jpeg', quality: 95, maxWidth: Math.round(viewport.width * deviceScaleFactor), maxHeight: Math.round(viewport.height * deviceScaleFactor),
@@ -242,6 +244,13 @@ async function capture(demo, chapter, device, context) {
   await cdp.send('Page.stopScreencast');
   await page.close();
   if (frames.length < 2) throw new Error(`${demo.name}:${chapter.id} (${device}): only ${frames.length} frames captured`);
+  if (box) {
+    const frameW = Math.min(...frames.map((f) => f.width));
+    const frameH = Math.min(...frames.map((f) => f.height));
+    if (box.x < 0 || box.y < 0 || box.x + box.width > frameW + 0.5 || box.y + box.height > frameH + 0.5) {
+      throw new Error(`${demo.name}:${chapter.id} (${device}): crop box ${JSON.stringify(box)} runs outside the ${frameW.toFixed(0)}×${frameH.toFixed(0)} frames captured`);
+    }
+  }
   return { work, frames, end, crop };
 }
 
@@ -279,14 +288,26 @@ function encode(demo, chapter, device, { work, frames, end, crop }) {
   return { duration: Number(probeDuration(master).toFixed(2)), master };
 }
 
+let ffmpegHasWebp;
+/** One frame of `video` as a WebP, through ffmpeg's libwebp or, in builds without it, cwebp. */
+function webpFrame(video, time, filter, quality, file) {
+  ffmpegHasWebp ??= execFileSync('ffmpeg', ['-hide_banner', '-encoders']).toString().includes('libwebp');
+  const grab = ['-ss', String(time), '-i', video, '-frames:v', '1', '-vf', filter];
+  if (ffmpegHasWebp) return ffmpeg([...grab, '-c:v', 'libwebp', '-quality', String(quality), file]);
+  const png = `${file}.png`;
+  ffmpeg([...grab, png]);
+  execFileSync('cwebp', ['-quiet', '-q', String(quality), png, '-o', file]);
+  rmSync(png);
+}
+
 function still(video, time, width, file) {
-  ffmpeg(['-ss', String(time), '-i', video, '-frames:v', '1', '-vf', `scale=${width}:-2:flags=lanczos`, '-c:v', 'libwebp', '-quality', '80', file]);
+  webpFrame(video, time, `scale=${width}:-2:flags=lanczos`, 80, file);
 }
 
 /** A 24px-wide copy of a still as a data URI: the blurred placeholder until the still arrives. */
 function lqip(video, time, work) {
   const tiny = join(work, 'tiny.webp');
-  ffmpeg(['-ss', String(time), '-i', video, '-frames:v', '1', '-vf', 'scale=24:-2:flags=area', '-c:v', 'libwebp', '-quality', '60', tiny]);
+  webpFrame(video, time, 'scale=24:-2:flags=area', 60, tiny);
   return `data:image/webp;base64,${readFileSync(tiny).toString('base64')}`;
 }
 

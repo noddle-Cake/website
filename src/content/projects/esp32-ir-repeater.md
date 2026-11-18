@@ -9,5 +9,5 @@ highlight:
   value: "Rust"
   label: "firmware on the ESP32-S3, debugged down to the signal"
 featured: true
-order: 7
+order: 8
 ---
