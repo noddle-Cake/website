@@ -181,13 +181,13 @@
         "id": "buying",
         "label": "Buying",
         "duration": 0,
-        "mobileDuration": 25.37
+        "mobileDuration": 20.67
       },
       {
         "id": "selling",
         "label": "Selling",
         "duration": 0,
-        "mobileDuration": 25.37
+        "mobileDuration": 15.27
       }
     ],
     "start": {
@@ -195,10 +195,10 @@
       "time": 0
     },
     "lqip": null,
-    "lqipMobile": "data:image/webp;base64,UklGRl4BAABXRUJQVlA4IFIBAABwBwCdASoYADQAPrVSo0ynJKMiKBgKqOAWiWMAyF2NUq6J7mjnu4vTJGK2pl1Fdu4/AOv47NZu+jQ+fka8HXcc/MoMAAD+86/6az7Qdq/g/mgUNhaVMClAxmdSvFD14afmA3R2LZgjm2eeVOiSmD3vblhi2aOTnXGS3deitt//5Aqyvh41OAl00TZhUQyZC2URuQTJQFs3FauGXkf0ULEQC3N2QkbDWCa2Wp5a/FqSVXlOuXvIbRLkrPlVn8bIMylwwJD2/D/e3YPRxuAtBdTklJ8nQ7pVqfR5FPzC3TzbPJx6M/uVH28wlH9SLX6Ug3/xHl6fSKwEkaDgR7QTQQtDsItMEgDF1/JzWn45Hj6Auf1FyNd8UR5U76FlLLhfZkIttq4GwwdSIUAGkcWI4FyDzk0lBqZUGugzklMeQECMp3aKvCx/gthqmQjVxFBZLAAAAA==",
-    "statusBg": "rgb(255 255 255)",
+    "lqipMobile": "data:image/webp;base64,UklGRkwBAABXRUJQVlA4IEABAACwBwCdASoYADQAPrVEnEmnI6KhMBgN+OAWiWMAw3MuwHiaCC/tNR9eg8UuC+RbO2iKsJJwFkV++SS7Vbz7hpKnB4AcTAyAAP7pxgdRh+78tkF/9440k2tuz0ypRut2iAJbdsRsKRBtKUIg6cwXI5BdEyI80t//bp6GTAQzDmHHvCc56kUkf78/t07me8zPv1BdtEvxfEc7ENQFGR1Okh594yJcLwg1UW2eywNVvqOoj7eqs8brRi4bvp0QXPxotqX02/NhufVqG0/MNqFNVb/O19XtMkICYrP/+adVVHm5OKd45xo4+fTIyOAP5gUaca69ndhl8XQLn34Qul3cT1o0mtyOCCZgsZPxIGgx/xUn8PAeK7u0Fsd3D9KmjwRaKeXaeUqupcbuxnEgOG+rJXtIl1OeTYfxAPXziDw7PQAAAA==",
+    "statusBg": "rgb(41 39 53)",
     "statusBar": false,
     "phoneAspect": "588 / 1278",
-    "version": "mwfx7jam"
+    "version": "mwmfu42x"
   }
 }
